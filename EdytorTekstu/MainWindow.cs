@@ -10,20 +10,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace EdytorTekstu
+namespace SiTE
 {
-    public partial class EdytorTekstu : Form
+    public partial class MainWindow : Form
     {
-        private string filePath = "Dokument";
+        private string filePath;
 
         private FontFamily[] fonts;
         private System.Drawing.FontStyle newFontStyle;
 
         private Localization lang = new Localization();
 
-        public EdytorTekstu()
+        public MainWindow()
         {
             InitializeComponent();
+            filePath = lang.GetLine("default_path");
             fontSizeList.SelectedIndex = 4;
             AddAvailableFonts();
             ChangeLang(System.Globalization.CultureInfo.CurrentCulture.DisplayName);
@@ -61,7 +62,7 @@ namespace EdytorTekstu
         //*********************************************//
         private void NewFile()
         {
-            filePath = "Dokument";
+            filePath = lang.GetLine("default_path");
             textArea.Text = "";
         }
 
@@ -120,7 +121,7 @@ namespace EdytorTekstu
 
         private void SaveFile()
         {
-            if (filePath != "Dokument")
+            if (filePath != lang.GetLine("default_path"))
             {
                 try
                 {

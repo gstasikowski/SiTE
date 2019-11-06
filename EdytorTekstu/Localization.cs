@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EdytorTekstu
+namespace SiTE
 {
     class Localization
     {
@@ -15,6 +15,7 @@ namespace EdytorTekstu
 
         string[][] textLines = { new string[]{"formats", "RTF document (RTF) (*.rtf)|*.rtf|Plain text (*.txt)|*.txt|HTML (*.html)|*.html|PHP (*.php)|*.php|XML (*.xml) |*.xml|All files (*.*)|*.*", 
                                                          "Tekst sformatowany (RTF) (*.rtf)|*.rtf|Dokument tekstowy (*.txt)|*.txt|Plik HTML (*.html)|*.html|Plik PHP (*.php)|*.php|Plik XML (*.xml) |*.xml|Wszystkie pliki (*.*)|*.*"},
+                                 new string[]{"default_path", "Document", "Dokument"},
                                  new string[]{"tm_file", "File", "Plik"}, 
                                  new string[]{"tm_edit", "Edit", "Edycja"},
                                  new string[]{"tm_format", "Format", "Format"},

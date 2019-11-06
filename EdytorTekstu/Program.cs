@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace EdytorTekstu
+namespace SiTE
 {
     static class Program
     {
@@ -16,7 +16,7 @@ namespace EdytorTekstu
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new EdytorTekstu());
+            Application.Run(new MainWindow());
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace EdytorTekstu
+﻿namespace SiTE
 {
-    partial class EdytorTekstu
+    partial class MainWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EdytorTekstu));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.topMenu = new System.Windows.Forms.MenuStrip();
             this.tmFile = new System.Windows.Forms.ToolStripMenuItem();
             this.newFileBtn = new System.Windows.Forms.ToolStripMenuItem();
