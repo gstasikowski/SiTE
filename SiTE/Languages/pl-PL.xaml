@@ -1,0 +1,77 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+    <!-- Menu items - [File] -->
+    <system:String x:Key="MenuFile">Plik</system:String>
+    <system:String x:Key="MenuNewNote">Nowa notatka</system:String>
+    <system:String x:Key="MenuSaveNote">Zapisz notatkę</system:String>
+    <system:String x:Key="MenuDeleteNote">Usuń notatkę</system:String>
+    <system:String x:Key="MenuPageSettings">Ustawienia strony</system:String>
+    <system:String x:Key="MenuExit">Zamknij</system:String>
+    <!-- Menu items - [Edit] -->
+    <system:String x:Key="MenuEdit">Edytuj</system:String>
+    <system:String x:Key="MenuCut">Wytnij</system:String>
+    <system:String x:Key="MenuCopy">Kopiuj</system:String>
+    <system:String x:Key="MenuPaste">Wklej</system:String>
+    <system:String x:Key="MenuSelectAll">Zaznacz wszystko</system:String>
+    <system:String x:Key="MenuUndo">Cofnij</system:String>
+    <system:String x:Key="MenuRedo">Powtórz</system:String>
+    <system:String x:Key="MenuBold">Pogrubienie</system:String>
+    <system:String x:Key="MenuItalic">Kursywa</system:String>
+    <system:String x:Key="MenuUnderline">Podkreślenie</system:String>
+    <system:String x:Key="MenuStrikethrough">Przekreślenie</system:String>
+    <!-- Menu items - [Format] -->
+    <system:String x:Key="MenuFormat">Format</system:String>
+    <system:String x:Key="MenuFont">Czcionka</system:String>
+    <system:String x:Key="MenuFontColor">Kolor czcionki</system:String>
+    <system:String x:Key="MenuHighlightColor">Kolor tła</system:String>
+    <system:String x:Key="MenuWordWrap">Zwijaj wiersze</system:String>
+    <system:String x:Key="MenuSpellcheck">Sprawdzanie błędów</system:String>
+    <!-- Menu items - [Settings] -->
+    <system:String x:Key="MenuSettings">Ustawienia</system:String>
+    <!-- Menu items - [Help] -->
+    <system:String x:Key="MenuHelp">Pomoc</system:String>
+    <system:String x:Key="MenuGit">GitHub</system:String>
+    <system:String x:Key="MenuAbout">O programie</system:String>
+    <!-- Tooltips -->
+    <system:String x:Key="TipNewNote">Tworzy nową notatkę</system:String>
+    <system:String x:Key="TipSaveNote">Zapisz otwartą notatkę</system:String>
+    <system:String x:Key="TipDeleteNote">Usuń otwartą notatkę</system:String>
+    <system:String x:Key="TipCut">Wytnij do schowka.</system:String>
+    <system:String x:Key="TipCopy">Skopiuj do schowka.</system:String>
+    <system:String x:Key="TipPaste">Wklej ze schowka.</system:String>
+    <system:String x:Key="TipUndo">Cofnij</system:String>
+    <system:String x:Key="TipRedo">Powtórz</system:String>
+    <system:String x:Key="TipFont">Zmień czcionkę.</system:String>
+    <system:String x:Key="TipFontSize">Zmień rozmiar czcionki.</system:String>
+    <system:String x:Key="TipBold">Pogrub zaznaczy tekst.</system:String>
+    <system:String x:Key="TipItalic">Przechyl zaznaczony tekst.</system:String>
+    <system:String x:Key="TipUnderline">Podkreśl zaznaczony tekst.</system:String>
+    <system:String x:Key="TipStrikethrough">Przekreśl zaznaczony tekst.</system:String>
+    <system:String x:Key="TipFontColor">Zmień kolor tekstu.</system:String>
+    <system:String x:Key="TipHighlightColor">Zmień kolor tła tekstu.</system:String>
+    <system:String x:Key="TipTextLeft">Wyrównaj tekst do lewej.</system:String>
+    <system:String x:Key="TipTextCenter">Wyrównaj tekst do środka.</system:String>
+    <system:String x:Key="TipTextRight">Wyrównaj tekst do prawej.</system:String>
+    <system:String x:Key="TipTextJustify">Wyrównaj tekst do obu marginesów.</system:String>
+    <system:String x:Key="TipWordWrap">Włącz/wyłącz zwijanie wierszy.</system:String>
+    <system:String x:Key="TipSpellcheck">Włącz/wyłącz sprawdzanie błędów.</system:String>
+    <system:String x:Key="TipNoteList">Pokaż/ukryj listę notatek.</system:String>
+    <!-- Note items -->
+    <system:String x:Key="NoteTitle">Tytuł</system:String>
+    <system:String x:Key="NoteLastSaveTime">Ostatnio zapisano</system:String>
+    <!-- Settings items - [General] -->
+    <system:String x:Key="GroupGeneral">Ogólne</system:String>
+    <system:String x:Key="Language">Język</system:String>
+    <!-- Settings items - [Encryption] -->
+    <system:String x:Key="GroupEncryption">Szyfrowanie</system:String>
+    <system:String x:Key="EncryptionToggle">Włącz szyfrowanie</system:String>
+    <system:String x:Key="Password">Hasło</system:String>
+    <!-- Buttons -->
+    <system:String x:Key="ButtonApply">Potwierdź</system:String>
+    <system:String x:Key="ButtonBack">Cofnij</system:String>
+    <!-- ErrorMessages -->
+    <system:String x:Key="ErrorDefault">Wystąpił nieznany błąd, spróbuj ponownie.</system:String>
+    <system:String x:Key="ErrorWrongPassword">Błędne hasło szyfrowania. Upewnij się że szyfrowanie jest włączone w opcjach a hasło zgadza się z użytym prz zapisaniu notatki.</system:String>
+    <!--<system:String x:Key=""></system:String>-->
+</ResourceDictionary>

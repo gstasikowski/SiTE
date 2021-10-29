@@ -1,0 +1,41 @@
+﻿<Window x:Class="SiTE.View.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SiTE.View"
+        mc:Ignorable="d"
+        Title="Settings" Height="450" Width="800" Closing="Window_Closing" ShowInTaskbar="False" Topmost="True" WindowStartupLocation="CenterOwner">
+    <Grid Margin="2,2,2,2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Expander Header="{DynamicResource GroupGeneral}" IsExpanded="True">
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{DynamicResource Language}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="cb_LanguageList" />
+                </StackPanel>
+            </Grid>
+        </Expander>
+        <Expander Header="{DynamicResource GroupEncryption}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="1" IsExpanded="True">
+            <Grid Margin="2,2,2,2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <CheckBox x:Name="chkb_Encryption" Content="{DynamicResource EncryptionToggle}" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="ChkbEncryption_Toggled" Unchecked="ChkbEncryption_Toggled"/>
+                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <Label Content="{DynamicResource Password}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <TextBox x:Name="tb_EncryptionPassword" Height="20" MinWidth="100"/>
+                </StackPanel>
+            </Grid>
+        </Expander>
+        <DockPanel VerticalAlignment="Bottom" Grid.Row="2" Height="25">
+            <Button Content="{DynamicResource ButtonBack}" HorizontalAlignment="Left" VerticalAlignment="Top" Click="BtnBack_Click"/>
+            <Button Content="{DynamicResource ButtonApply}" HorizontalAlignment="Left" VerticalAlignment="Top" Click="BtnApply_Click" Margin="5,0,0,0"/>
+        </DockPanel>
+    </Grid>
+</Window>
