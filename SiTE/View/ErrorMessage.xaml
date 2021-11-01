@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SiTE.View"
         mc:Ignorable="d"
-        Title="ErrorMessage" Height="120" Width="500" ResizeMode="NoResize" ShowInTaskbar="False" SizeToContent="WidthAndHeight" Topmost="True" WindowStartupLocation="CenterOwner">
+        Title="ErrorMessage" Height="120" Width="500" ResizeMode="NoResize" ShowInTaskbar="False" SizeToContent="WidthAndHeight" Topmost="True" WindowStartupLocation="CenterOwner" Closing="Window_Closing">
     <Grid Height="Auto" Width="Auto">
-        <Label Name="lbl_errorContent" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,10,5,0"/>
+        <Label x:Name="lbl_ErrorContent" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,10,5,0"/>
         <!--<Button Content="OK" />-->
     </Grid>
 </Window>

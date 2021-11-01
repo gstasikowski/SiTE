@@ -36,7 +36,7 @@ namespace SiTE.View
             
             foreach (string note in Logic.Refs.fileOperations.GetNoteList())
             {
-                lv_NoteList.Items.Add(note.Replace(Logic.Refs.dataBank.DefaultNotePath, "").Replace(".aes", ""));
+                lv_NoteList.Items.Add(note.Replace(Logic.Refs.dataBank.DefaultNotePath, "").Replace(".aes", "").Replace(".site", ""));
             }
         }
 
@@ -53,22 +53,24 @@ namespace SiTE.View
             if (lv_NoteList.SelectedIndex < 0)
                 return;
 
-            ta_Note.IsUndoEnabled = false; // TODO figure out a better way to do this
-            Logic.Refs.fileOperations.LoadDocument(lv_NoteList.SelectedItem.ToString(), ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
-            tb_Title.Text = lv_NoteList.SelectedItem.ToString();
-            CheckModified();
-            ta_Note.IsUndoEnabled = true;
+            if (Logic.Refs.fileOperations.LoadNote(lv_NoteList.SelectedItem.ToString(), ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd))
+            {
+                ta_Note.IsUndoEnabled = false; // TODO figure out a better way to do this
+                tb_Title.Text = lv_NoteList.SelectedItem.ToString();
+                CheckModified();
+                ta_Note.IsUndoEnabled = true; // TODO figure out a better way to do this
+            }
         }
 
         private void SaveNote()
         {
-            Logic.Refs.fileOperations.SaveDocument(tb_Title.Text, ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
+            Logic.Refs.fileOperations.SaveNote(tb_Title.Text, ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
             LoadNoteList();
         }
 
         private void DeleteNote()
         {
-            Logic.Refs.fileOperations.DeleteDocument(lv_NoteList.SelectedItem.ToString() + ".aes");
+            Logic.Refs.fileOperations.DeleteNote(lv_NoteList.SelectedItem.ToString() + ".aes");
             NewNote();
             LoadNoteList();
         }
@@ -79,7 +81,7 @@ namespace SiTE.View
             btn_RedoMenu.IsEnabled = btn_RedoToolbar.IsEnabled = ta_Note.CanRedo;
 
             WindowSetup();
-            lbl_LastSaveTime.Content = (Logic.Refs.dataBank.LastSaveNote != string.Empty) ? (string)FindResource("NoteLastSaveTime") + ": " + Logic.Refs.dataBank.LastSaveNote : string.Empty; // TODO add proper line (page) count or sth
+            lbl_LastSaveTime.Content = (Logic.Refs.dataBank.LastSaveNote != string.Empty) ? (string)FindResource("NoteLastSaveTime") + ": " + Logic.Refs.dataBank.LastSaveNote : string.Empty;
         }
 
         private void CutText()
@@ -159,14 +161,20 @@ namespace SiTE.View
                 ta_Note.Selection.ApplyPropertyValue(TextElement.FontStyleProperty, "Normal");
         }
 
-        private void FontUnderline()
+        private void FontUnderline() // change to allow for underline + strikethrough
         {
-
+            if (ta_Note.Selection.GetPropertyValue(Inline.TextDecorationsProperty) != TextDecorations.Underline)
+                ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
+            else
+                ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Baseline);
         }
 
-        private void FontStrike()
+        private void FontStrike() // change to allow for underline + strikethrough
         {
-
+            if (ta_Note.Selection.GetPropertyValue(Inline.TextDecorationsProperty) != TextDecorations.Strikethrough)
+                ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Strikethrough);
+            else
+                ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Baseline);
         }
 
         private void FontColor()
@@ -201,11 +209,6 @@ namespace SiTE.View
             }
         }
 
-        private void WordWrapToggle()
-        {
-            ta_Note.FontSize = 112.0;
-        }
-
         private void SpellCheckToggle() // currently non functioning, requires (?) Telerik.Windows.Documents.Proofing.Dictionaries.En-US.dll for EN spellcheck
         {
             ta_Note.SpellCheck.IsEnabled = !ta_Note.SpellCheck.IsEnabled;
@@ -230,7 +233,7 @@ namespace SiTE.View
 
         private void ExitApp()
         {
-            // check if saved
+            // throw save reminder in note was modified
             Application.Current.Shutdown();
         }
 
@@ -323,11 +326,6 @@ namespace SiTE.View
         private void BtnTextPosition_Click(object sender, RoutedEventArgs e)
         {
             TextPosition(sender);
-        }
-
-        private void BtnWordWrap_Click(object sender, RoutedEventArgs e)
-        {
-            WordWrapToggle();
         }
 
         private void BtnSpellCheck_Click(object sender, RoutedEventArgs e)

@@ -151,10 +151,9 @@
                     <ImageBrush Stretch="Uniform" ImageSource="/Resources/jRight.png" Opacity="1"/>
                 </Button.Background>
             </Button>
-            <Button x:Name="btn_textJust" Width="22" Height="22" Click="BtnTextPosition_Click" Content="JUST" ToolTip="{DynamicResource TipTextJustify}"/>
-            <Button Width="22" Height="22" Click="BtnWordWrap_Click" ToolTip="{DynamicResource TipWordWrap}">
+            <Button x:Name="btn_textJust" Width="22" Height="22" Click="BtnTextPosition_Click" ToolTip="{DynamicResource TipTextJustify}">
                 <Button.Background>
-                    <ImageBrush Stretch="Uniform" ImageSource="/Resources/wordWrap.png" Opacity="1"/>
+                    <ImageBrush ImageSource="/Resources/wordWrap.png" Stretch="Uniform"/> <!-- TODO update icon -->
                 </Button.Background>
             </Button>
             <Button Width="22" Height="22" Click="BtnSpellCheck_Click" Content="SPC" ToolTip="{DynamicResource TipSpellcheck}"/>

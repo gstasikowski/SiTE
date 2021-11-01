@@ -10,7 +10,7 @@ namespace SiTE.Model
         string defaultLanguagePath = AppDomain.CurrentDomain.BaseDirectory + "Languages\\";
         Dictionary<string, string> settings = new Dictionary<string, string>();
 
-        List<string> langList = new List<string>();
+        List<string> languageList = new List<string>();
 
         string currentOpenNote = string.Empty;
         string lastSaveTime = string.Empty;
@@ -69,18 +69,18 @@ namespace SiTE.Model
 
         public void AddAvailableLanguage(string languageCode)
         {
-            if (!langList.Contains(languageCode))
-            { langList.Add(languageCode); }
+            if (!languageList.Contains(languageCode))
+            { languageList.Add(languageCode); }
         }
 
         public List<string> LanguageList
         {
-            get { return langList; }
+            get { return languageList; }
         }
 
         public int LanguageIndex(string languageCode)
         {
-            return langList.FindIndex(x => x.Contains(languageCode));
+            return languageList.FindIndex(x => x.Contains(languageCode));
         }
     }
 }

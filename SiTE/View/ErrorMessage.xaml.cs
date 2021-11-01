@@ -10,7 +10,12 @@ namespace SiTE.View
         public ErrorMessage(string message)
         {
             InitializeComponent();
-            lbl_errorContent.Content = message;
+            lbl_ErrorContent.Content = message;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Application.Current.MainWindow.IsEnabled = true;
         }
     }
 }

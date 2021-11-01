@@ -69,7 +69,7 @@
     <system:String x:Key="Password">Password</system:String>
     <!-- Buttons -->
     <system:String x:Key="ButtonApply">Apply</system:String>
-    <system:String x:Key="ButtonBack">Back</system:String>
+    <system:String x:Key="ButtonBack">&lt; Back</system:String>
     <!-- ErrorMessages -->
     <system:String x:Key="ErrorDefault">Unkown error has occured. Please try again.</system:String>
     <system:String x:Key="ErrorWrongPassword">Wrong encryption password. Make sure encryption is enabled in app settings and password matches one used when saving the note.</system:String>

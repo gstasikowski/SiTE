@@ -27,65 +27,73 @@ namespace SiTE.Logic
                 Directory.CreateDirectory(Refs.dataBank.DefaultConfigPath);
         }
 
-        public void LoadDocument(string filepath, TextPointer pointerStart, TextPointer pointerEnd)
+        public bool LoadNote(string noteTitle, TextPointer pointerStart, TextPointer pointerEnd)
         {
             TextRange docContent;
-            FileStream fStream;
+            FileStream fileStream;
 
-            string fullFilePath = Refs.dataBank.DefaultNotePath + filepath + ".aes";
+            string filePath = Refs.dataBank.DefaultNotePath + noteTitle + ".aes";
 
-            if (File.Exists(fullFilePath))
+            if (File.Exists(filePath))
             {
-                string filepathDecrypted = fullFilePath.Replace(".aes", ".site");
-                FileDecrypt(fullFilePath, filepathDecrypted, Refs.dataBank.GetSetting("password"));
-                
-                docContent = new TextRange(pointerStart, pointerEnd);
-                fStream = new FileStream(filepathDecrypted, FileMode.OpenOrCreate);
-                try
-                {  docContent.Load(fStream, DataFormats.XamlPackage); }
-                catch
-                {                    
-                    new ErrorHandler(Application.Current, "ErrorWrongPassword"); // probably caused by incorrect encryption password, inform the user and ask for password in case they know it
-                }
-                fStream.Close();
+                string filePathDecrypted = filePath.Replace(".aes", ".site");
+                FileDecrypt(filePath, filePathDecrypted, Refs.dataBank.GetSetting("password"));
 
-                File.Delete(filepathDecrypted);
-                Refs.dataBank.CurrentOpenNote = filepath;
-                Refs.dataBank.LastSaveNote = File.GetLastWriteTime(fullFilePath).ToString();
+                docContent = new TextRange(pointerStart, pointerEnd);
+                fileStream = new FileStream(filePathDecrypted, FileMode.OpenOrCreate);
+
+                try
+                {
+                    docContent.Load(fileStream, DataFormats.XamlPackage);
+                    Refs.dataBank.CurrentOpenNote = noteTitle;
+                    Refs.dataBank.LastSaveNote = File.GetLastWriteTime(filePath).ToString();
+                }
+                catch
+                {
+                    new ErrorHandler(Application.Current, "ErrorWrongPassword"); // probably caused by incorrect encryption password, inform the user and ask for password in case they know it
+                    return false;// add choice to input custom password, get back to new/last note if declined
+                }
+
+                fileStream.Close();
+                File.Delete(filePathDecrypted);
             }
+            else
+            { return false; }
+
+            return true;
         }
 
-        public void SaveDocument(string filepath, TextPointer pointerStart, TextPointer pointerEnd)
+        public void SaveNote(string noteTitle, TextPointer pointerStart, TextPointer pointerEnd)
         {
-            string fullFilePath = Refs.dataBank.DefaultNotePath + filepath + ".site"; // TODO remove temp .site files step after changing encryption to direct from document
+            string filePath = Refs.dataBank.DefaultNotePath + noteTitle + ".site"; // TODO remove temp .site files step after changing encryption to direct from document
 
-            TextRange range;
-            FileStream fStream;
-            range = new TextRange(pointerStart, pointerEnd);
-            fStream = new FileStream(fullFilePath, FileMode.Create);
-            range.Save(fStream, DataFormats.XamlPackage);
-            fStream.Close();
+            TextRange textRange;
+            FileStream fileStream;
+            textRange = new TextRange(pointerStart, pointerEnd);
+            fileStream = new FileStream(filePath, FileMode.Create);
+            textRange.Save(fileStream, DataFormats.XamlPackage);
+            fileStream.Close();
 
-            if (Refs.dataBank.GetSetting("encryption") == "False")
-                return;
-            
-            FileEncrypt(fullFilePath, Refs.dataBank.GetSetting("password"));
-            DeleteDocument(filepath + ".site");
-
-            if (Refs.dataBank.CurrentOpenNote != string.Empty && Refs.dataBank.CurrentOpenNote != filepath)
+            if (Refs.dataBank.GetSetting("encryption") == "True")
             {
-                DeleteDocument(Refs.dataBank.CurrentOpenNote + ".aes");
-                Refs.dataBank.CurrentOpenNote = filepath;
+                FileEncrypt(filePath, Refs.dataBank.GetSetting("password"));
+                DeleteNote(noteTitle + ".site");
+
+                if (Refs.dataBank.CurrentOpenNote != string.Empty && Refs.dataBank.CurrentOpenNote != noteTitle)
+                {
+                    DeleteNote(Refs.dataBank.CurrentOpenNote + ".aes");
+                    Refs.dataBank.CurrentOpenNote = noteTitle;
+                }
             }
 
             Refs.dataBank.LastSaveNote = DateTime.Now.ToString();
         }
 
-        public void DeleteDocument(string filepath)
+        public void DeleteNote(string noteFile)
         {
             // TODO after getting rid of temp .site files assume all files have the same extension
             // instead of adding it in multiple classes/places
-            File.Delete(Refs.dataBank.DefaultNotePath + filepath);
+            File.Delete(Refs.dataBank.DefaultNotePath + noteFile);
         }
 
         static byte[] GenerateRandomSalt()
@@ -104,7 +112,7 @@ namespace SiTE.Logic
             return data;
         }
 
-        private void FileEncrypt(string filepath, string password) // TODO modify encryption to save straight from text area instead of temp file
+        private void FileEncrypt(string filePath, string password) // TODO modify encryption to save straight from text area instead of temp file
         {
             //http://stackoverflow.com/questions/27645527/aes-encryption-on-large-files
 
@@ -112,7 +120,7 @@ namespace SiTE.Logic
             byte[] salt = GenerateRandomSalt();
 
             //create output file name
-            FileStream fsCrypt = new FileStream(filepath.Replace(".site",".aes"), FileMode.Create);
+            FileStream fileStreamCrypt = new FileStream(filePath.Replace(".site",".aes"), FileMode.Create);
 
             //convert password string to byte arrray
             byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
@@ -133,11 +141,10 @@ namespace SiTE.Logic
             AES.Mode = CipherMode.CFB;
 
             // write salt to the begining of the output file, so in this case can be random every time
-            fsCrypt.Write(salt, 0, salt.Length);
+            fileStreamCrypt.Write(salt, 0, salt.Length);
 
-            CryptoStream cs = new CryptoStream(fsCrypt, AES.CreateEncryptor(), CryptoStreamMode.Write);
-
-            FileStream fsIn = new FileStream(filepath, FileMode.Open);
+            CryptoStream cryptoStream = new CryptoStream(fileStreamCrypt, AES.CreateEncryptor(), CryptoStreamMode.Write);
+            FileStream fileStreamTemp = new FileStream(filePath, FileMode.Open);
 
             //create a buffer (1mb) so only this amount will allocate in the memory and not the whole file
             byte[] buffer = new byte[1048576];
@@ -145,23 +152,23 @@ namespace SiTE.Logic
 
             try
             {
-                while ((read = fsIn.Read(buffer, 0, buffer.Length)) > 0)
+                while ((read = fileStreamTemp.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     //Application.DoEvents(); // -> for responsive GUI, using Task will be better!
-                    cs.Write(buffer, 0, read);
+                    cryptoStream.Write(buffer, 0, read);
                 }
 
                 // Close up
-                fsIn.Close();
+                fileStreamTemp.Close();
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message);
+                new ErrorHandler(Application.Current, "ErrorWrongPassword", ex.Message);
             }
             finally
             {
-                cs.Close();
-                fsCrypt.Close();
+                cryptoStream.Close();
+                fileStreamCrypt.Close();
             }
         }
 
@@ -234,9 +241,9 @@ namespace SiTE.Logic
 
         public void LoadTranslations()
         {
-            foreach (string fileName in Directory.EnumerateFiles(Refs.dataBank.DefaultLanguagePath))
+            foreach (string filePath in Directory.EnumerateFiles(Refs.dataBank.DefaultLanguagePath))
             {
-                string cultureCode = fileName.Substring(fileName.LastIndexOf('\\') + 1).Replace(".xaml", "");
+                string cultureCode = filePath.Substring(filePath.LastIndexOf('\\') + 1).Replace(".xaml", "");
                 var tempCulture = System.Globalization.CultureInfo.GetCultureInfo(cultureCode);
                 Refs.dataBank.AddAvailableLanguage(string.Format("{0} [{1}]", tempCulture.DisplayName, tempCulture.Name));
             }
@@ -250,10 +257,9 @@ namespace SiTE.Logic
             {
                 string configFile = File.ReadAllText(configFilePath);
                 XElement rootElement = XElement.Parse(configFile);
-                foreach (var el in rootElement.Elements())
-                {
-                    Refs.dataBank.SetSetting(el.Name.LocalName, el.Value);
-                }
+
+                foreach (var element in rootElement.Elements())
+                { Refs.dataBank.SetSetting(element.Name.LocalName, element.Value); }
             }
             else
             { SaveSettings(); }
@@ -263,16 +269,16 @@ namespace SiTE.Logic
 
         public void SaveSettings()
         {
-            Dictionary<string, string> settingsObject = Refs.dataBank.GetAllSettings();
+            Dictionary<string, string> appSettings = Refs.dataBank.GetAllSettings();
 
-            FileStream fStream;
-            fStream = new FileStream(Refs.dataBank.DefaultConfigPath + "Config.xml", FileMode.Create);
+            FileStream fileStream;
+            fileStream = new FileStream(Refs.dataBank.DefaultConfigPath + "Config.xml", FileMode.Create);
 
-            XElement rootElement = new XElement("Config", settingsObject.Select(kv => new XElement(kv.Key, kv.Value)));
+            XElement rootElement = new XElement("Config", appSettings.Select(kv => new XElement(kv.Key, kv.Value)));
             XmlSerializer serializer = new XmlSerializer(rootElement.GetType());
-            serializer.Serialize(fStream, rootElement);
+            serializer.Serialize(fileStream, rootElement);
 
-            fStream.Close();
+            fileStream.Close();
         }
     }
 }

@@ -69,7 +69,7 @@
     <system:String x:Key="Password">Hasło</system:String>
     <!-- Buttons -->
     <system:String x:Key="ButtonApply">Potwierdź</system:String>
-    <system:String x:Key="ButtonBack">Cofnij</system:String>
+    <system:String x:Key="ButtonBack">&lt; Wróć</system:String>
     <!-- ErrorMessages -->
     <system:String x:Key="ErrorDefault">Wystąpił nieznany błąd, spróbuj ponownie.</system:String>
     <system:String x:Key="ErrorWrongPassword">Błędne hasło szyfrowania. Upewnij się że szyfrowanie jest włączone w opcjach a hasło zgadza się z użytym prz zapisaniu notatki.</system:String>
