@@ -45,6 +45,8 @@ namespace SiTE.View
             tb_Title.Text = "";
             ta_Note.Document = new FlowDocument();
             Logic.Refs.dataBank.CurrentOpenNote = Logic.Refs.dataBank.LastSaveNote = string.Empty;
+            SetFontFamilySelection(ta_Note.FontFamily);
+            SetFontSizeSelection(ta_Note.FontSize.ToString());
             CheckModified();
         }
 
@@ -141,7 +143,9 @@ namespace SiTE.View
             double fontSize;
             double.TryParse(cbValue, out fontSize);
             
-            ta_Note.Selection.ApplyPropertyValue(TextElement.FontSizeProperty, fontSize);
+            if (fontSize > 0)
+                ta_Note.Selection.ApplyPropertyValue(TextElement.FontSizeProperty, fontSize);
+
             ta_Note.Focus();
         }
 
@@ -235,6 +239,27 @@ namespace SiTE.View
         {
             // throw save reminder in note was modified
             Application.Current.Shutdown();
+        }
+
+        private void UpdateTextStyle()
+        {
+            if (ta_Note.Selection.IsEmpty)
+                return;
+            
+            SetFontFamilySelection(ta_Note.Selection.GetPropertyValue(TextElement.FontFamilyProperty));
+            SetFontSizeSelection(ta_Note.Selection.GetPropertyValue(TextElement.FontSizeProperty).ToString());
+        }
+
+        private void SetFontFamilySelection(object fontFamily)
+        {
+            if (!fontFamily.ToString().Contains("UnsetValue"))
+            { cb_Font.SelectedItem = fontFamily; }
+        }
+
+        private void SetFontSizeSelection(string fontSize)
+        {
+            if (!fontSize.Contains("UnsetValue"))
+            { cb_FontSize.Text = fontSize; }
         }
 
         //* UI Events *//
@@ -356,6 +381,11 @@ namespace SiTE.View
         private void EXNoteList_Expanded(object sender, RoutedEventArgs e)
         {
             ToggleNoteList(true);
+        }
+
+        private void ta_Note_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            UpdateTextStyle();
         }
     }
 }

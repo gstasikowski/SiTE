@@ -179,7 +179,7 @@
                 </Grid.RowDefinitions>
                 <Label x:Name="lbl_Title" HorizontalAlignment="Left" Content="{DynamicResource NoteTitle}"/>
                 <TextBox x:Name="tb_Title" MinWidth="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" TextChanged="TANoteContent_TextChanged" Grid.ColumnSpan="1" Grid.Column="1"/>
-                <RichTextBox x:Name="ta_Note" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="100" Background="White" TextChanged="TANoteContent_TextChanged" IsDocumentEnabled="True" Margin="0,2,0,0" Grid.Row="1" Grid.ColumnSpan="2" />
+                <RichTextBox x:Name="ta_Note" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="100" Background="White" TextChanged="TANoteContent_TextChanged" IsDocumentEnabled="True" Margin="0,2,0,0" Grid.Row="1" Grid.ColumnSpan="2" SelectionChanged="ta_Note_SelectionChanged" />
             </Grid>
         </Grid>
         <DockPanel LastChildFill="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="4" Height="25">
