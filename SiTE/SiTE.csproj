@@ -14,6 +14,7 @@
     <None Remove="Resources\fontBackColor.PNG" />
     <None Remove="Resources\fontColor.PNG" />
     <None Remove="Resources\jCenter.png" />
+    <None Remove="Resources\jJustify.png" />
     <None Remove="Resources\jLeft.png" />
     <None Remove="Resources\jRight.png" />
     <None Remove="Resources\newFile.png" />
@@ -22,7 +23,6 @@
     <None Remove="Resources\redo.PNG" />
     <None Remove="Resources\saveFile.png" />
     <None Remove="Resources\undo.PNG" />
-    <None Remove="Resources\wordWrap.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,6 +60,9 @@
     <Resource Include="Resources\jCenter.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\jJustify.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\jLeft.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -82,9 +85,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\undo.PNG">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\wordWrap.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

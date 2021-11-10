@@ -1,17 +1,20 @@
-﻿using System.Windows;
+﻿using SiTE.Interface;
+using System.Windows;
 
 namespace SiTE.View
 {
     /// <summary>
     /// Interaction logic for Settings.xaml
     /// </summary>
-    public partial class SettingsWindow : Window
+    public partial class SettingsView : IPageViewModel
     {
-        public SettingsWindow()
+        public SettingsView()
         {
             InitializeComponent();
             LoadSettings();
         }
+
+        #region Methods
 
         private void LoadSettings()
         {
@@ -59,10 +62,13 @@ namespace SiTE.View
 
        private void CloseWindow()
         {
-            App.Current.MainWindow.IsEnabled = true;
+            Logic.Refs.viewControl.CurrentPageViewModel = Logic.Refs.viewControl.PageViewModels[0];
         }
 
-        //* UI Events *//
+        #endregion
+
+        #region UI Events
+
         private void ChkbEncryption_Toggled(object sender, RoutedEventArgs e)
         {
             ToggleEncryption();
@@ -76,12 +82,8 @@ namespace SiTE.View
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
             CloseWindow();
-            Close();
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            CloseWindow();
-        }
+        #endregion
     }
 }

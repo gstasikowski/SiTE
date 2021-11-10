@@ -1,13 +1,13 @@
-﻿<Window
+﻿<UserControl
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SiTE"
-        xmlns:Emit="clr-namespace:System.Reflection.Emit;assembly=System.Reflection.Emit.ILGeneration" x:Class="SiTE.View.MainWindow"
+        x:Class="SiTE.View.EditorView" 
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        d:DesignHeight="450" d:DesignWidth="800">
+    
+    <Grid Grid.IsSharedSizeScope="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -67,7 +67,7 @@
             <Separator/>
             <Button Width="22" Height="22" Click="BtnCut_Click" ToolTip="{DynamicResource TipCut}">
                 <Button.Background>
-                    <ImageBrush Stretch="Uniform" ImageSource="/Resources/cut.PNG"/>
+                    <ImageBrush ImageSource="/Resources/cut.PNG" Stretch="None"/>
                 </Button.Background>
             </Button>
             <Button Width="22" Height="22" Click="BtnCopy_Click" ToolTip="{DynamicResource TipCopy}">
@@ -83,12 +83,12 @@
             <Separator/>
             <Button x:Name="btn_UndoToolbar" Width="22" Height="22" Click="BtnUndo_Click" ToolTip="{DynamicResource TipUndo}">
                 <Button.Background>
-                    <ImageBrush Stretch="Uniform" ImageSource="/Resources/undo.PNG"/>
+                    <ImageBrush ImageSource="/Resources/undo.PNG"/>
                 </Button.Background>
             </Button>
             <Button x:Name="btn_RedoToolbar" Width="22" Height="22" Click="BtnTRedo_Click" ToolTip="{DynamicResource TipRedo}">
                 <Button.Background>
-                    <ImageBrush Stretch="Uniform" ImageSource="/Resources/redo.PNG" Opacity="1"/>
+                    <ImageBrush ImageSource="/Resources/redo.PNG" Opacity="1"/>
                 </Button.Background>
             </Button>
             <Separator/>
@@ -127,33 +127,33 @@
             </Button>
             <Button Width="22" Height="22" Click="BtnFontColor_Click" ToolTip="{DynamicResource TipFontColor}">
                 <Button.Background>
-                    <ImageBrush Stretch="Uniform" ImageSource="/Resources/fontColor.PNG" Opacity="1"/>
+                    <ImageBrush ImageSource="/Resources/fontColor.PNG" Opacity="1" Stretch="None"/>
                 </Button.Background>
             </Button>
             <Button Width="22" Height="22" BorderBrush="Black" Click="BtnFontHighlight_Click" ToolTip="{DynamicResource TipHighlightColor}">
                 <Button.Background>
-                    <ImageBrush Stretch="None" ImageSource="/Resources/fontBackColor.PNG" Opacity="1"/>
+                    <ImageBrush ImageSource="/Resources/fontBackColor.PNG" Stretch="None"/>
                 </Button.Background>
             </Button>
             <Separator/>
             <Button x:Name="btn_textLeft" Width="22" Height="22" Click="BtnTextPosition_Click" ToolTip="{DynamicResource TipTextLeft}">
                 <Button.Background>
-                    <ImageBrush Stretch="Uniform" ImageSource="/Resources/jLeft.png" Opacity="1"/>
+                    <ImageBrush ImageSource="/Resources/jLeft.png" Opacity="1" Stretch="None"/>
                 </Button.Background>
             </Button>
             <Button x:Name="btn_textCenter" Width="22" Height="22" Click="BtnTextPosition_Click" ToolTip="{DynamicResource TipTextCenter}">
                 <Button.Background>
-                    <ImageBrush Stretch="Uniform" ImageSource="/Resources/jCenter.png" Opacity="1"/>
+                    <ImageBrush ImageSource="/Resources/jCenter.png" Opacity="1" Stretch="None"/>
                 </Button.Background>
             </Button>
             <Button x:Name="btn_textRight" Width="22" Height="22" Click="BtnTextPosition_Click" ToolTip="{DynamicResource TipTextRight}">
                 <Button.Background>
-                    <ImageBrush Stretch="Uniform" ImageSource="/Resources/jRight.png" Opacity="1"/>
+                    <ImageBrush ImageSource="/Resources/jRight.png" Opacity="1" Stretch="None"/>
                 </Button.Background>
             </Button>
             <Button x:Name="btn_textJust" Width="22" Height="22" Click="BtnTextPosition_Click" ToolTip="{DynamicResource TipTextJustify}">
                 <Button.Background>
-                    <ImageBrush ImageSource="/Resources/wordWrap.png" Stretch="Uniform"/> <!-- TODO update icon -->
+                    <ImageBrush ImageSource="/Resources/jJustify.png" Stretch="None"/>
                 </Button.Background>
             </Button>
             <Button Width="22" Height="22" Click="BtnSpellCheck_Click" Content="SPC" ToolTip="{DynamicResource TipSpellcheck}"/>
@@ -179,11 +179,11 @@
                 </Grid.RowDefinitions>
                 <Label x:Name="lbl_Title" HorizontalAlignment="Left" Content="{DynamicResource NoteTitle}"/>
                 <TextBox x:Name="tb_Title" MinWidth="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" TextChanged="TANoteContent_TextChanged" Grid.ColumnSpan="1" Grid.Column="1"/>
-                <RichTextBox x:Name="ta_Note" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="100" Background="White" TextChanged="TANoteContent_TextChanged" IsDocumentEnabled="True" Margin="0,2,0,0" Grid.Row="1" Grid.ColumnSpan="2" SelectionChanged="ta_Note_SelectionChanged" />
+                <RichTextBox x:Name="ta_Note" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="100" Background="White" TextChanged="TANoteContent_TextChanged" IsDocumentEnabled="True" Margin="0,2,0,0" Grid.Row="1" Grid.ColumnSpan="2" SelectionChanged="TANote_SelectionChanged" />
             </Grid>
         </Grid>
         <DockPanel LastChildFill="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="4" Height="25">
             <Label x:Name="lbl_LastSaveTime"></Label>
         </DockPanel>
     </Grid>
-</Window>
+</UserControl>

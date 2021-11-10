@@ -1,25 +1,28 @@
-﻿using System.Windows;
+﻿using SiTE.Interface;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 
 namespace SiTE.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for EditorView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class EditorView : IPageViewModel
     {
-        public MainWindow()
+        public EditorView()
         {
             InitializeComponent();
 
             Logic.Refs.fileOperations.LoadTranslations();
-            Logic.Refs.fileOperations.LoadAppSettings();
+            Logic.Refs.fileOperations.LoadSettings();
 
             WindowSetup();
             LoadNoteList();
             NewNote(); // TODO see if undo/redo buttons can start as disabled without calling this method
         }
+
+        #region Methods
 
         private void WindowSetup()
         {
@@ -230,9 +233,7 @@ namespace SiTE.View
 
         private void OpenSettings()
         {
-            SettingsWindow settingsWindow = new SettingsWindow();
-            this.IsEnabled = false;
-            settingsWindow.Show();
+            Logic.Refs.viewControl.CurrentPageViewModel = Logic.Refs.viewControl.PageViewModels[1];
         }
 
         private void ExitApp()
@@ -261,8 +262,10 @@ namespace SiTE.View
             if (!fontSize.Contains("UnsetValue"))
             { cb_FontSize.Text = fontSize; }
         }
+        
+        #endregion
 
-        //* UI Events *//
+        #region UI Events
         private void TANoteContent_TextChanged(object sender, TextChangedEventArgs e)
         {
             CheckModified();
@@ -383,9 +386,11 @@ namespace SiTE.View
             ToggleNoteList(true);
         }
 
-        private void ta_Note_SelectionChanged(object sender, RoutedEventArgs e)
+        private void TANote_SelectionChanged(object sender, RoutedEventArgs e)
         {
             UpdateTextStyle();
         }
+        
+        #endregion
     }
 }

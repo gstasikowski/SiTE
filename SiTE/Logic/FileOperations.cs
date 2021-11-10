@@ -27,6 +27,8 @@ namespace SiTE.Logic
                 Directory.CreateDirectory(Refs.dataBank.DefaultConfigPath);
         }
 
+        #region Note file IO
+
         public bool LoadNote(string noteTitle, TextPointer pointerStart, TextPointer pointerEnd)
         {
             TextRange docContent;
@@ -95,6 +97,10 @@ namespace SiTE.Logic
             // instead of adding it in multiple classes/places
             File.Delete(Refs.dataBank.DefaultNotePath + noteFile);
         }
+
+        #endregion
+
+        #region Encryption
 
         static byte[] GenerateRandomSalt()
         {
@@ -234,6 +240,8 @@ namespace SiTE.Logic
             }
         }
 
+        #endregion
+
         public string[] GetNoteList()
         {
             return Directory.GetFiles(Refs.dataBank.DefaultNotePath);
@@ -249,7 +257,9 @@ namespace SiTE.Logic
             }
         }
 
-        public void LoadAppSettings()
+        #region Settings
+
+        public void LoadSettings()
         {
             string configFilePath = Refs.dataBank.DefaultConfigPath + "Config.xml";
 
@@ -280,5 +290,7 @@ namespace SiTE.Logic
 
             fileStream.Close();
         }
+
+        #endregion
     }
 }

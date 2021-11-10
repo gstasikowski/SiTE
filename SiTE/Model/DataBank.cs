@@ -5,6 +5,8 @@ namespace SiTE.Model
 {
     public class DataBank
     {
+        #region Variables
+        
         string defaultNotePath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\";
         string defaultConfigPath = AppDomain.CurrentDomain.BaseDirectory;
         string defaultLanguagePath = AppDomain.CurrentDomain.BaseDirectory + "Languages\\";
@@ -14,6 +16,10 @@ namespace SiTE.Model
 
         string currentOpenNote = string.Empty;
         string lastSaveTime = string.Empty;
+
+        #endregion
+
+        #region Getters/setters
 
         public string DefaultNotePath
         {
@@ -29,6 +35,10 @@ namespace SiTE.Model
         {
             get { return defaultLanguagePath; }
         }
+
+        #endregion
+
+        #region Methods
 
         public void RestoreDefaultSettings()
         {
@@ -82,5 +92,7 @@ namespace SiTE.Model
         {
             return languageList.FindIndex(x => x.Contains(languageCode));
         }
+
+        #endregion
     }
 }

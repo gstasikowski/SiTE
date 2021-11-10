@@ -136,6 +136,9 @@
   <data name="jCenter" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\jCenter.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="jJustify" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\jJustify.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="jLeft" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\jLeft.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -159,8 +162,5 @@
   </data>
   <data name="undo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\undo.PNG;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="wordWrap" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\wordWrap.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>
