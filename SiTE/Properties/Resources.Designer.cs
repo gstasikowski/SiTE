@@ -123,6 +123,16 @@ namespace SiTE.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] jJustify {
+            get {
+                object obj = ResourceManager.GetObject("jJustify", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] jLeft {
             get {
                 object obj = ResourceManager.GetObject("jLeft", resourceCulture);
@@ -196,16 +206,6 @@ namespace SiTE.Properties {
         internal static byte[] undo {
             get {
                 object obj = ResourceManager.GetObject("undo", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] wordWrap {
-            get {
-                object obj = ResourceManager.GetObject("wordWrap", resourceCulture);
                 return ((byte[])(obj));
             }
         }
