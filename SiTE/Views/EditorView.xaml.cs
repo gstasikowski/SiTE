@@ -1,9 +1,9 @@
-﻿using SiTE.Interface;
+﻿using SiTE.Interfaces;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 
-namespace SiTE.View
+namespace SiTE.Views
 {
     /// <summary>
     /// Interaction logic for EditorView.xaml
@@ -233,7 +233,7 @@ namespace SiTE.View
 
         private void OpenSettings()
         {
-            Logic.Refs.viewControl.CurrentPageViewModel = Logic.Refs.viewControl.PageViewModels[1];
+            Logic.Refs.viewControl.CurrentPageViewModel = Logic.Refs.viewControl.PageViewModels[1]; // switch to binding
         }
 
         private void ExitApp()
@@ -263,9 +263,10 @@ namespace SiTE.View
             { cb_FontSize.Text = fontSize; }
         }
         
-        #endregion
+        #endregion Methods
 
         #region UI Events
+
         private void TANoteContent_TextChanged(object sender, TextChangedEventArgs e)
         {
             CheckModified();
@@ -390,7 +391,7 @@ namespace SiTE.View
         {
             UpdateTextStyle();
         }
-        
-        #endregion
+
+        # endregion UI Events
     }
 }

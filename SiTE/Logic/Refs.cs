@@ -1,4 +1,4 @@
-﻿using SiTE.Model;
+﻿using SiTE.Models;
 
 namespace SiTE.Logic
 {

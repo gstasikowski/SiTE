@@ -1,7 +1,7 @@
-﻿using SiTE.Interface;
+﻿using SiTE.Interfaces;
 using System.Windows;
 
-namespace SiTE.View
+namespace SiTE.Views
 {
     /// <summary>
     /// Interaction logic for Settings.xaml
@@ -15,7 +15,6 @@ namespace SiTE.View
         }
 
         #region Methods
-
         private void LoadSettings()
         {
             // Language
@@ -23,16 +22,16 @@ namespace SiTE.View
 
             foreach (string language in Logic.Refs.dataBank.LanguageList)
             { cb_LanguageList.Items.Add(language.Substring(0, language.IndexOf('[') - 1)); }
-
+            
             cb_LanguageList.SelectedIndex = Logic.Refs.dataBank.LanguageIndex(Logic.Refs.dataBank.GetSetting("languageID"));
-            ChangeLanguage();
+            SelectLanguage();
 
             // Encryption
             chkb_Encryption.IsChecked = System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("encryption"));
             ToggleEncryption();
         }
 
-        private void ChangeLanguage()
+        private void SelectLanguage()
         {
             string currentLanguage = Logic.Refs.dataBank.LanguageList[cb_LanguageList.SelectedIndex];
             int codePosition = currentLanguage.IndexOf('[') + 1;
@@ -53,19 +52,19 @@ namespace SiTE.View
 
         private void ApplySettings()
         {
-            ChangeLanguage();
+            SelectLanguage();
             Logic.Refs.dataBank.SetSetting("encryption", chkb_Encryption.IsChecked.ToString());
             Logic.Refs.dataBank.SetSetting("password", tb_EncryptionPassword.Text); // TODO prevent user from setting empty password if encryption is enabled
 
             Logic.Refs.fileOperations.SaveSettings();
         }
 
-       private void CloseWindow()
+       private void CloseSettingsView()
         {
-            Logic.Refs.viewControl.CurrentPageViewModel = Logic.Refs.viewControl.PageViewModels[0];
+            Logic.Refs.viewControl.CurrentPageViewModel = Logic.Refs.viewControl.PageViewModels[0]; // switch to binding
         }
 
-        #endregion
+        #endregion Methods
 
         #region UI Events
 
@@ -81,9 +80,9 @@ namespace SiTE.View
 
         private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
-            CloseWindow();
+            CloseSettingsView();
         }
 
-        #endregion
+        #endregion UI Events
     }
 }

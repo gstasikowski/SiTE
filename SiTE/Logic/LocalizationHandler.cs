@@ -9,11 +9,11 @@ namespace SiTE.Logic
     {
         private static void SetLocalization(CultureInfo cultureInfo)
         {
-            string filePath = AppDomain.CurrentDomain.BaseDirectory + "Languages";
+            string filePath = Refs.dataBank.DefaultLanguagePath;
 
             var dict = new ResourceDictionary
             {
-                Source = new Uri(string.Format("pack://{0}\\{1}.xaml", filePath, cultureInfo.Name))
+                Source = new Uri(string.Format("pack://{0}{1}.xaml", filePath, cultureInfo.Name))
             };
 
             var existingDict = Application.Current.Resources.MergedDictionaries.FirstOrDefault(

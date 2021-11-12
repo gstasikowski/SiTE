@@ -1,10 +1,10 @@
 ﻿using SiTE.Helpers;
-using SiTE.Interface;
+using SiTE.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 
-namespace SiTE.Model
+namespace SiTE.Models
 {
     public class ApplicationViewModel : ObservableObject
     {
@@ -18,8 +18,8 @@ namespace SiTE.Model
 
         public ApplicationViewModel()
         {
-            PageViewModels.Add(new View.EditorView());
-            PageViewModels.Add(new View.SettingsView());
+            PageViewModels.Add(new Views.EditorView());
+            PageViewModels.Add(new Views.SettingsView());
 
             CurrentPageViewModel = PageViewModels[0];
         }

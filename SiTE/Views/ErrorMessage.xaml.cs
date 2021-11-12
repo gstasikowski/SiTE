@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace SiTE.View
+namespace SiTE.Views
 {
     /// <summary>
     /// Interaction logic for ErrorMessage.xaml

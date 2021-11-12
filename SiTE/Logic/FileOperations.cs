@@ -98,7 +98,7 @@ namespace SiTE.Logic
             File.Delete(Refs.dataBank.DefaultNotePath + noteFile);
         }
 
-        #endregion
+        #endregion //Note file IO
 
         #region Encryption
 
@@ -240,7 +240,7 @@ namespace SiTE.Logic
             }
         }
 
-        #endregion
+        #endregion //Encryption
 
         public string[] GetNoteList()
         {
@@ -272,7 +272,10 @@ namespace SiTE.Logic
                 { Refs.dataBank.SetSetting(element.Name.LocalName, element.Value); }
             }
             else
-            { SaveSettings(); }
+            {
+                Refs.dataBank.RestoreDefaultSettings();
+                SaveSettings(); 
+            }
 
             Refs.localizationHandler.SwitchLanguage(Refs.dataBank.GetSetting("languageID"));
         }
@@ -291,6 +294,6 @@ namespace SiTE.Logic
             fileStream.Close();
         }
 
-        #endregion
+        #endregion //Settings
     }
 }

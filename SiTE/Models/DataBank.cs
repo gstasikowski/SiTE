@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SiTE.Model
+namespace SiTE.Models
 {
     public class DataBank
     {
@@ -17,7 +17,7 @@ namespace SiTE.Model
         string currentOpenNote = string.Empty;
         string lastSaveTime = string.Empty;
 
-        #endregion
+        #endregion Variables
 
         #region Getters/setters
 
@@ -36,7 +36,7 @@ namespace SiTE.Model
             get { return defaultLanguagePath; }
         }
 
-        #endregion
+        #endregion Getters/setters
 
         #region Methods
 
@@ -93,6 +93,6 @@ namespace SiTE.Model
             return languageList.FindIndex(x => x.Contains(languageCode));
         }
 
-        #endregion
+        #endregion Methods
     }
 }

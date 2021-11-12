@@ -1,4 +1,4 @@
-﻿namespace SiTE.Interface
+﻿namespace SiTE.Interfaces
 {
     public interface IPageViewModel
     {

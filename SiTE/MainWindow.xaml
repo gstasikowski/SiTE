@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         Title="SiTE" Width="800" Height="450">
 
-    <Grid Grid.IsSharedSizeScope="True">
+    <Grid>
         <ContentControl Content="{Binding CurrentPageViewModel}"/>
     </Grid>
 </Window>

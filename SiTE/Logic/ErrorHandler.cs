@@ -16,7 +16,7 @@ namespace SiTE.Logic
             { message = (string)app.FindResource("ErrorDefault") + message; }
 
             Application.Current.MainWindow.IsEnabled = false;
-            View.ErrorMessage messageWindows = new View.ErrorMessage(message);
+            Views.ErrorMessage messageWindows = new Views.ErrorMessage(message);
             messageWindows.Show();
         }
     }
