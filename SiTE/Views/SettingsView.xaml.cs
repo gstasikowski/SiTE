@@ -29,6 +29,7 @@ namespace SiTE.Views
             // Encryption
             chkb_Encryption.IsChecked = System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("encryption"));
             ToggleEncryption();
+            ToggleSettingsStatus(false);
         }
 
         private void SelectLanguage()
@@ -57,20 +58,40 @@ namespace SiTE.Views
             Logic.Refs.dataBank.SetSetting("password", tb_EncryptionPassword.Text); // TODO prevent user from setting empty password if encryption is enabled
 
             Logic.Refs.fileOperations.SaveSettings();
+            ToggleSettingsStatus(false);
         }
 
        private void CloseSettingsView()
         {
+            LoadSettings();
             Logic.Refs.viewControl.CurrentPageViewModel = Logic.Refs.viewControl.PageViewModels[0]; // switch to binding
+        }
+
+        private void ToggleSettingsStatus(bool modified)
+        {
+            if (Logic.Refs.viewControl == null)
+                return;
+
+            Logic.Refs.viewControl.SettingsModified = modified;
         }
 
         #endregion Methods
 
         #region UI Events
 
+        private void CBLanguageList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            ToggleSettingsStatus(true);
+        }
+
         private void ChkbEncryption_Toggled(object sender, RoutedEventArgs e)
         {
             ToggleEncryption();
+        }
+
+        private void TBEncryptionPassword_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            ToggleSettingsStatus(true);
         }
 
         private void BtnApply_Click(object sender, RoutedEventArgs e)

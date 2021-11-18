@@ -10,12 +10,13 @@ namespace SiTE.Models
         string defaultNotePath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\";
         string defaultConfigPath = AppDomain.CurrentDomain.BaseDirectory;
         string defaultLanguagePath = AppDomain.CurrentDomain.BaseDirectory + "Languages\\";
+        string tempFileExtension = ".site";
         Dictionary<string, string> settings = new Dictionary<string, string>();
 
         List<string> languageList = new List<string>();
 
-        string currentOpenNote = string.Empty;
-        string lastSaveTime = string.Empty;
+        string noteCurrentOpen = string.Empty;
+        string noteLastSaveTime = string.Empty;
 
         #endregion Variables
 
@@ -36,6 +37,10 @@ namespace SiTE.Models
             get { return defaultLanguagePath; }
         }
 
+        public string TempFileExtension
+        {
+            get { return tempFileExtension; }
+        }
         #endregion Getters/setters
 
         #region Methods
@@ -60,21 +65,26 @@ namespace SiTE.Models
         public void SetSetting(string key, string value)
         {
             if (settings.ContainsKey(key))
-            { settings[key] = value; }
+            {
+                if (key == "password")
+                    Logic.Refs.fileOperations.UpdateEncryptionPassword(GetSetting("password"), value);
+
+                settings[key] = value; 
+            }
             else
             { settings.Add(key, value); }
         }
 
-        public string CurrentOpenNote
+        public string NoteCurrentOpen
         {
-            get { return currentOpenNote; }
-            set { currentOpenNote = value; }
+            get { return noteCurrentOpen; }
+            set { noteCurrentOpen = value; }
         }
 
-        public string LastSaveNote
+        public string NoteLastSaveTime
         {
-            get { return lastSaveTime; }
-            set { lastSaveTime = value; }
+            get { return noteLastSaveTime; }
+            set { noteLastSaveTime = value; }
         }
 
         public void AddAvailableLanguage(string languageCode)

@@ -14,6 +14,8 @@ namespace SiTE.Models
         private IPageViewModel _currentPageViewModel;
         private List<IPageViewModel> _pageViewModels;
 
+        private bool _settingsModified;
+
         #endregion
 
         public ApplicationViewModel()
@@ -22,6 +24,7 @@ namespace SiTE.Models
             PageViewModels.Add(new Views.SettingsView());
 
             CurrentPageViewModel = PageViewModels[0];
+            SettingsModified = false;
         }
 
         #region Commands & properties
@@ -63,6 +66,15 @@ namespace SiTE.Models
             }
         }
 
+        public bool SettingsModified
+        {
+            get { return _settingsModified; }
+            set
+            {
+                _settingsModified = value;
+                OnPropertyChanged("SettingsModified");
+            }
+        }
         #endregion
 
         #region Methods

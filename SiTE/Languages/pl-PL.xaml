@@ -72,6 +72,8 @@
     <system:String x:Key="ButtonBack">&lt; Wróć</system:String>
     <!-- ErrorMessages -->
     <system:String x:Key="ErrorDefault">Wystąpił nieznany błąd, spróbuj ponownie.</system:String>
-    <system:String x:Key="ErrorWrongPassword">Błędne hasło szyfrowania. Upewnij się że szyfrowanie jest włączone w opcjach a hasło zgadza się z użytym prz zapisaniu notatki.</system:String>
+    <system:String x:Key="ErrorWrongPassword" xml:space="preserve">Błędne hasło szyfrowania. &#10;Upewnij się że szyfrowanie jest włączone w opcjach a hasło zgadza się z użytym przy zapisaniu notatki.</system:String>
+    <system:String x:Key="ErrorCryptographicException">Wystąpił błąd podczas odszyfrowywania pliku.</system:String>
+    <system:String x:Key="ErrorCryptoStream">Wystąpił błąd przy zamykaniu CryptoStream.</system:String>
     <!--<system:String x:Key=""></system:String>-->
 </ResourceDictionary>

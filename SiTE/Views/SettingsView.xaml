@@ -12,29 +12,29 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Expander Header="{DynamicResource GroupGeneral}" IsExpanded="True">
-            <Grid>
+            <Grid Margin="19, 5, 10, 0">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="{DynamicResource Language}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="cb_LanguageList"/>
+                    <ComboBox x:Name="cb_LanguageList" SelectionChanged="CBLanguageList_SelectionChanged"/>
                 </StackPanel>
             </Grid>
         </Expander>
         <Expander Header="{DynamicResource GroupEncryption}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="1" IsExpanded="True">
-            <Grid Margin="2,2,2,2">
+            <Grid  Margin="19, 5, 10, 0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <CheckBox x:Name="chkb_Encryption" Content="{DynamicResource EncryptionToggle}" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="ChkbEncryption_Toggled" Unchecked="ChkbEncryption_Toggled"/>
+                <CheckBox x:Name="chkb_Encryption" Content="{DynamicResource EncryptionToggle}" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="ChkbEncryption_Toggled" Unchecked="ChkbEncryption_Toggled" Margin="4,0,0,0"/>
                 <StackPanel Grid.Row="1" Orientation="Horizontal">
                     <Label Content="{DynamicResource Password}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                    <TextBox x:Name="tb_EncryptionPassword" Height="20" MinWidth="100"/>
+                    <TextBox x:Name="tb_EncryptionPassword" Height="20" MinWidth="300" TextChanged="TBEncryptionPassword_TextChanged"/>
                 </StackPanel>
             </Grid>
         </Expander>
         <DockPanel VerticalAlignment="Bottom" Grid.Row="2" Height="25">
-            <Button Content="{DynamicResource ButtonBack}" HorizontalAlignment="Left" VerticalAlignment="Top" Click="BtnBack_Click" MinWidth="20" MinHeight="20"/>
-            <Button Content="{DynamicResource ButtonApply}" HorizontalAlignment="Left" VerticalAlignment="Top" Click="BtnApply_Click" Margin="5,0,0,0" MinWidth="20" MinHeight="20"/>
+            <Button Content="{DynamicResource ButtonBack}" HorizontalAlignment="Left" VerticalAlignment="Top" Click="BtnBack_Click" MinWidth="20" MinHeight="20" Padding="4,2,4,2"/>
+            <Button Content="{DynamicResource ButtonApply}" IsEnabled="{Binding SettingsModified}" HorizontalAlignment="Left" VerticalAlignment="Top" Click="BtnApply_Click" Margin="5,0,0,0" MinWidth="20" MinHeight="20" Padding="4,2,4,2"/>
         </DockPanel>
     </Grid>
 </UserControl>

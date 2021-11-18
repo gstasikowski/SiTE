@@ -72,6 +72,8 @@
     <system:String x:Key="ButtonBack">&lt; Back</system:String>
     <!-- ErrorMessages -->
     <system:String x:Key="ErrorDefault">Unkown error has occured. Please try again.</system:String>
-    <system:String x:Key="ErrorWrongPassword">Wrong encryption password. Make sure encryption is enabled in app settings and password matches one used when saving the note.</system:String>
+    <system:String x:Key="ErrorWrongPassword" xml:space="preserve">Wrong encryption password. &#10;Make sure encryption is enabled in app settings and password matches one used when saving the note.</system:String>
+    <system:String x:Key="ErrorCryptographicException">There was an error during decryption.</system:String>
+    <system:String x:Key="ErrorCryptoStream">Issue occured while closing CryptoStream.</system:String>
     <!--<system:String x:Key=""></system:String>-->
 </ResourceDictionary>

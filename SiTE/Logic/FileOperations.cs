@@ -38,7 +38,7 @@ namespace SiTE.Logic
 
             if (File.Exists(filePath))
             {
-                string filePathDecrypted = filePath.Replace(".aes", ".site");
+                string filePathDecrypted = filePath.Replace(".aes", Refs.dataBank.TempFileExtension);
                 FileDecrypt(filePath, filePathDecrypted, Refs.dataBank.GetSetting("password"));
 
                 docContent = new TextRange(pointerStart, pointerEnd);
@@ -47,8 +47,8 @@ namespace SiTE.Logic
                 try
                 {
                     docContent.Load(fileStream, DataFormats.XamlPackage);
-                    Refs.dataBank.CurrentOpenNote = noteTitle;
-                    Refs.dataBank.LastSaveNote = File.GetLastWriteTime(filePath).ToString();
+                    Refs.dataBank.NoteCurrentOpen = noteTitle;
+                    Refs.dataBank.NoteLastSaveTime = File.GetLastWriteTime(filePath).ToString();
                 }
                 catch
                 {
@@ -67,7 +67,7 @@ namespace SiTE.Logic
 
         public void SaveNote(string noteTitle, TextPointer pointerStart, TextPointer pointerEnd)
         {
-            string filePath = Refs.dataBank.DefaultNotePath + noteTitle + ".site"; // TODO remove temp .site files step after changing encryption to direct from document
+            string filePath = Refs.dataBank.DefaultNotePath + noteTitle + Refs.dataBank.TempFileExtension; // TODO remove temp .site files step after changing encryption to direct from document
 
             TextRange textRange;
             FileStream fileStream;
@@ -76,29 +76,32 @@ namespace SiTE.Logic
             textRange.Save(fileStream, DataFormats.XamlPackage);
             fileStream.Close();
 
-            if (Refs.dataBank.GetSetting("encryption") == "True")
+            if (Refs.dataBank.GetSetting("encryption") == "True" && Refs.dataBank.GetSetting("password") != string.Empty)
             {
                 FileEncrypt(filePath, Refs.dataBank.GetSetting("password"));
-                DeleteNote(noteTitle + ".site");
+                DeleteNote(noteTitle + Refs.dataBank.TempFileExtension);
 
-                if (Refs.dataBank.CurrentOpenNote != string.Empty && Refs.dataBank.CurrentOpenNote != noteTitle)
+                if (Refs.dataBank.NoteCurrentOpen != string.Empty && Refs.dataBank.NoteCurrentOpen != noteTitle)
                 {
-                    DeleteNote(Refs.dataBank.CurrentOpenNote + ".aes");
-                    Refs.dataBank.CurrentOpenNote = noteTitle;
+                    DeleteNote(Refs.dataBank.NoteCurrentOpen + ".aes");
+                    Refs.dataBank.NoteCurrentOpen = noteTitle;
                 }
             }
 
-            Refs.dataBank.LastSaveNote = DateTime.Now.ToString();
+            Refs.dataBank.NoteLastSaveTime = DateTime.Now.ToString();
         }
 
         public void DeleteNote(string noteFile)
         {
             // TODO after getting rid of temp .site files assume all files have the same extension
             // instead of adding it in multiple classes/places
-            File.Delete(Refs.dataBank.DefaultNotePath + noteFile);
+            if (noteFile.Contains("\\"))
+                File.Delete(noteFile);
+            else
+                File.Delete(Refs.dataBank.DefaultNotePath + noteFile);
         }
 
-        #endregion //Note file IO
+        #endregion Note file IO
 
         #region Encryption
 
@@ -118,7 +121,7 @@ namespace SiTE.Logic
             return data;
         }
 
-        private void FileEncrypt(string filePath, string password) // TODO modify encryption to save straight from text area instead of temp file
+        private void FileEncrypt(string filePath, string password)
         {
             //http://stackoverflow.com/questions/27645527/aes-encryption-on-large-files
 
@@ -126,7 +129,7 @@ namespace SiTE.Logic
             byte[] salt = GenerateRandomSalt();
 
             //create output file name
-            FileStream fileStreamCrypt = new FileStream(filePath.Replace(".site",".aes"), FileMode.Create);
+            FileStream fileStreamCrypt = new FileStream(filePath.Replace(Refs.dataBank.TempFileExtension,".aes"), FileMode.Create);
 
             //convert password string to byte arrray
             byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
@@ -218,11 +221,11 @@ namespace SiTE.Logic
             }
             catch (CryptographicException ex_CryptographicException)
             {
-                Console.WriteLine("CryptographicException error: " + ex_CryptographicException.Message);
+                new ErrorHandler(Application.Current, "ErrorCryptographicException", ex_CryptographicException.Message);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message);
+                new ErrorHandler(Application.Current, "ErrorDefault", ex.Message);
             }
 
             try
@@ -231,7 +234,7 @@ namespace SiTE.Logic
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error by closing CryptoStream: " + ex.Message);
+                new ErrorHandler(Application.Current, "ErrorCryptoStream", ex.Message);
             }
             finally
             {
@@ -240,7 +243,23 @@ namespace SiTE.Logic
             }
         }
 
-        #endregion //Encryption
+        public void UpdateEncryptionPassword(string oldPassword, string newPassword)
+        {
+            if (oldPassword == newPassword)
+                return;
+
+            string[] filesToUpdate = GetNoteList();
+
+            foreach (string file in filesToUpdate)
+            {
+                string tempFile = file.Replace(".aes", Refs.dataBank.TempFileExtension);
+                FileDecrypt(file, tempFile, oldPassword);
+                FileEncrypt(tempFile, newPassword);
+                DeleteNote(tempFile);
+            }
+        }
+
+        #endregion Encryption
 
         public string[] GetNoteList()
         {
@@ -294,6 +313,6 @@ namespace SiTE.Logic
             fileStream.Close();
         }
 
-        #endregion //Settings
+        #endregion Settings
     }
 }

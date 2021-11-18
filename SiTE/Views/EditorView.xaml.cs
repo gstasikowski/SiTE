@@ -47,7 +47,7 @@ namespace SiTE.Views
         {
             tb_Title.Text = "";
             ta_Note.Document = new FlowDocument();
-            Logic.Refs.dataBank.CurrentOpenNote = Logic.Refs.dataBank.LastSaveNote = string.Empty;
+            Logic.Refs.dataBank.NoteCurrentOpen = Logic.Refs.dataBank.NoteLastSaveTime = string.Empty;
             SetFontFamilySelection(ta_Note.FontFamily);
             SetFontSizeSelection(ta_Note.FontSize.ToString());
             CheckModified();
@@ -86,7 +86,7 @@ namespace SiTE.Views
             btn_RedoMenu.IsEnabled = btn_RedoToolbar.IsEnabled = ta_Note.CanRedo;
 
             WindowSetup();
-            lbl_LastSaveTime.Content = (Logic.Refs.dataBank.LastSaveNote != string.Empty) ? (string)FindResource("NoteLastSaveTime") + ": " + Logic.Refs.dataBank.LastSaveNote : string.Empty;
+            lbl_LastSaveTime.Content = (Logic.Refs.dataBank.NoteLastSaveTime != string.Empty) ? (string)FindResource("NoteLastSaveTime") + ": " + Logic.Refs.dataBank.NoteLastSaveTime : string.Empty;
         }
 
         private void CutText()
