@@ -46,8 +46,10 @@ namespace SiTE.Models
         #region Methods
 
         public void RestoreDefaultSettings()
-        {
+        {            
             SetSetting("languageID", "en-US");
+            SetSetting("autoSave", "true");
+            SetSetting("autoSaveDelay", "5");
             SetSetting("encryption", "true");
             SetSetting("password", "abcde1234"); // for testing only! TODO hash and move into a secure place so it's not widely available when app is running
         }

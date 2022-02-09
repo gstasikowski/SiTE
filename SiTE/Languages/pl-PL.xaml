@@ -63,6 +63,8 @@
     <!-- Settings items - [General] -->
     <system:String x:Key="GroupGeneral">Ogólne</system:String>
     <system:String x:Key="Language">Język</system:String>
+    <system:String x:Key="AutoSave">Automatyczny zapis</system:String>
+    <system:String x:Key="Delay">Częstotliwość automatycznego zapisu</system:String>
     <!-- Settings items - [Encryption] -->
     <system:String x:Key="GroupEncryption">Szyfrowanie</system:String>
     <system:String x:Key="EncryptionToggle">Włącz szyfrowanie</system:String>
@@ -75,5 +77,6 @@
     <system:String x:Key="ErrorWrongPassword" xml:space="preserve">Błędne hasło szyfrowania. &#10;Upewnij się że szyfrowanie jest włączone w opcjach a hasło zgadza się z użytym przy zapisaniu notatki.</system:String>
     <system:String x:Key="ErrorCryptographicException">Wystąpił błąd podczas odszyfrowywania pliku.</system:String>
     <system:String x:Key="ErrorCryptoStream">Wystąpił błąd przy zamykaniu CryptoStream.</system:String>
+    <system:String x:Key="ErrorNoFile">Brak dostępu do pliku notki. &#10;Spróbuj ponownie.</system:String>
     <!--<system:String x:Key=""></system:String>-->
 </ResourceDictionary>

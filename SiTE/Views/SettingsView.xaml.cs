@@ -26,6 +26,10 @@ namespace SiTE.Views
             cb_LanguageList.SelectedIndex = Logic.Refs.dataBank.LanguageIndex(Logic.Refs.dataBank.GetSetting("languageID"));
             SelectLanguage();
 
+            // AutoSave
+            chkb_AutoSaveEnable.IsChecked = System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("autoSave"));
+            ToggleAutoSave();
+
             // Encryption
             chkb_Encryption.IsChecked = System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("encryption"));
             ToggleEncryption();
@@ -49,11 +53,32 @@ namespace SiTE.Views
                 tb_EncryptionPassword.Text = "";
             else
                 tb_EncryptionPassword.Text = Logic.Refs.dataBank.GetSetting("password"); // temporary for testing
+            
+            ToggleSettingsStatus(true);
+        }
+
+        private void ToggleAutoSave()
+        {
+            tb_AutoSaveDelay.IsEnabled = (bool)chkb_AutoSaveEnable.IsChecked;
+
+            if (!tb_AutoSaveDelay.IsEnabled)
+                tb_AutoSaveDelay.Text = "";
+            else
+                tb_AutoSaveDelay.Text = Logic.Refs.dataBank.GetSetting("autoSaveDelay");
+
+            ToggleSettingsStatus(true);
         }
 
         private void ApplySettings()
         {
             SelectLanguage();
+            Logic.Refs.dataBank.SetSetting("autoSave", chkb_AutoSaveEnable.IsChecked.ToString());
+            
+            if (int.TryParse(tb_AutoSaveDelay.Text, out _))
+                Logic.Refs.dataBank.SetSetting("autoSaveDelay", tb_AutoSaveDelay.Text);
+            else
+                Logic.Refs.dataBank.SetSetting("autoSaveDelay", "5");
+
             Logic.Refs.dataBank.SetSetting("encryption", chkb_Encryption.IsChecked.ToString());
             Logic.Refs.dataBank.SetSetting("password", tb_EncryptionPassword.Text); // TODO prevent user from setting empty password if encryption is enabled
 
@@ -80,6 +105,16 @@ namespace SiTE.Views
         #region UI Events
 
         private void CBLanguageList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            ToggleSettingsStatus(true);
+        }
+
+        private void ChkbAutoSaveEnable_Toggled(object sender, RoutedEventArgs e)
+        {
+            ToggleAutoSave();
+        }
+
+        private void TBAutoSaveDelay_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             ToggleSettingsStatus(true);
         }

@@ -1,4 +1,5 @@
 ﻿using SiTE.Interfaces;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -10,6 +11,9 @@ namespace SiTE.Views
     /// </summary>
     public partial class EditorView : IPageViewModel
     {
+        private Task autosaveTask;
+        private bool noteModified = false;
+
         public EditorView()
         {
             InitializeComponent();
@@ -29,7 +33,7 @@ namespace SiTE.Views
             string appTitle = Application.ResourceAssembly.GetName().ToString();
             Application.Current.MainWindow.Title = appTitle.Substring(0, appTitle.IndexOf(','));
 
-            if (ta_Note.CanUndo)
+            if (noteModified)
                 Application.Current.MainWindow.Title += '*';
         }
 
@@ -50,20 +54,21 @@ namespace SiTE.Views
             Logic.Refs.dataBank.NoteCurrentOpen = Logic.Refs.dataBank.NoteLastSaveTime = string.Empty;
             SetFontFamilySelection(ta_Note.FontFamily);
             SetFontSizeSelection(ta_Note.FontSize.ToString());
-            CheckModified();
+            SetModifiedState(false);
         }
 
         private void OpenNote()
         {
-            if (lv_NoteList.SelectedIndex < 0)
+            if (lv_NoteList.SelectedIndex < 0 || !CheckSaveReminder())
                 return;
 
             if (Logic.Refs.fileOperations.LoadNote(lv_NoteList.SelectedItem.ToString(), ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd))
             {
                 ta_Note.IsUndoEnabled = false; // TODO figure out a better way to do this
                 tb_Title.Text = lv_NoteList.SelectedItem.ToString();
-                CheckModified();
+                SetModifiedState(false);
                 ta_Note.IsUndoEnabled = true; // TODO figure out a better way to do this
+                autosaveTask = SetAutoSaveTask();
             }
         }
 
@@ -71,6 +76,8 @@ namespace SiTE.Views
         {
             Logic.Refs.fileOperations.SaveNote(tb_Title.Text, ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
             LoadNoteList();
+            SetModifiedState(false);
+            autosaveTask = SetAutoSaveTask();
         }
 
         private void DeleteNote()
@@ -87,6 +94,17 @@ namespace SiTE.Views
 
             WindowSetup();
             lbl_LastSaveTime.Content = (Logic.Refs.dataBank.NoteLastSaveTime != string.Empty) ? (string)FindResource("NoteLastSaveTime") + ": " + Logic.Refs.dataBank.NoteLastSaveTime : string.Empty;
+        }
+
+        private bool CheckSaveReminder()
+        {
+            if (ta_Note.CanUndo)
+            {
+                // TODO show save prompt (yes/no/cancel)
+                // return false when canceling operation
+            }
+
+            return true;
         }
 
         private void CutText()
@@ -186,12 +204,12 @@ namespace SiTE.Views
 
         private void FontColor()
         {
-
+            // TODO Implement
         }
 
         private void FontHighlight()
         {
-
+            // TODO Implement
         }
 
         private void TextPosition(object sender)
@@ -262,14 +280,35 @@ namespace SiTE.Views
             if (!fontSize.Contains("UnsetValue"))
             { cb_FontSize.Text = fontSize; }
         }
-        
+
+        private async Task SetAutoSaveTask() // TODO reset timer on saving/opening note (cancel and recreate task?)
+        {
+            if (System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("autoSave")))
+            {
+                await Task.Run(async delegate
+                {
+                    int autoSaveDelay = 5;
+                    int.TryParse(Logic.Refs.dataBank.GetSetting("autoSaveDelay"), out autoSaveDelay);
+                    await Task.Delay(autoSaveDelay * 60000);
+                });
+
+                SaveNote();
+            }
+        }
+
+        private void SetModifiedState(bool isModified)
+        {
+            noteModified = isModified;
+            CheckModified();
+        }
+
         #endregion Methods
 
         #region UI Events
 
         private void TANoteContent_TextChanged(object sender, TextChangedEventArgs e)
         {
-            CheckModified();
+            SetModifiedState(true);
         }
 
         private void BtnNewNote_Click(object sender, RoutedEventArgs e)

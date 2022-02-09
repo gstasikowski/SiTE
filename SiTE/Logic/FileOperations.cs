@@ -76,12 +76,12 @@ namespace SiTE.Logic
             textRange.Save(fileStream, DataFormats.XamlPackage);
             fileStream.Close();
 
-            if (Refs.dataBank.GetSetting("encryption") == "True" && Refs.dataBank.GetSetting("password") != string.Empty)
+            if (Refs.dataBank.GetSetting("encryption").ToLower() == "true" && Refs.dataBank.GetSetting("password") != string.Empty)
             {
                 FileEncrypt(filePath, Refs.dataBank.GetSetting("password"));
                 DeleteNote(noteTitle + Refs.dataBank.TempFileExtension);
 
-                if (Refs.dataBank.NoteCurrentOpen != string.Empty && Refs.dataBank.NoteCurrentOpen != noteTitle)
+                if (Refs.dataBank.NoteCurrentOpen != noteTitle)
                 {
                     DeleteNote(Refs.dataBank.NoteCurrentOpen + ".aes");
                     Refs.dataBank.NoteCurrentOpen = noteTitle;
@@ -95,10 +95,15 @@ namespace SiTE.Logic
         {
             // TODO after getting rid of temp .site files assume all files have the same extension
             // instead of adding it in multiple classes/places
-            if (noteFile.Contains("\\"))
-                File.Delete(noteFile);
-            else
-                File.Delete(Refs.dataBank.DefaultNotePath + noteFile);
+            string filePath = (noteFile.Contains("\\")) ? noteFile : Refs.dataBank.DefaultNotePath + noteFile;
+
+            if (!File.Exists(filePath))
+            {
+                new ErrorHandler(Application.Current, "ErrorNoFile");
+                return;
+            }
+
+            File.Delete(filePath);
         }
 
         #endregion Note file IO
@@ -124,6 +129,12 @@ namespace SiTE.Logic
         private void FileEncrypt(string filePath, string password)
         {
             //http://stackoverflow.com/questions/27645527/aes-encryption-on-large-files
+
+            if (!File.Exists(filePath))
+            {
+                new ErrorHandler(Application.Current, "ErrorNoFile");
+                return;
+            }
 
             //generate random salt
             byte[] salt = GenerateRandomSalt();
@@ -189,6 +200,12 @@ namespace SiTE.Logic
         /// <param name="password"></param>
         private void FileDecrypt(string inputFile, string outputFile, string password)
         {
+            if (!File.Exists(inputFile))
+            {
+                new ErrorHandler(Application.Current, "ErrorNoFile");
+                return;
+            }
+
             byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
             byte[] salt = new byte[32];
 
