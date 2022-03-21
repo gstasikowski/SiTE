@@ -72,6 +72,11 @@
     <!-- Buttons -->
     <system:String x:Key="ButtonApply">Potwierdź</system:String>
     <system:String x:Key="ButtonBack">&lt; Wróć</system:String>
+    <system:String x:Key="ButtonYes">Tak</system:String>
+    <system:String x:Key="ButtonNo">Nie</system:String>
+    <system:String x:Key="ButtonCancel">Anuluj</system:String>
+    <!-- Messages -->
+    <system:String x:Key="MessageSaveReminder">Notka zawiera nie zapisane zmiany.&#10;Zapisać przed kontynuowaniem?</system:String>
     <!-- ErrorMessages -->
     <system:String x:Key="ErrorDefault">Wystąpił nieznany błąd, spróbuj ponownie.</system:String>
     <system:String x:Key="ErrorWrongPassword" xml:space="preserve">Błędne hasło szyfrowania. &#10;Upewnij się że szyfrowanie jest włączone w opcjach a hasło zgadza się z użytym przy zapisaniu notatki.</system:String>

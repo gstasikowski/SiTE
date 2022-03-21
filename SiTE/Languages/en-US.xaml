@@ -72,6 +72,11 @@
     <!-- Buttons -->
     <system:String x:Key="ButtonApply">Apply</system:String>
     <system:String x:Key="ButtonBack">&lt; Back</system:String>
+    <system:String x:Key="ButtonYes">Yes</system:String>
+    <system:String x:Key="ButtonNo">No</system:String>
+    <system:String x:Key="ButtonCancel">Cancel</system:String>
+    <!-- Messages -->
+    <system:String x:Key="MessageSaveReminder">Note contains some unsaved changes.&#10;Would you like to save them before proceeding?</system:String>
     <!-- ErrorMessages -->
     <system:String x:Key="ErrorDefault">Unkown error has occured. Please try again.</system:String>
     <system:String x:Key="ErrorWrongPassword" xml:space="preserve">Wrong encryption password. &#10;Make sure encryption is enabled in app settings and password matches one used when saving the note.</system:String>

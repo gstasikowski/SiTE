@@ -283,7 +283,7 @@ namespace SiTE.Views
 
         private async Task SetAutoSaveTask() // TODO reset timer on saving/opening note (cancel and recreate task?)
         {
-            if (System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("autoSave")))
+            if (System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("autoSave")) && Logic.Refs.dataBank.NoteCurrentOpen != string.Empty)
             {
                 await Task.Run(async delegate
                 {
