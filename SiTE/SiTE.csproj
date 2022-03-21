@@ -42,6 +42,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="CustomDatabase">
+      <HintPath>..\..\CustomDatabase\CustomDatabase\bin\Debug\CustomDatabase.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\clearClipboard.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
