@@ -27,11 +27,11 @@ namespace SiTE.Views
         }
 
         #region Methods
-
         private void WindowSetup()
         {
             string appTitle = Application.ResourceAssembly.GetName().ToString();
             Application.Current.MainWindow.Title = appTitle.Substring(0, appTitle.IndexOf(','));
+            lv_NoteList.ItemsSource = Logic.Refs.dataBank.NoteList;
 
             if (noteModified)
                 Application.Current.MainWindow.Title += '*';
@@ -39,16 +39,12 @@ namespace SiTE.Views
 
         private void LoadNoteList()
         {
-            lv_NoteList.Items.Clear();
-            
-            foreach (string note in Logic.Refs.fileOperations.GetNoteList())
-            {
-                lv_NoteList.Items.Add(note.Replace(Logic.Refs.dataBank.DefaultNotePath, "").Replace(".aes", "").Replace(".site", ""));
-            }
+            Logic.Refs.fileOperations.GetNoteListFromDB();
         }
 
         private void NewNote()
         {
+            lv_NoteList.SelectedIndex = -1;
             tb_Title.Text = "";
             ta_Note.Document = new FlowDocument();
             Logic.Refs.dataBank.NoteCurrentOpen = Logic.Refs.dataBank.NoteLastSaveTime = string.Empty;
@@ -62,27 +58,47 @@ namespace SiTE.Views
             if (lv_NoteList.SelectedIndex < 0 || !CheckSaveReminder())
                 return;
 
-            if (Logic.Refs.fileOperations.LoadNote(lv_NoteList.SelectedItem.ToString(), ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd))
-            {
-                ta_Note.IsUndoEnabled = false; // TODO figure out a better way to do this
-                tb_Title.Text = lv_NoteList.SelectedItem.ToString();
-                SetModifiedState(false);
-                ta_Note.IsUndoEnabled = true; // TODO figure out a better way to do this
-                autosaveTask = SetAutoSaveTask();
-            }
+            ta_Note.IsUndoEnabled = false; // TODO figure out a better way to do this
+            
+            var tempItem = (Models.NoteModel)lv_NoteList.SelectedItem;
+            var tempNote = Logic.Refs.fileOperations.LoadNoteFromDB(tempItem.ID);
+
+            tb_Title.Text = tempNote.Title;
+            var tempTextRange = new TextRange(ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
+            tempTextRange.Text = tempNote.Content;
+            
+            SetModifiedState(false);
+            ta_Note.IsUndoEnabled = true; // TODO figure out a better way to do this
         }
 
         private void SaveNote()
         {
-            Logic.Refs.fileOperations.SaveNote(tb_Title.Text, ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
+            string noteID = null;
+
+            if (lv_NoteList.SelectedIndex >= 0)
+            {
+                var tempItem = (Models.NoteModel)lv_NoteList.SelectedItem;
+                noteID = tempItem.ID.ToString();
+            }
+
+            Logic.Refs.fileOperations.SaveNoteToDB(noteID, tb_Title.Text, ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
+
             LoadNoteList();
+
+            if (lv_NoteList.SelectedIndex < 0)
+            { lv_NoteList.SelectedIndex = lv_NoteList.Items.IndexOf(tb_Title.Text); }
+
             SetModifiedState(false);
             autosaveTask = SetAutoSaveTask();
         }
 
         private void DeleteNote()
         {
-            Logic.Refs.fileOperations.DeleteNote(lv_NoteList.SelectedItem.ToString() + ".aes");
+            if (lv_NoteList.SelectedIndex < 0)
+                return;
+
+            var tempItem = (Models.NoteModel)lv_NoteList.SelectedItem;
+            Logic.Refs.fileOperations.DeleteNoteFromDB(tempItem.ID);
             NewNote();
             LoadNoteList();
         }
@@ -153,7 +169,7 @@ namespace SiTE.Views
 
             if (cb_FontSize.SelectedValue == null)
             {
-                cbValue = cb_FontSize.Text; // attempt to add custom font sizes, doesn't work
+                cbValue = cb_FontSize.Text; // TODO attempt to add custom font sizes, doesn't work
             }
             else
             {
@@ -186,7 +202,7 @@ namespace SiTE.Views
                 ta_Note.Selection.ApplyPropertyValue(TextElement.FontStyleProperty, "Normal");
         }
 
-        private void FontUnderline() // change to allow for underline + strikethrough
+        private void FontUnderline() // TODO change to allow for underline + strikethrough
         {
             if (ta_Note.Selection.GetPropertyValue(Inline.TextDecorationsProperty) != TextDecorations.Underline)
                 ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
@@ -194,7 +210,7 @@ namespace SiTE.Views
                 ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Baseline);
         }
 
-        private void FontStrike() // change to allow for underline + strikethrough
+        private void FontStrike() // TODO change to allow for underline + strikethrough
         {
             if (ta_Note.Selection.GetPropertyValue(Inline.TextDecorationsProperty) != TextDecorations.Strikethrough)
                 ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Strikethrough);
@@ -251,12 +267,12 @@ namespace SiTE.Views
 
         private void OpenSettings()
         {
-            Logic.Refs.viewControl.CurrentPageViewModel = Logic.Refs.viewControl.PageViewModels[1]; // switch to binding
+            Logic.Refs.viewControl.CurrentPageViewModel = Logic.Refs.viewControl.PageViewModels[1]; // TODO switch to binding
         }
 
         private void ExitApp()
         {
-            // throw save reminder in note was modified
+            // TODO throw save reminder in note was modified
             Application.Current.Shutdown();
         }
 
@@ -301,11 +317,9 @@ namespace SiTE.Views
             noteModified = isModified;
             CheckModified();
         }
-
         #endregion Methods
 
         #region UI Events
-
         private void TANoteContent_TextChanged(object sender, TextChangedEventArgs e)
         {
             SetModifiedState(true);
@@ -430,7 +444,6 @@ namespace SiTE.Views
         {
             UpdateTextStyle();
         }
-
-        # endregion UI Events
+        #endregion UI Events
     }
 }
