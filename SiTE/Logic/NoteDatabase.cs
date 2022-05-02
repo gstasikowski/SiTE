@@ -5,24 +5,24 @@ using SiTE.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
-// TODO add function to get all entries using primary index (for displaying note list)
 namespace SiTE.Logic
 {
-    class DatabaseHandler : IDisposable
+    class NoteDatabase : IDisposable
     {
         #region Variables
         readonly Stream mainDatabaseFile;
         readonly Stream primaryIndexFile;
         readonly Stream secondaryIndexFile;
         readonly Tree<Guid, uint> primaryIndex;
-        readonly Tree<Tuple<string, int>, uint> secondaryIndex;
+        readonly Tree<Tuple<string, string>, uint> secondaryIndex;
         readonly RecordStorage noteRecords;
         readonly NoteSerializer noteSerializer = new NoteSerializer();
         #endregion Variables
 
         #region Constructor
-        public DatabaseHandler(string pathToDBFile)
+        public NoteDatabase(string pathToDBFile)
         {
             if (pathToDBFile == null)
             { throw new ArgumentNullException("pathToDBFile"); }
@@ -45,9 +45,9 @@ namespace SiTE.Logic
                 false
             );
 
-            this.secondaryIndex = new Tree<Tuple<string, int>, uint>(
-                new TreeDiskNodeManager<Tuple<string, int>, uint>(
-                    new StringIntSerializer(),
+            this.secondaryIndex = new Tree<Tuple<string, string>, uint>(
+                new TreeDiskNodeManager<Tuple<string, string>, uint>(
+                    new StringSerializer(),
                     new TreeUIntSerializer(),
                     new RecordStorage(new BlockStorage(this.secondaryIndexFile, 4096))
                     ),
@@ -63,9 +63,19 @@ namespace SiTE.Logic
         public void Update(NoteModel note)
         {
             if (disposed)
-            { throw new ObjectDisposedException("CowDatabase"); }
+            { throw new ObjectDisposedException("NoteDatabase"); }
 
-            throw new NotImplementedException();
+            var entry = this.primaryIndex.Get(note.ID);
+
+            if (entry == null)
+            { return; }
+
+            var temp = new Tuple<string, string>(Refs.dataBank.GetNoteTitle(note.ID), string.Empty);
+            this.secondaryIndex.Delete(temp, entry.Item2);
+
+            var serializedNote = this.noteSerializer.Serialize(note);
+            this.noteRecords.Update(entry.Item2, serializedNote);
+            this.secondaryIndex.Insert(new Tuple<string, string>(note.Title, string.Empty), entry.Item2);
         }
 
         /// <summary>
@@ -74,13 +84,13 @@ namespace SiTE.Logic
         public void Insert(NoteModel note)
         {
             if (disposed)
-            { throw new ObjectDisposedException("CowDatabase"); }
+            { throw new ObjectDisposedException("NoteDatabase"); }
 
             var recordID = this.noteRecords.Create(this.noteSerializer.Serialize(note));
 
             this.primaryIndex.Insert(note.ID, recordID);
-            // TODO Change to change "0" to a note related property that can be used for search (add tags?).
-            this.secondaryIndex.Insert(new Tuple<string, int>(note.Title, 0), recordID);
+            // TODO Change to change second string to a note related property that can be used for search (add tags?).
+            this.secondaryIndex.Insert(new Tuple<string, string>(note.Title, string.Empty), recordID);
         }
 
         /// <summary>
@@ -89,7 +99,7 @@ namespace SiTE.Logic
         public NoteModel Find(Guid ID)
         {
             if (disposed)
-            { throw new ObjectDisposedException("CowDatabase"); }
+            { throw new ObjectDisposedException("NoteDatabase"); }
 
             var entry = this.primaryIndex.Get(ID);
 
@@ -102,11 +112,10 @@ namespace SiTE.Logic
         /// <summary>
         /// Find all entries within parameteres.
         /// </summary>
-        // TODO Replace age with a note related property.
-        public IEnumerable<NoteModel> FindBy(string title, int age)
+        public IEnumerable<NoteModel> FindBy(string title, string tags)
         {
-            var comparer = Comparer<Tuple<string, int>>.Default;
-            var searchKey = new Tuple<string, int>(title, age);
+            var comparer = Comparer<Tuple<string, string>>.Default;
+            var searchKey = new Tuple<string, string>(title, tags);
 
             foreach (var entry in this.secondaryIndex.LargerThanOrEqualTo(searchKey))
             {
@@ -119,12 +128,36 @@ namespace SiTE.Logic
         }
 
         /// <summary>
+        /// Get all entries.
+        /// </summary>
+        public IEnumerable<NoteModel> GetAll()
+        {
+            var elements = this.primaryIndex.GetAll();
+
+            foreach (var entry in elements)
+            {
+                if (entry == null)
+                    break;
+
+                // Using DeserializeSimple because we DON'T need all the note content when asking for note list
+                yield return this.noteSerializer.DeserializeSimple(this.noteRecords.Find(entry.Item2));
+            }
+        }
+
+        /// <summary>
         /// Delete specified entry from database.
         /// </summary>
-        // TODO Implement note deletion.
         public void Delete(NoteModel note)
         {
-            throw new NotImplementedException();
+            var entry = this.primaryIndex.Get(note.ID);
+
+            if (entry == null)
+            { return; }
+
+            var temp = new Tuple<string, string>(note.Title, string.Empty);
+            this.secondaryIndex.Delete(temp, entry.Item2);
+            this.primaryIndex.Delete(note.ID);
+            this.noteRecords.Delete(entry.Item2);
         }
         #endregion Methods (public)
 
@@ -148,7 +181,7 @@ namespace SiTE.Logic
             }
         }
 
-        ~DatabaseHandler()
+        ~NoteDatabase()
         {
             Dispose(false);
         }

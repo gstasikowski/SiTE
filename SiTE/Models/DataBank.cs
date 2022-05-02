@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SiTE.Models
 {
     public class DataBank
     {
         #region Variables
-        
+        string defaultDatabasePath = AppDomain.CurrentDomain.BaseDirectory + "Journal.data";
         string defaultNotePath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\";
         string defaultConfigPath = AppDomain.CurrentDomain.BaseDirectory;
         string defaultLanguagePath = AppDomain.CurrentDomain.BaseDirectory + "Languages\\";
@@ -14,13 +15,17 @@ namespace SiTE.Models
         Dictionary<string, string> settings = new Dictionary<string, string>();
 
         List<string> languageList = new List<string>();
-
+        System.Collections.ObjectModel.ObservableCollection<NoteModel> noteList = new();
+        
         string noteCurrentOpen = string.Empty;
         string noteLastSaveTime = string.Empty;
-
         #endregion Variables
 
-        #region Getters/setters
+        #region Properties
+        public string DefaultDBPath
+        {
+            get { return defaultDatabasePath; }
+        }
 
         public string DefaultNotePath
         {
@@ -41,10 +46,9 @@ namespace SiTE.Models
         {
             get { return tempFileExtension; }
         }
-        #endregion Getters/setters
+        #endregion Properties
 
         #region Methods
-
         public void RestoreDefaultSettings()
         {            
             SetSetting("languageID", "en-US");
@@ -100,11 +104,21 @@ namespace SiTE.Models
             get { return languageList; }
         }
 
+        public System.Collections.ObjectModel.ObservableCollection<NoteModel> NoteList
+        {
+            get { return noteList; }
+            set { noteList = value; }
+        }
+
+        public string GetNoteTitle(Guid noteID)
+        {
+            return NoteList.Where(n => n.ID == noteID).FirstOrDefault().Title;
+        }
+
         public int LanguageIndex(string languageCode)
         {
             return languageList.FindIndex(x => x.Contains(languageCode));
         }
-
         #endregion Methods
     }
 }

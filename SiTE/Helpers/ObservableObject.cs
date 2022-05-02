@@ -7,7 +7,6 @@ namespace SiTE.Helpers
     public abstract class ObservableObject : INotifyPropertyChanged
     {
         #region Debugging Aides
-
         /// <summary>
         /// Warns the developer if this object does not have
         /// a public property with the specified name. This 
@@ -37,11 +36,9 @@ namespace SiTE.Helpers
         /// override this property's getter to return true.
         /// </summary>
         protected virtual bool ThrowOnInvalidPropertyName { get; private set; }
-
-        #endregion // Debugging Aides
+        #endregion Debugging Aides
 
         #region INotifyPropertyChanged Members
-
         /// <summary>
         /// Raises the PropertyChange event for the property specified
         /// </summary>
@@ -72,7 +69,6 @@ namespace SiTE.Helpers
                 handler(this, e);
             }
         }
-
-        #endregion // INotifyPropertyChanged Members
+        #endregion INotifyPropertyChanged Members
     }
 }

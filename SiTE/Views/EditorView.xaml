@@ -3,10 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Models="clr-namespace:SiTE.Models"
         x:Class="SiTE.Views.EditorView" 
         mc:Ignorable="d"
         d:DesignHeight="450" d:DesignWidth="800">
-    
+
     <Grid Grid.IsSharedSizeScope="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -62,8 +63,7 @@
                     <ImageBrush Stretch="Uniform" ImageSource="/Resources/saveFile.png"/>
                 </Button.Background>
             </Button>
-            <Button Width="22" Height="22" Click="BtnDeleteNote_Click" Content="X" FontWeight="Bold" ToolTip="{DynamicResource TipDeleteNote}">
-            </Button>
+            <Button Width="22" Height="22" Click="BtnDeleteNote_Click" Content="X" FontWeight="Bold" ToolTip="{DynamicResource TipDeleteNote}"/>
             <Separator/>
             <Button Width="22" Height="22" Click="BtnCut_Click" ToolTip="{DynamicResource TipCut}">
                 <Button.Background>
@@ -114,16 +114,10 @@
             <Button Width="22" Height="22" Content="B" FontWeight="Bold" Click="BtnTBold_Click" ToolTip="{DynamicResource TipBold}"/>
             <Button Width="22" Height="22" Content="I" FontStyle="Italic" Click="BtnItalics_Click" ToolTip="{DynamicResource TipItalic}"/>
             <Button Width="22" Height="22" Click="BtnUnderline_Click" ToolTip="{DynamicResource TipUnderline}">
-                <Button.Content>
-                    <TextBlock TextDecorations="Underline">U</TextBlock>
-                </Button.Content>
+                <TextBlock TextDecorations="Underline"><Run Text="U"/></TextBlock>
             </Button>
             <Button Width="30" Height="22" Click="BtnStrike_Click" ToolTip="{DynamicResource TipStrikethrough}">
-                <Button.Content>
-                    <TextBlock TextDecorations="Strikethrough">
-                        abc
-                    </TextBlock>
-                </Button.Content>
+                <TextBlock TextDecorations="Strikethrough"><Run Text="abc"/></TextBlock>
             </Button>
             <Button Width="22" Height="22" Click="BtnFontColor_Click" ToolTip="{DynamicResource TipFontColor}">
                 <Button.Background>
@@ -165,7 +159,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Expander ExpandDirection="Right" IsExpanded="True" Collapsed="EXNoteList_Collapsed" Expanded="EXNoteList_Expanded" VerticalContentAlignment="Stretch"  ToolTip="{DynamicResource TipNoteList}">
-                <ListView x:Name="lv_NoteList" SelectionChanged="LVNoteList_SelectionChanged" Margin="2,0,0,-1" ScrollViewer.VerticalScrollBarVisibility="Auto" Visibility="Visible" MinWidth="130" />
+                <ListView x:Name="lv_NoteList" SelectionChanged="LVNoteList_SelectionChanged" Margin="2,0,0,-1" ScrollViewer.VerticalScrollBarVisibility="Auto" Visibility="Visible" MinWidth="130" DisplayMemberPath="Title"/>
             </Expander>
             <GridSplitter x:Name="gcl_splitter" Grid.Column="1" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" Width="2" />
             <Grid Grid.Column="2" Margin="0,0,2,0">
@@ -183,7 +177,7 @@
             </Grid>
         </Grid>
         <DockPanel LastChildFill="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="4" Height="25">
-            <Label x:Name="lbl_LastSaveTime"></Label>
+            <Label x:Name="lbl_LastSaveTime"/>
         </DockPanel>
     </Grid>
 </UserControl>

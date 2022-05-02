@@ -28,7 +28,7 @@ namespace SiTE.Logic
         }
 
         #region Note file IO
-
+        // TODO Remove after adding database encryption
         public bool LoadNote(string noteTitle, TextPointer pointerStart, TextPointer pointerEnd)
         {
             TextRange docContent;
@@ -65,6 +65,14 @@ namespace SiTE.Logic
             return true;
         }
 
+        // TODO decrypt db files
+        public Models.NoteModel LoadNoteFromDB(Guid noteID)
+        {
+            using (var db = new NoteDatabase(Refs.dataBank.DefaultDBPath))
+            { return db.Find(noteID); }
+        }
+
+        // TODO Remove after adding database encryption
         public void SaveNote(string noteTitle, TextPointer pointerStart, TextPointer pointerEnd)
         {
             string filePath = Refs.dataBank.DefaultNotePath + noteTitle + Refs.dataBank.TempFileExtension; // TODO remove temp .site files step after changing encryption to direct from document
@@ -88,7 +96,39 @@ namespace SiTE.Logic
                 }
             }
 
+            SaveNoteToDB(string.Empty, noteTitle, pointerStart, pointerEnd);
             Refs.dataBank.NoteLastSaveTime = DateTime.Now.ToString();
+        }
+
+        // TODO encrypt db files
+        public void SaveNoteToDB(string noteID, string noteTitle, TextPointer pointerStart, TextPointer pointerEnd)
+        {
+            TextRange textRange = new TextRange(pointerStart, pointerEnd);
+
+            using (var db = new NoteDatabase(Refs.dataBank.DefaultDBPath))
+            {
+                var noteGuid = string.IsNullOrEmpty(noteID) ? Guid.NewGuid() : Guid.Parse(noteID);
+                var oldNote = db.Find(noteGuid);
+
+                Models.NoteModel freshNote = new Models.NoteModel
+                {
+                    ID = noteGuid,
+                    Title = noteTitle,
+                    Content = textRange.Text,
+                    Modified = DateTime.Now
+                };
+
+                if (oldNote == null)
+                {
+                    freshNote.Created = DateTime.Now;
+                    db.Insert(freshNote);
+                }
+                else
+                {
+                    freshNote.Created = oldNote.Created;
+                    db.Update(freshNote);
+                }
+            }
         }
 
         public void DeleteNote(string noteFile)
@@ -106,10 +146,17 @@ namespace SiTE.Logic
             File.Delete(filePath);
         }
 
+        public void DeleteNoteFromDB(Guid noteID)
+        {
+            using (var db = new NoteDatabase(Refs.dataBank.DefaultDBPath))
+            {
+                var noteToRemove = db.Find(noteID);
+                db.Delete(noteToRemove);
+            }
+        }
         #endregion Note file IO
 
         #region Encryption
-
         static byte[] GenerateRandomSalt()
         {
             byte[] data = new byte[32];
@@ -275,12 +322,24 @@ namespace SiTE.Logic
                 DeleteNote(tempFile);
             }
         }
-
         #endregion Encryption
 
+        // TODO Remove after adding database encryption
         public string[] GetNoteList()
         {
             return Directory.GetFiles(Refs.dataBank.DefaultNotePath);
+        }
+
+        public void GetNoteListFromDB()
+        {
+            using (var db = new NoteDatabase(Refs.dataBank.DefaultDBPath))
+            {
+                var noteList = db.GetAll();
+                Refs.dataBank.NoteList.Clear();
+                
+                foreach (var note in noteList)
+                { Refs.dataBank.NoteList.Add(note); }
+            }
         }
 
         public void LoadTranslations()
@@ -294,7 +353,6 @@ namespace SiTE.Logic
         }
 
         #region Settings
-
         public void LoadSettings()
         {
             string configFilePath = Refs.dataBank.DefaultConfigPath + "Config.xml";
@@ -329,7 +387,6 @@ namespace SiTE.Logic
 
             fileStream.Close();
         }
-
         #endregion Settings
     }
 }

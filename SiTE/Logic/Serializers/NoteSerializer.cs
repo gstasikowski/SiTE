@@ -134,7 +134,6 @@ namespace SiTE.Logic.Serializers
             if (createDateLength < 0 || createDateLength > (16 * 1024))
             { throw new Exception("Invalid string length: " + createDateLength); }
 
-            //DateTime createDate = DateTime.FromBinary(BufferHelper.ReadBufferInt64(data, 16 + 4 + titleLength + 4 + contentLength + 4));
             DateTime createDate = DateTime.Parse(System.Text.Encoding.UTF8.GetString(data, 16 + 4 + titleLength + 4 + contentLength + 4, createDateLength));
             note.Created = createDate;
 
@@ -146,6 +145,23 @@ namespace SiTE.Logic.Serializers
 
             DateTime modifyDate = DateTime.Parse(System.Text.Encoding.UTF8.GetString(data, 16 + 4 + titleLength + 4 + contentLength + 4 + createDateLength + 4, modifyDateLength));
             note.Modified = modifyDate;
+
+            return note;
+        }
+        public NoteModel DeserializeSimple(byte[] data)
+        {
+            var note = new NoteModel();
+
+            // ID
+            note.ID = BufferHelper.ReadBufferGuid(data, 0);
+
+            // Title
+            var titleLength = BufferHelper.ReadBufferInt32(data, 16);
+
+            if (titleLength < 0 || titleLength > (16 * 1024))
+            { throw new Exception("Invalid string length: " + titleLength); }
+
+            note.Title = System.Text.Encoding.UTF8.GetString(data, 16 + 4, titleLength);
 
             return note;
         }

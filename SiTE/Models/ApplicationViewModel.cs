@@ -9,13 +9,11 @@ namespace SiTE.Models
     public class ApplicationViewModel : ObservableObject
     {
         #region Fields
-
         private ICommand _changePageCommand;
         private IPageViewModel _currentPageViewModel;
         private List<IPageViewModel> _pageViewModels;
 
         private bool _settingsModified;
-
         #endregion
 
         public ApplicationViewModel()
@@ -28,7 +26,6 @@ namespace SiTE.Models
         }
 
         #region Commands & properties
-
         public ICommand ChangePageCommand
         {
             get
@@ -75,9 +72,7 @@ namespace SiTE.Models
                 OnPropertyChanged("SettingsModified");
             }
         }
-        #endregion
-
-        #region Methods
+        #endregion Commands & properties
 
         private void ChangeViewModel(IPageViewModel viewModel)
         {
@@ -86,7 +81,5 @@ namespace SiTE.Models
 
             CurrentPageViewModel = PageViewModels.FirstOrDefault(vm => vm == viewModel);
         }
-
-        #endregion
     }
 }
