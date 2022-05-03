@@ -17,9 +17,7 @@ namespace SiTE.Views
         public EditorView()
         {
             InitializeComponent();
-
-            Logic.Refs.fileOperations.LoadTranslations();
-            Logic.Refs.fileOperations.LoadSettings();
+            Logic.FileOperations.InitialSetup();
 
             WindowSetup();
             LoadNoteList();
@@ -39,7 +37,7 @@ namespace SiTE.Views
 
         private void LoadNoteList()
         {
-            Logic.Refs.fileOperations.GetNoteListFromDB();
+            Logic.FileOperations.GetNoteList();
         }
 
         private void NewNote()
@@ -61,7 +59,7 @@ namespace SiTE.Views
             ta_Note.IsUndoEnabled = false; // TODO figure out a better way to do this
             
             var tempItem = (Models.NoteModel)lv_NoteList.SelectedItem;
-            var tempNote = Logic.Refs.fileOperations.LoadNoteFromDB(tempItem.ID);
+            var tempNote = Logic.FileOperations.LoadNote(tempItem.ID);
 
             tb_Title.Text = tempNote.Title;
             var tempTextRange = new TextRange(ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
@@ -81,7 +79,7 @@ namespace SiTE.Views
                 noteID = tempItem.ID.ToString();
             }
 
-            Logic.Refs.fileOperations.SaveNoteToDB(noteID, tb_Title.Text, ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
+            Logic.FileOperations.SaveNote(noteID, tb_Title.Text, ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
 
             LoadNoteList();
 
@@ -98,11 +96,12 @@ namespace SiTE.Views
                 return;
 
             var tempItem = (Models.NoteModel)lv_NoteList.SelectedItem;
-            Logic.Refs.fileOperations.DeleteNoteFromDB(tempItem.ID);
+            Logic.FileOperations.DeleteNote(tempItem.ID);
             NewNote();
             LoadNoteList();
         }
 
+        // TODO add note modification time
         private void CheckModified()
         {
             btn_UndoMenu.IsEnabled = btn_UndoToolbar.IsEnabled = ta_Note.CanUndo;
