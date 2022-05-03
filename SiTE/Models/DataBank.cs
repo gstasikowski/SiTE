@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace SiTE.Models
@@ -7,15 +8,17 @@ namespace SiTE.Models
     public class DataBank
     {
         #region Variables
-        string defaultDatabasePath = AppDomain.CurrentDomain.BaseDirectory + "Journal.data";
         string defaultNotePath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\";
+        string defaultDatabasePath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\Journal.data";
+        string defaultPIndexPath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\Journal.pixd";
+        string defaultSIndexPath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\Journal.sidx";
         string defaultConfigPath = AppDomain.CurrentDomain.BaseDirectory;
         string defaultLanguagePath = AppDomain.CurrentDomain.BaseDirectory + "Languages\\";
-        string tempFileExtension = ".site";
+
         Dictionary<string, string> settings = new Dictionary<string, string>();
 
         List<string> languageList = new List<string>();
-        System.Collections.ObjectModel.ObservableCollection<NoteModel> noteList = new();
+        ObservableCollection<NoteModel> noteList = new();
         
         string noteCurrentOpen = string.Empty;
         string noteLastSaveTime = string.Empty;
@@ -25,6 +28,16 @@ namespace SiTE.Models
         public string DefaultDBPath
         {
             get { return defaultDatabasePath; }
+        }
+
+        public string DefaultPIndexPath
+        {
+            get { return defaultPIndexPath; }
+        }
+
+        public string DefaultSIndexPath
+        {
+            get { return defaultSIndexPath; }
         }
 
         public string DefaultNotePath
@@ -40,11 +53,6 @@ namespace SiTE.Models
         public string DefaultLanguagePath
         {
             get { return defaultLanguagePath; }
-        }
-
-        public string TempFileExtension
-        {
-            get { return tempFileExtension; }
         }
         #endregion Properties
 
@@ -72,21 +80,23 @@ namespace SiTE.Models
         {
             if (settings.ContainsKey(key))
             {
-                if (key == "password")
-                    Logic.Refs.fileOperations.UpdateEncryptionPassword(GetSetting("password"), value);
+                settings[key] = value;
 
-                settings[key] = value; 
+                if (key == "password")
+                    Logic.FileOperations.UpdateEncryption();
             }
             else
             { settings.Add(key, value); }
         }
 
+        // TODO remove?
         public string NoteCurrentOpen
         {
             get { return noteCurrentOpen; }
             set { noteCurrentOpen = value; }
         }
 
+        // TODO remove?
         public string NoteLastSaveTime
         {
             get { return noteLastSaveTime; }
@@ -104,7 +114,7 @@ namespace SiTE.Models
             get { return languageList; }
         }
 
-        public System.Collections.ObjectModel.ObservableCollection<NoteModel> NoteList
+        public ObservableCollection<NoteModel> NoteList
         {
             get { return noteList; }
             set { noteList = value; }

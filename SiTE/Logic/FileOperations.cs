@@ -11,14 +11,18 @@ using System.Xml.Serialization;
 
 namespace SiTE.Logic
 {
-    public class FileOperations
+    public static class FileOperations
     {
-        public FileOperations()
+        public static void InitialSetup()
         {
             CheckConfigDirectories();
+            LoadTranslations();
+            LoadSettings();
+            CheckForPlainDatabaseFiles(); // remove remnant temp files on startup (in case of crash)
+            CheckForEncryptedDatabaseFiles();
         }
 
-        void CheckConfigDirectories()
+        static void CheckConfigDirectories()
         {
             if (!Directory.Exists(Refs.dataBank.DefaultNotePath))
                 Directory.CreateDirectory(Refs.dataBank.DefaultNotePath);
@@ -27,81 +31,84 @@ namespace SiTE.Logic
                 Directory.CreateDirectory(Refs.dataBank.DefaultConfigPath);
         }
 
-        #region Note file IO
-        // TODO Remove after adding database encryption
-        public bool LoadNote(string noteTitle, TextPointer pointerStart, TextPointer pointerEnd)
+        static void DeleteFile(string filePath)
         {
-            TextRange docContent;
-            FileStream fileStream;
-
-            string filePath = Refs.dataBank.DefaultNotePath + noteTitle + ".aes";
-
-            if (File.Exists(filePath))
-            {
-                string filePathDecrypted = filePath.Replace(".aes", Refs.dataBank.TempFileExtension);
-                FileDecrypt(filePath, filePathDecrypted, Refs.dataBank.GetSetting("password"));
-
-                docContent = new TextRange(pointerStart, pointerEnd);
-                fileStream = new FileStream(filePathDecrypted, FileMode.OpenOrCreate);
-
-                try
-                {
-                    docContent.Load(fileStream, DataFormats.XamlPackage);
-                    Refs.dataBank.NoteCurrentOpen = noteTitle;
-                    Refs.dataBank.NoteLastSaveTime = File.GetLastWriteTime(filePath).ToString();
-                }
-                catch
-                {
-                    new ErrorHandler(Application.Current, "ErrorWrongPassword"); // probably caused by incorrect encryption password, inform the user and ask for password in case they know it
-                    return false;// add choice to input custom password, get back to new/last note if declined
-                }
-
-                fileStream.Close();
-                File.Delete(filePathDecrypted);
-            }
-            else
-            { return false; }
-
-            return true;
+            if (!File.Exists(filePath))
+            { return; }
+            
+            File.Delete(filePath);
         }
 
-        // TODO decrypt db files
-        public Models.NoteModel LoadNoteFromDB(Guid noteID)
+        #region Database IO
+        private static void EncryptDatabase()
+        {
+            if (Refs.dataBank.GetSetting("encryption") == "False")
+                return;
+
+            if (File.Exists(Refs.dataBank.DefaultDBPath) 
+                && File.Exists(Refs.dataBank.DefaultPIndexPath) 
+                && File.Exists(Refs.dataBank.DefaultSIndexPath))
+            {
+                FileEncrypt(Refs.dataBank.DefaultDBPath, Refs.dataBank.GetSetting("password"));
+                FileEncrypt(Refs.dataBank.DefaultPIndexPath, Refs.dataBank.GetSetting("password"));
+                FileEncrypt(Refs.dataBank.DefaultSIndexPath, Refs.dataBank.GetSetting("password"));
+            }
+        }
+
+        private static void DencryptDatabase()
+        {
+            if (Refs.dataBank.GetSetting("encryption") == "False")
+                return;
+
+            if (File.Exists(Refs.dataBank.DefaultDBPath + ".aes")
+                && File.Exists(Refs.dataBank.DefaultPIndexPath + ".aes")
+                && File.Exists(Refs.dataBank.DefaultSIndexPath + ".aes"))
+            {
+                FileDecrypt(Refs.dataBank.DefaultDBPath + ".aes", Refs.dataBank.DefaultDBPath, Refs.dataBank.GetSetting("password"));
+                FileDecrypt(Refs.dataBank.DefaultPIndexPath + ".aes", Refs.dataBank.DefaultPIndexPath, Refs.dataBank.GetSetting("password"));
+                FileDecrypt(Refs.dataBank.DefaultSIndexPath + ".aes", Refs.dataBank.DefaultSIndexPath, Refs.dataBank.GetSetting("password"));
+            }
+            }
+
+        public static void CheckForEncryptedDatabaseFiles()
+        {            
+            if (File.Exists(Refs.dataBank.DefaultDBPath + ".aes")
+                && File.Exists(Refs.dataBank.DefaultPIndexPath + ".aes")
+                && File.Exists(Refs.dataBank.DefaultSIndexPath + ".aes"))
+            { DencryptDatabase(); }
+        }
+
+        public static void CheckForPlainDatabaseFiles()
+        {
+            if (Refs.dataBank.GetSetting("encryption") == "False")
+                return;
+
+            DeleteFile(Refs.dataBank.DefaultDBPath);
+            DeleteFile(Refs.dataBank.DefaultPIndexPath);
+            DeleteFile(Refs.dataBank.DefaultSIndexPath);
+        }
+        #endregion Database IO
+
+        #region Note file IO
+        public static void GetNoteList()
+        {
+            using (var db = new NoteDatabase(Refs.dataBank.DefaultDBPath))
+            {
+                var noteList = db.GetAll();
+                Refs.dataBank.NoteList.Clear();
+
+                foreach (var note in noteList)
+                { Refs.dataBank.NoteList.Add(note); }
+            }
+        }
+
+        public static Models.NoteModel LoadNote(Guid noteID)
         {
             using (var db = new NoteDatabase(Refs.dataBank.DefaultDBPath))
             { return db.Find(noteID); }
         }
 
-        // TODO Remove after adding database encryption
-        public void SaveNote(string noteTitle, TextPointer pointerStart, TextPointer pointerEnd)
-        {
-            string filePath = Refs.dataBank.DefaultNotePath + noteTitle + Refs.dataBank.TempFileExtension; // TODO remove temp .site files step after changing encryption to direct from document
-
-            TextRange textRange;
-            FileStream fileStream;
-            textRange = new TextRange(pointerStart, pointerEnd);
-            fileStream = new FileStream(filePath, FileMode.Create);
-            textRange.Save(fileStream, DataFormats.XamlPackage);
-            fileStream.Close();
-
-            if (Refs.dataBank.GetSetting("encryption").ToLower() == "true" && Refs.dataBank.GetSetting("password") != string.Empty)
-            {
-                FileEncrypt(filePath, Refs.dataBank.GetSetting("password"));
-                DeleteNote(noteTitle + Refs.dataBank.TempFileExtension);
-
-                if (Refs.dataBank.NoteCurrentOpen != noteTitle)
-                {
-                    DeleteNote(Refs.dataBank.NoteCurrentOpen + ".aes");
-                    Refs.dataBank.NoteCurrentOpen = noteTitle;
-                }
-            }
-
-            SaveNoteToDB(string.Empty, noteTitle, pointerStart, pointerEnd);
-            Refs.dataBank.NoteLastSaveTime = DateTime.Now.ToString();
-        }
-
-        // TODO encrypt db files
-        public void SaveNoteToDB(string noteID, string noteTitle, TextPointer pointerStart, TextPointer pointerEnd)
+        public static void SaveNote(string noteID, string noteTitle, TextPointer pointerStart, TextPointer pointerEnd)
         {
             TextRange textRange = new TextRange(pointerStart, pointerEnd);
 
@@ -129,30 +136,19 @@ namespace SiTE.Logic
                     db.Update(freshNote);
                 }
             }
+
+            EncryptDatabase();
         }
 
-        public void DeleteNote(string noteFile)
-        {
-            // TODO after getting rid of temp .site files assume all files have the same extension
-            // instead of adding it in multiple classes/places
-            string filePath = (noteFile.Contains("\\")) ? noteFile : Refs.dataBank.DefaultNotePath + noteFile;
-
-            if (!File.Exists(filePath))
-            {
-                new ErrorHandler(Application.Current, "ErrorNoFile");
-                return;
-            }
-
-            File.Delete(filePath);
-        }
-
-        public void DeleteNoteFromDB(Guid noteID)
+        public static void DeleteNote(Guid noteID)
         {
             using (var db = new NoteDatabase(Refs.dataBank.DefaultDBPath))
             {
                 var noteToRemove = db.Find(noteID);
                 db.Delete(noteToRemove);
             }
+
+            EncryptDatabase();
         }
         #endregion Note file IO
 
@@ -173,7 +169,7 @@ namespace SiTE.Logic
             return data;
         }
 
-        private void FileEncrypt(string filePath, string password)
+        private static void FileEncrypt(string filePath, string password)
         {
             //http://stackoverflow.com/questions/27645527/aes-encryption-on-large-files
 
@@ -187,7 +183,7 @@ namespace SiTE.Logic
             byte[] salt = GenerateRandomSalt();
 
             //create output file name
-            FileStream fileStreamCrypt = new FileStream(filePath.Replace(Refs.dataBank.TempFileExtension,".aes"), FileMode.Create);
+            FileStream fileStreamCrypt = new FileStream(filePath + ".aes", FileMode.Create);
 
             //convert password string to byte arrray
             byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
@@ -245,7 +241,7 @@ namespace SiTE.Logic
         /// <param name="inputFile"></param>
         /// <param name="outputFile"></param>
         /// <param name="password"></param>
-        private void FileDecrypt(string inputFile, string outputFile, string password)
+        private static void FileDecrypt(string inputFile, string outputFile, string password)
         {
             if (!File.Exists(inputFile))
             {
@@ -307,42 +303,24 @@ namespace SiTE.Logic
             }
         }
 
-        public void UpdateEncryptionPassword(string oldPassword, string newPassword)
+        /// <summary>
+        /// Delete encrypted files when disabling encryption
+        /// or reencrypt database files on password change.
+        /// </summary>
+        public static void UpdateEncryption()
         {
-            if (oldPassword == newPassword)
-                return;
-
-            string[] filesToUpdate = GetNoteList();
-
-            foreach (string file in filesToUpdate)
+            if (Refs.dataBank.GetSetting("encryption") == "False")
             {
-                string tempFile = file.Replace(".aes", Refs.dataBank.TempFileExtension);
-                FileDecrypt(file, tempFile, oldPassword);
-                FileEncrypt(tempFile, newPassword);
-                DeleteNote(tempFile);
+                DeleteFile(Refs.dataBank.DefaultDBPath + ".aes");
+                DeleteFile(Refs.dataBank.DefaultPIndexPath + ".aes");
+                DeleteFile(Refs.dataBank.DefaultSIndexPath + ".aes");
             }
+            else
+            { EncryptDatabase(); }
         }
         #endregion Encryption
 
-        // TODO Remove after adding database encryption
-        public string[] GetNoteList()
-        {
-            return Directory.GetFiles(Refs.dataBank.DefaultNotePath);
-        }
-
-        public void GetNoteListFromDB()
-        {
-            using (var db = new NoteDatabase(Refs.dataBank.DefaultDBPath))
-            {
-                var noteList = db.GetAll();
-                Refs.dataBank.NoteList.Clear();
-                
-                foreach (var note in noteList)
-                { Refs.dataBank.NoteList.Add(note); }
-            }
-        }
-
-        public void LoadTranslations()
+        public static void LoadTranslations()
         {
             foreach (string filePath in Directory.EnumerateFiles(Refs.dataBank.DefaultLanguagePath))
             {
@@ -353,7 +331,7 @@ namespace SiTE.Logic
         }
 
         #region Settings
-        public void LoadSettings()
+        public static void LoadSettings()
         {
             string configFilePath = Refs.dataBank.DefaultConfigPath + "Config.xml";
 
@@ -374,7 +352,7 @@ namespace SiTE.Logic
             Refs.localizationHandler.SwitchLanguage(Refs.dataBank.GetSetting("languageID"));
         }
 
-        public void SaveSettings()
+        public static void SaveSettings()
         {
             Dictionary<string, string> appSettings = Refs.dataBank.GetAllSettings();
 

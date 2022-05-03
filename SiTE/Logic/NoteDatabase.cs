@@ -5,7 +5,6 @@ using SiTE.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace SiTE.Logic
 {
@@ -28,9 +27,9 @@ namespace SiTE.Logic
             { throw new ArgumentNullException("pathToDBFile"); }
 
             // Open the stream and (create) database files.
-            this.mainDatabaseFile = new FileStream(pathToDBFile, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 4096);
-            this.primaryIndexFile = new FileStream(pathToDBFile + ".pidx", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 4096);
-            this.secondaryIndexFile = new FileStream(pathToDBFile + ".sidx", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 4096);
+            this.mainDatabaseFile = new FileStream(Refs.dataBank.DefaultDBPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 4096);
+            this.primaryIndexFile = new FileStream(Refs.dataBank.DefaultPIndexPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 4096);
+            this.secondaryIndexFile = new FileStream(Refs.dataBank.DefaultSIndexPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 4096);
 
             // Create a RecordStorage for main cow data
             this.noteRecords = new RecordStorage(new BlockStorage(this.mainDatabaseFile, 4096, 48));

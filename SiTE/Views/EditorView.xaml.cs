@@ -1,4 +1,5 @@
 ﻿using SiTE.Interfaces;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,14 +13,14 @@ namespace SiTE.Views
     public partial class EditorView : IPageViewModel
     {
         private Task autosaveTask;
+        private CancellationTokenSource cancellationToken;
+
         private bool noteModified = false;
 
         public EditorView()
         {
             InitializeComponent();
-
-            Logic.Refs.fileOperations.LoadTranslations();
-            Logic.Refs.fileOperations.LoadSettings();
+            Logic.FileOperations.InitialSetup();
 
             WindowSetup();
             LoadNoteList();
@@ -39,7 +40,7 @@ namespace SiTE.Views
 
         private void LoadNoteList()
         {
-            Logic.Refs.fileOperations.GetNoteListFromDB();
+            Logic.FileOperations.GetNoteList();
         }
 
         private void NewNote()
@@ -61,14 +62,20 @@ namespace SiTE.Views
             ta_Note.IsUndoEnabled = false; // TODO figure out a better way to do this
             
             var tempItem = (Models.NoteModel)lv_NoteList.SelectedItem;
-            var tempNote = Logic.Refs.fileOperations.LoadNoteFromDB(tempItem.ID);
+            var tempNote = Logic.FileOperations.LoadNote(tempItem.ID);
 
             tb_Title.Text = tempNote.Title;
             var tempTextRange = new TextRange(ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
             tempTextRange.Text = tempNote.Content;
-            
+
+            Logic.Refs.dataBank.NoteCurrentOpen = tempNote.ID.ToString();
+            Logic.Refs.dataBank.NoteLastSaveTime = tempNote.Modified.ToString();
+
             SetModifiedState(false);
             ta_Note.IsUndoEnabled = true; // TODO figure out a better way to do this
+
+            //autosaveTask = SetAutoSaveTask();
+            ResetAutosave();
         }
 
         private void SaveNote()
@@ -81,7 +88,7 @@ namespace SiTE.Views
                 noteID = tempItem.ID.ToString();
             }
 
-            Logic.Refs.fileOperations.SaveNoteToDB(noteID, tb_Title.Text, ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
+            Logic.FileOperations.SaveNote(noteID, tb_Title.Text, ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
 
             LoadNoteList();
 
@@ -89,7 +96,8 @@ namespace SiTE.Views
             { lv_NoteList.SelectedIndex = lv_NoteList.Items.IndexOf(tb_Title.Text); }
 
             SetModifiedState(false);
-            autosaveTask = SetAutoSaveTask();
+            //autosaveTask = SetAutoSaveTask();
+            ResetAutosave();
         }
 
         private void DeleteNote()
@@ -98,11 +106,12 @@ namespace SiTE.Views
                 return;
 
             var tempItem = (Models.NoteModel)lv_NoteList.SelectedItem;
-            Logic.Refs.fileOperations.DeleteNoteFromDB(tempItem.ID);
+            Logic.FileOperations.DeleteNote(tempItem.ID);
             NewNote();
             LoadNoteList();
         }
 
+        // TODO add note modification time
         private void CheckModified()
         {
             btn_UndoMenu.IsEnabled = btn_UndoToolbar.IsEnabled = ta_Note.CanUndo;
@@ -297,18 +306,38 @@ namespace SiTE.Views
             { cb_FontSize.Text = fontSize; }
         }
 
-        private async Task SetAutoSaveTask() // TODO reset timer on saving/opening note (cancel and recreate task?)
+        private void ResetAutosave()
+        {
+            return; // temp solution until fixed
+
+            if (autosaveTask != null && !autosaveTask.IsCompleted)
+            { 
+                cancellationToken.Cancel();
+
+                if (autosaveTask.IsCanceled)
+                { autosaveTask.Dispose(); }
+            }
+
+            cancellationToken = new CancellationTokenSource();
+
+            autosaveTask = AutoSaveTask();
+        }
+
+        private async Task AutoSaveTask() // TODO reset timer on saving/opening note (cancel and recreate task?)
         {
             if (System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("autoSave")) && Logic.Refs.dataBank.NoteCurrentOpen != string.Empty)
             {
-                await Task.Run(async delegate
+                using (cancellationToken)
                 {
-                    int autoSaveDelay = 5;
-                    int.TryParse(Logic.Refs.dataBank.GetSetting("autoSaveDelay"), out autoSaveDelay);
-                    await Task.Delay(autoSaveDelay * 60000);
-                });
+                    await Task.Run(async delegate
+                    {
+                        int autoSaveDelay = 5;
+                        int.TryParse(Logic.Refs.dataBank.GetSetting("autoSaveDelay"), out autoSaveDelay);
+                        await Task.Delay(autoSaveDelay * 60000);
+                    });
 
-                SaveNote();
+                    SaveNote();
+                }
             }
         }
 

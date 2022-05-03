@@ -82,7 +82,7 @@ namespace SiTE.Views
             Logic.Refs.dataBank.SetSetting("encryption", chkb_Encryption.IsChecked.ToString());
             Logic.Refs.dataBank.SetSetting("password", tb_EncryptionPassword.Text); // TODO prevent user from setting empty password if encryption is enabled
 
-            Logic.Refs.fileOperations.SaveSettings();
+            Logic.FileOperations.SaveSettings();
             ToggleSettingsStatus(false);
         }
 
