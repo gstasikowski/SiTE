@@ -24,7 +24,7 @@ namespace SiTE.Views
 
             WindowSetup();
             LoadNoteList();
-            NewNote(); // TODO see if undo/redo buttons can start as disabled without calling this method
+            NewNote();
         }
 
         #region Methods
@@ -48,10 +48,9 @@ namespace SiTE.Views
             lv_NoteList.SelectedIndex = -1;
             tb_Title.Text = "";
             ta_Note.Document = new FlowDocument();
-            Logic.Refs.dataBank.NoteCurrentOpen = Logic.Refs.dataBank.NoteLastSaveTime = string.Empty;
             SetFontFamilySelection(ta_Note.FontFamily);
             SetFontSizeSelection(ta_Note.FontSize.ToString());
-            SetModifiedState(false);
+            SetModifiedState(false, string.Empty);
         }
 
         private void OpenNote()
@@ -68,13 +67,9 @@ namespace SiTE.Views
             var tempTextRange = new TextRange(ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
             tempTextRange.Text = tempNote.Content;
 
-            Logic.Refs.dataBank.NoteCurrentOpen = tempNote.ID.ToString();
-            Logic.Refs.dataBank.NoteLastSaveTime = tempNote.Modified.ToString();
-
-            SetModifiedState(false);
+            SetModifiedState(false, tempNote.Modified.ToString());
             ta_Note.IsUndoEnabled = true; // TODO figure out a better way to do this
 
-            //autosaveTask = SetAutoSaveTask();
             ResetAutosave();
         }
 
@@ -93,10 +88,9 @@ namespace SiTE.Views
             LoadNoteList();
 
             if (lv_NoteList.SelectedIndex < 0)
-            { lv_NoteList.SelectedIndex = lv_NoteList.Items.IndexOf(tb_Title.Text); }
+            { lv_NoteList.SelectedIndex = Logic.Refs.dataBank.GetNoteIndex(tb_Title.Text); }
 
-            SetModifiedState(false);
-            //autosaveTask = SetAutoSaveTask();
+            SetModifiedState(false, System.DateTime.Now.ToString());
             ResetAutosave();
         }
 
@@ -109,16 +103,6 @@ namespace SiTE.Views
             Logic.FileOperations.DeleteNote(tempItem.ID);
             NewNote();
             LoadNoteList();
-        }
-
-        // TODO add note modification time
-        private void CheckModified()
-        {
-            btn_UndoMenu.IsEnabled = btn_UndoToolbar.IsEnabled = ta_Note.CanUndo;
-            btn_RedoMenu.IsEnabled = btn_RedoToolbar.IsEnabled = ta_Note.CanRedo;
-
-            WindowSetup();
-            lbl_LastSaveTime.Content = (Logic.Refs.dataBank.NoteLastSaveTime != string.Empty) ? (string)FindResource("NoteLastSaveTime") + ": " + Logic.Refs.dataBank.NoteLastSaveTime : string.Empty;
         }
 
         private bool CheckSaveReminder()
@@ -308,8 +292,6 @@ namespace SiTE.Views
 
         private void ResetAutosave()
         {
-            return; // temp solution until fixed
-
             if (autosaveTask != null && !autosaveTask.IsCompleted)
             { 
                 cancellationToken.Cancel();
@@ -319,39 +301,43 @@ namespace SiTE.Views
             }
 
             cancellationToken = new CancellationTokenSource();
-
             autosaveTask = AutoSaveTask();
         }
 
-        private async Task AutoSaveTask() // TODO reset timer on saving/opening note (cancel and recreate task?)
+        private async Task AutoSaveTask()
         {
-            if (System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("autoSave")) && Logic.Refs.dataBank.NoteCurrentOpen != string.Empty)
+            if (System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("autoSave")) && lv_NoteList.SelectedIndex >= 0)
             {
                 using (cancellationToken)
                 {
-                    await Task.Run(async delegate
-                    {
-                        int autoSaveDelay = 5;
-                        int.TryParse(Logic.Refs.dataBank.GetSetting("autoSaveDelay"), out autoSaveDelay);
-                        await Task.Delay(autoSaveDelay * 60000);
-                    });
-
+                    int autoSaveDelay = 5;
+                    int.TryParse(Logic.Refs.dataBank.GetSetting("autoSaveDelay"), out autoSaveDelay);
+                    await Task.Delay(autoSaveDelay * 30000);
+                        
                     SaveNote();
                 }
             }
         }
 
-        private void SetModifiedState(bool isModified)
+        private void SetModifiedState(bool isModified, string modifiedDate)
         {
             noteModified = isModified;
-            CheckModified();
+
+
+            btn_UndoMenu.IsEnabled = btn_UndoToolbar.IsEnabled = ta_Note.CanUndo;
+            btn_RedoMenu.IsEnabled = btn_RedoToolbar.IsEnabled = ta_Note.CanRedo;
+
+            WindowSetup();
+
+            if (modifiedDate != null)
+            { lbl_LastSaveTime.Content = (string)FindResource("NoteLastSaveTime") + ": " + modifiedDate; }
         }
         #endregion Methods
 
         #region UI Events
         private void TANoteContent_TextChanged(object sender, TextChangedEventArgs e)
         {
-            SetModifiedState(true);
+            SetModifiedState(true, null);
         }
 
         private void BtnNewNote_Click(object sender, RoutedEventArgs e)
