@@ -89,20 +89,6 @@ namespace SiTE.Models
             { settings.Add(key, value); }
         }
 
-        // TODO remove?
-        public string NoteCurrentOpen
-        {
-            get { return noteCurrentOpen; }
-            set { noteCurrentOpen = value; }
-        }
-
-        // TODO remove?
-        public string NoteLastSaveTime
-        {
-            get { return noteLastSaveTime; }
-            set { noteLastSaveTime = value; }
-        }
-
         public void AddAvailableLanguage(string languageCode)
         {
             if (!languageList.Contains(languageCode))
@@ -122,7 +108,13 @@ namespace SiTE.Models
 
         public string GetNoteTitle(Guid noteID)
         {
-            return NoteList.Where(n => n.ID == noteID).FirstOrDefault().Title;
+            return NoteList.FirstOrDefault(n => n.ID == noteID).Title;
+        }
+
+        public int GetNoteIndex(string noteTitle)
+        {
+            NoteModel note = NoteList.FirstOrDefault(n => n.Title.Equals(noteTitle));
+            return NoteList.IndexOf(note);
         }
 
         public int LanguageIndex(string languageCode)
