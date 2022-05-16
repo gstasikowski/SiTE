@@ -42,6 +42,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Neo.Markdig.Xaml" Version="1.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="CustomDatabase">
       <HintPath>..\..\CustomDatabase\CustomDatabase\bin\Debug\CustomDatabase.dll</HintPath>
     </Reference>

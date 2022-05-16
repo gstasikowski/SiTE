@@ -26,7 +26,7 @@
     <system:String x:Key="MenuFontColor">Font color</system:String>
     <system:String x:Key="MenuHighlightColor">Highlight color</system:String>
     <system:String x:Key="MenuWordWrap">Word wrap</system:String>
-    <system:String x:Key="MenuSpellcheck">Spellcheck</system:String>
+    <system:String x:Key="MenuViewMode">Cycle editor mode</system:String>
     <!-- Menu items - [Settings] -->
     <system:String x:Key="MenuSettings">Settings</system:String>
     <!-- Menu items - [Help] -->
@@ -55,7 +55,7 @@
     <system:String x:Key="TipTextRight">Align text to the right.</system:String>
     <system:String x:Key="TipTextJustify">Align text to both left and right margin.</system:String>
     <system:String x:Key="TipWordWrap">Toggle word wrapping.</system:String>
-    <system:String x:Key="TipSpellcheck">Toggle spellcheck.</system:String>
+    <system:String x:Key="TipViewMode">Toggle view mode (editor / mixed / markdown).</system:String>
     <system:String x:Key="TipNoteList">Toggle note list.</system:String>
     <!-- Note items -->
     <system:String x:Key="NoteTitle">Title</system:String>

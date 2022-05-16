@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Models="clr-namespace:SiTE.Models"
+        xmlns:md="clr-namespace:Neo.Markdig.Xaml;assembly=Neo.Markdig.Xaml"
         x:Class="SiTE.Views.EditorView" 
         mc:Ignorable="d"
         d:DesignHeight="450" d:DesignWidth="800">
@@ -119,38 +120,8 @@
             <Button Width="30" Height="22" Click="BtnStrike_Click" ToolTip="{DynamicResource TipStrikethrough}">
                 <TextBlock TextDecorations="Strikethrough"><Run Text="abc"/></TextBlock>
             </Button>
-            <Button Width="22" Height="22" Click="BtnFontColor_Click" ToolTip="{DynamicResource TipFontColor}">
-                <Button.Background>
-                    <ImageBrush ImageSource="/Resources/fontColor.PNG" Opacity="1" Stretch="None"/>
-                </Button.Background>
-            </Button>
-            <Button Width="22" Height="22" BorderBrush="Black" Click="BtnFontHighlight_Click" ToolTip="{DynamicResource TipHighlightColor}">
-                <Button.Background>
-                    <ImageBrush ImageSource="/Resources/fontBackColor.PNG" Stretch="None"/>
-                </Button.Background>
-            </Button>
             <Separator/>
-            <Button x:Name="btn_textLeft" Width="22" Height="22" Click="BtnTextPosition_Click" ToolTip="{DynamicResource TipTextLeft}">
-                <Button.Background>
-                    <ImageBrush ImageSource="/Resources/jLeft.png" Opacity="1" Stretch="None"/>
-                </Button.Background>
-            </Button>
-            <Button x:Name="btn_textCenter" Width="22" Height="22" Click="BtnTextPosition_Click" ToolTip="{DynamicResource TipTextCenter}">
-                <Button.Background>
-                    <ImageBrush ImageSource="/Resources/jCenter.png" Opacity="1" Stretch="None"/>
-                </Button.Background>
-            </Button>
-            <Button x:Name="btn_textRight" Width="22" Height="22" Click="BtnTextPosition_Click" ToolTip="{DynamicResource TipTextRight}">
-                <Button.Background>
-                    <ImageBrush ImageSource="/Resources/jRight.png" Opacity="1" Stretch="None"/>
-                </Button.Background>
-            </Button>
-            <Button x:Name="btn_textJust" Width="22" Height="22" Click="BtnTextPosition_Click" ToolTip="{DynamicResource TipTextJustify}">
-                <Button.Background>
-                    <ImageBrush ImageSource="/Resources/jJustify.png" Stretch="None"/>
-                </Button.Background>
-            </Button>
-            <Button Width="22" Height="22" Click="BtnSpellCheck_Click" Content="SPC" ToolTip="{DynamicResource TipSpellcheck}"/>
+            <Button Width="22" Height="22" Click="BtnViewMode_Click" Content="VM" ToolTip="{DynamicResource TipViewMode}"/>
         </ToolBar>
         <Grid Grid.Row="3" Margin="2,2,0,0">
             <Grid.ColumnDefinitions>
@@ -173,7 +144,18 @@
                 </Grid.RowDefinitions>
                 <Label x:Name="lbl_Title" HorizontalAlignment="Left" Content="{DynamicResource NoteTitle}"/>
                 <TextBox x:Name="tb_Title" MinWidth="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" TextChanged="TANoteContent_TextChanged" Grid.ColumnSpan="1" Grid.Column="1"/>
-                <RichTextBox x:Name="ta_Note" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="100" Background="White" TextChanged="TANoteContent_TextChanged" IsDocumentEnabled="True" Margin="0,2,0,0" Grid.Row="1" Grid.ColumnSpan="2" SelectionChanged="TANote_SelectionChanged" />
+                <Grid x:Name="grid_editorMode" Grid.Row="1" Grid.ColumnSpan="2" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                        <TextBox x:Name="ta_Note" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="100" Background="White" TextChanged="TANoteContent_TextChanged" Margin="0,2,0,0" SelectionChanged="TANote_SelectionChanged" AcceptsReturn="True" AcceptsTab="True" Visibility="Visible" HorizontalContentAlignment="Left" />
+                        <FlowDocumentScrollViewer x:Name="flowDocumentViewer" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="100" Background="Blue" Margin="0,2,0,0" Visibility="Visible" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Column="1" BorderBrush="#FFABADB3" BorderThickness="1" MaxZoom="100">
+                            <FlowDocumentScrollViewer.CommandBindings>
+                                <CommandBinding Command="{x:Static md:MarkdownXaml.Hyperlink}" Executed="CommandBinding_Executed" />
+                            </FlowDocumentScrollViewer.CommandBindings>
+                        </FlowDocumentScrollViewer>
+                </Grid>
             </Grid>
         </Grid>
         <DockPanel LastChildFill="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="4" Height="25">

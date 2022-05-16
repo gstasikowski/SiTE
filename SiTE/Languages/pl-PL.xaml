@@ -26,7 +26,7 @@
     <system:String x:Key="MenuFontColor">Kolor czcionki</system:String>
     <system:String x:Key="MenuHighlightColor">Kolor tła</system:String>
     <system:String x:Key="MenuWordWrap">Zwijaj wiersze</system:String>
-    <system:String x:Key="MenuSpellcheck">Sprawdzanie błędów</system:String>
+    <system:String x:Key="MenuViewMode">Przeącz tryb edycji</system:String>
     <!-- Menu items - [Settings] -->
     <system:String x:Key="MenuSettings">Ustawienia</system:String>
     <!-- Menu items - [Help] -->
@@ -55,7 +55,7 @@
     <system:String x:Key="TipTextRight">Wyrównaj tekst do prawej.</system:String>
     <system:String x:Key="TipTextJustify">Wyrównaj tekst do obu marginesów.</system:String>
     <system:String x:Key="TipWordWrap">Włącz/wyłącz zwijanie wierszy.</system:String>
-    <system:String x:Key="TipSpellcheck">Włącz/wyłącz sprawdzanie błędów.</system:String>
+    <system:String x:Key="TipViewMode">Zmień tryb edycji (edytor / mieszany / markdown).</system:String>
     <system:String x:Key="TipNoteList">Pokaż/ukryj listę notatek.</system:String>
     <!-- Note items -->
     <system:String x:Key="NoteTitle">Tytuł</system:String>

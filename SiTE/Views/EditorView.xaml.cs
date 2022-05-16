@@ -4,9 +4,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using Markdig;
+using Neo.Markdig.Xaml;
 
 namespace SiTE.Views
 {
+    enum EditorMode { editor, mixed, render };
+
     /// <summary>
     /// Interaction logic for EditorView.xaml
     /// </summary>
@@ -15,6 +19,7 @@ namespace SiTE.Views
         private Task autosaveTask;
         private CancellationTokenSource cancellationToken;
 
+        private EditorMode mode = EditorMode.editor;
         private bool noteModified = false;
 
         public EditorView()
@@ -36,6 +41,8 @@ namespace SiTE.Views
 
             if (noteModified)
                 Application.Current.MainWindow.Title += '*';
+            
+            UpdateEditorView();
         }
 
         private void LoadNoteList()
@@ -47,7 +54,7 @@ namespace SiTE.Views
         {
             lv_NoteList.SelectedIndex = -1;
             tb_Title.Text = "";
-            ta_Note.Document = new FlowDocument();
+            ta_Note.Text = string.Empty;
             SetFontFamilySelection(ta_Note.FontFamily);
             SetFontSizeSelection(ta_Note.FontSize.ToString());
             SetModifiedState(false, string.Empty);
@@ -62,15 +69,25 @@ namespace SiTE.Views
             
             var tempItem = (Models.NoteModel)lv_NoteList.SelectedItem;
             var tempNote = Logic.FileOperations.LoadNote(tempItem.ID);
-
+            
             tb_Title.Text = tempNote.Title;
-            var tempTextRange = new TextRange(ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
-            tempTextRange.Text = tempNote.Content;
+            ta_Note.Text = tempNote.Content;
 
             SetModifiedState(false, tempNote.Modified.ToString());
             ta_Note.IsUndoEnabled = true; // TODO figure out a better way to do this
 
             ResetAutosave();
+        }
+
+        private void UpdateMarkdownView()
+        {
+            var doc = MarkdownXaml.ToFlowDocument(ta_Note.Text,
+                new MarkdownPipelineBuilder()
+                .UseXamlSupportedExtensions()
+                .Build()
+            );
+
+            flowDocumentViewer.Document = doc;
         }
 
         private void SaveNote()
@@ -83,7 +100,7 @@ namespace SiTE.Views
                 noteID = tempItem.ID.ToString();
             }
 
-            Logic.FileOperations.SaveNote(noteID, tb_Title.Text, ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
+            Logic.FileOperations.SaveNote(noteID, tb_Title.Text, ta_Note.Text);
 
             LoadNoteList();
 
@@ -146,11 +163,12 @@ namespace SiTE.Views
             if (ta_Note == null)
                 return;
 
+            /*
             if (ta_Note.Selection != null)
             {
                 ta_Note.Selection.ApplyPropertyValue(TextElement.FontFamilyProperty, cb_Font.SelectedItem);
                 FontSetSize();
-            }
+            }*/
         }
 
         private void FontSetSize()
@@ -172,43 +190,43 @@ namespace SiTE.Views
 
             double fontSize;
             double.TryParse(cbValue, out fontSize);
-            
+            /*
             if (fontSize > 0)
                 ta_Note.Selection.ApplyPropertyValue(TextElement.FontSizeProperty, fontSize);
-
+            */
             ta_Note.Focus();
         }
 
         private void FontBold()
-        {
+        {/*
             if (ta_Note.Selection.GetPropertyValue(TextElement.FontWeightProperty).ToString() != "Bold")
                 ta_Note.Selection.ApplyPropertyValue(TextElement.FontWeightProperty, "Bold");
             else
-                ta_Note.Selection.ApplyPropertyValue(TextElement.FontWeightProperty, "Normal");
+                ta_Note.Selection.ApplyPropertyValue(TextElement.FontWeightProperty, "Normal");*/
         }
 
         private void FontItalic()
-        {
+        {/*
             if (ta_Note.Selection.GetPropertyValue(TextElement.FontStyleProperty).ToString() != "Italic")
                 ta_Note.Selection.ApplyPropertyValue(TextElement.FontStyleProperty, "Italic");
             else
-                ta_Note.Selection.ApplyPropertyValue(TextElement.FontStyleProperty, "Normal");
+                ta_Note.Selection.ApplyPropertyValue(TextElement.FontStyleProperty, "Normal");*/
         }
 
         private void FontUnderline() // TODO change to allow for underline + strikethrough
-        {
+        {/*
             if (ta_Note.Selection.GetPropertyValue(Inline.TextDecorationsProperty) != TextDecorations.Underline)
                 ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
             else
-                ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Baseline);
+                ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Baseline);*/
         }
 
         private void FontStrike() // TODO change to allow for underline + strikethrough
-        {
+        {/*
             if (ta_Note.Selection.GetPropertyValue(Inline.TextDecorationsProperty) != TextDecorations.Strikethrough)
                 ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Strikethrough);
             else
-                ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Baseline);
+                ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Baseline);*/
         }
 
         private void FontColor()
@@ -222,7 +240,7 @@ namespace SiTE.Views
         }
 
         private void TextPosition(object sender)
-        {
+        {/*
             switch (((Button)sender).Name)
             {
                 case "textCenter":
@@ -240,7 +258,7 @@ namespace SiTE.Views
                 default:
                     ta_Note.Document.TextAlignment = TextAlignment.Left;
                     break;
-            }
+            }*/
         }
 
         private void SpellCheckToggle() // currently non functioning, requires (?) Telerik.Windows.Documents.Proofing.Dictionaries.En-US.dll for EN spellcheck
@@ -270,12 +288,12 @@ namespace SiTE.Views
         }
 
         private void UpdateTextStyle()
-        {
+        {/*
             if (ta_Note.Selection.IsEmpty)
                 return;
             
             SetFontFamilySelection(ta_Note.Selection.GetPropertyValue(TextElement.FontFamilyProperty));
-            SetFontSizeSelection(ta_Note.Selection.GetPropertyValue(TextElement.FontSizeProperty).ToString());
+            SetFontSizeSelection(ta_Note.Selection.GetPropertyValue(TextElement.FontSizeProperty).ToString());*/
         }
 
         private void SetFontFamilySelection(object fontFamily)
@@ -332,12 +350,52 @@ namespace SiTE.Views
             if (modifiedDate != null)
             { lbl_LastSaveTime.Content = (string)FindResource("NoteLastSaveTime") + ": " + modifiedDate; }
         }
+
+        private void ToggleEditorMode()
+        {
+            mode++;
+
+            if (mode > EditorMode.render)
+            { mode = 0; }
+
+            UpdateEditorView();
+        }
+
+        private void UpdateEditorView()
+        { 
+            grid_editorMode.ColumnDefinitions[0].Width = grid_editorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+            
+            switch (mode)
+            {
+                case EditorMode.editor:
+                    ta_Note.Visibility = Visibility.Visible;
+                    flowDocumentViewer.Visibility = Visibility.Collapsed;
+                    grid_editorMode.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+                    grid_editorMode.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Auto);
+                    break;
+
+                case EditorMode.render:
+                    ta_Note.Visibility = Visibility.Collapsed;
+                    flowDocumentViewer.Visibility = Visibility.Visible;
+                    grid_editorMode.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Auto);
+                    grid_editorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+                    break;
+
+                default:
+                    ta_Note.Visibility = Visibility.Visible;
+                    flowDocumentViewer.Visibility = Visibility.Visible;
+                    grid_editorMode.ColumnDefinitions[0].Width = grid_editorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+                    break;
+            }
+
+        }
         #endregion Methods
 
         #region UI Events
         private void TANoteContent_TextChanged(object sender, TextChangedEventArgs e)
         {
             SetModifiedState(true, null);
+            UpdateMarkdownView();
         }
 
         private void BtnNewNote_Click(object sender, RoutedEventArgs e)
@@ -410,24 +468,9 @@ namespace SiTE.Views
             FontStrike();
         }
 
-        private void BtnFontColor_Click(object sender, RoutedEventArgs e)
+        private void BtnViewMode_Click(object sender, RoutedEventArgs e)
         {
-            FontColor();
-        }
-
-        private void BtnFontHighlight_Click(object sender, RoutedEventArgs e)
-        {
-            FontHighlight();
-        }
-
-        private void BtnTextPosition_Click(object sender, RoutedEventArgs e)
-        {
-            TextPosition(sender);
-        }
-
-        private void BtnSpellCheck_Click(object sender, RoutedEventArgs e)
-        {
-            SpellCheckToggle();
+            ToggleEditorMode();
         }
 
         private void MIExit_Click(object sender, RoutedEventArgs e)
@@ -458,6 +501,13 @@ namespace SiTE.Views
         private void TANote_SelectionChanged(object sender, RoutedEventArgs e)
         {
             UpdateTextStyle();
+        }
+
+        // TODO add opening web links using browser
+        // TODO add switching notes when using note links
+        private void CommandBinding_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            MessageBox.Show(System.String.Format("Link clicked: {0}", e.Parameter));
         }
         #endregion UI Events
     }
