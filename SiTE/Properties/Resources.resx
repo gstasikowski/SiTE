@@ -127,23 +127,8 @@
   <data name="cut" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cut.PNG;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="fontBackColor" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\fontBackColor.PNG;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="fontColor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fontColor.PNG;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="jCenter" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\jCenter.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="jJustify" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\jJustify.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="jLeft" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\jLeft.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="jRight" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\jRight.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="newFile" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\newFile.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -159,6 +144,15 @@
   </data>
   <data name="saveFile" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\saveFile.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="textHighlight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\textHighlight.PNG;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="textSubscript" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\textSubscript.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="textSuperscript" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\textSuperscript.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="undo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\undo.PNG;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

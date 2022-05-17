@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using Markdig;
 using Neo.Markdig.Xaml;
 
@@ -55,8 +54,6 @@ namespace SiTE.Views
             lv_NoteList.SelectedIndex = -1;
             tb_Title.Text = "";
             ta_Note.Text = string.Empty;
-            SetFontFamilySelection(ta_Note.FontFamily);
-            SetFontSizeSelection(ta_Note.FontSize.ToString());
             SetModifiedState(false, string.Empty);
         }
 
@@ -158,112 +155,91 @@ namespace SiTE.Views
             ta_Note.Redo();
         }
 
-        private void FontSetFamily()
+        private void ToggleTextBold()
         {
-            if (ta_Note == null)
-                return;
+            if (!IsNoteContentActive())
+            { return; }
 
-            /*
-            if (ta_Note.Selection != null)
-            {
-                ta_Note.Selection.ApplyPropertyValue(TextElement.FontFamilyProperty, cb_Font.SelectedItem);
-                FontSetSize();
-            }*/
+            if (ta_Note.SelectedText.StartsWith("**") && ta_Note.SelectedText.EndsWith("**"))
+            { ta_Note.SelectedText = ta_Note.SelectedText.Substring(2, ta_Note.SelectedText.Length - 4); }
+            else
+            { ta_Note.SelectedText = string.Format("**{0}**", ta_Note.SelectedText); }
         }
 
-        private void FontSetSize()
+        private void ToggleTextItalic()
         {
-            if (ta_Note == null)
-                return;
+            if (!IsNoteContentActive())
+            { return; }
 
-            string cbValue;
-
-            if (cb_FontSize.SelectedValue == null)
-            {
-                cbValue = cb_FontSize.Text; // TODO attempt to add custom font sizes, doesn't work
-            }
+            if (!CheckIfAddStyle(ta_Note.SelectedText, "*"))
+            { ta_Note.SelectedText = ta_Note.SelectedText.Substring(1, ta_Note.SelectedText.Length - 2); }
             else
-            {
-                cbValue = cb_FontSize.SelectedValue.ToString();
-                cbValue = cbValue.Substring(cbValue.LastIndexOf(": ") + 2);
-            }
-
-            double fontSize;
-            double.TryParse(cbValue, out fontSize);
-            /*
-            if (fontSize > 0)
-                ta_Note.Selection.ApplyPropertyValue(TextElement.FontSizeProperty, fontSize);
-            */
-            ta_Note.Focus();
+            { ta_Note.SelectedText = string.Format("*{0}*", ta_Note.SelectedText); }
         }
 
-        private void FontBold()
-        {/*
-            if (ta_Note.Selection.GetPropertyValue(TextElement.FontWeightProperty).ToString() != "Bold")
-                ta_Note.Selection.ApplyPropertyValue(TextElement.FontWeightProperty, "Bold");
-            else
-                ta_Note.Selection.ApplyPropertyValue(TextElement.FontWeightProperty, "Normal");*/
-        }
-
-        private void FontItalic()
-        {/*
-            if (ta_Note.Selection.GetPropertyValue(TextElement.FontStyleProperty).ToString() != "Italic")
-                ta_Note.Selection.ApplyPropertyValue(TextElement.FontStyleProperty, "Italic");
-            else
-                ta_Note.Selection.ApplyPropertyValue(TextElement.FontStyleProperty, "Normal");*/
-        }
-
-        private void FontUnderline() // TODO change to allow for underline + strikethrough
-        {/*
-            if (ta_Note.Selection.GetPropertyValue(Inline.TextDecorationsProperty) != TextDecorations.Underline)
-                ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
-            else
-                ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Baseline);*/
-        }
-
-        private void FontStrike() // TODO change to allow for underline + strikethrough
-        {/*
-            if (ta_Note.Selection.GetPropertyValue(Inline.TextDecorationsProperty) != TextDecorations.Strikethrough)
-                ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Strikethrough);
-            else
-                ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Baseline);*/
-        }
-
-        private void FontColor()
+        private void ToggleTextHighlight()
         {
-            // TODO Implement
+            if (!IsNoteContentActive())
+            { return; }
+
+            if (ta_Note.SelectedText.StartsWith("==") && ta_Note.SelectedText.EndsWith("=="))
+            { ta_Note.SelectedText = ta_Note.SelectedText.Substring(2, ta_Note.SelectedText.Length - 4); }
+            else
+            { ta_Note.SelectedText = string.Format("=={0}==", ta_Note.SelectedText); }
         }
 
-        private void FontHighlight()
+        private void ToggleTextStrikethrough()
         {
-            // TODO Implement
+            if (!IsNoteContentActive())
+            { return; }
+
+            if (ta_Note.SelectedText.StartsWith("~~") && ta_Note.SelectedText.EndsWith("~~"))
+            { ta_Note.SelectedText = ta_Note.SelectedText.Substring(2, ta_Note.SelectedText.Length - 4); }
+            else
+            { ta_Note.SelectedText = string.Format("~~{0}~~", ta_Note.SelectedText); }
         }
 
-        private void TextPosition(object sender)
-        {/*
-            switch (((Button)sender).Name)
-            {
-                case "textCenter":
-                    ta_Note.Document.TextAlignment = TextAlignment.Center;
-                    break;
-
-                case "textRight":
-                    ta_Note.Document.TextAlignment = TextAlignment.Right;
-                    break;
-
-                case "textJust":
-                    ta_Note.Document.TextAlignment = TextAlignment.Justify;
-                    break;
-
-                default:
-                    ta_Note.Document.TextAlignment = TextAlignment.Left;
-                    break;
-            }*/
-        }
-
-        private void SpellCheckToggle() // currently non functioning, requires (?) Telerik.Windows.Documents.Proofing.Dictionaries.En-US.dll for EN spellcheck
+        private void ToggleTextSubscript()
         {
-            ta_Note.SpellCheck.IsEnabled = !ta_Note.SpellCheck.IsEnabled;
+            if (!IsNoteContentActive())
+            { return; }
+
+            if (!CheckIfAddStyle(ta_Note.SelectedText, "~"))
+            { ta_Note.SelectedText = ta_Note.SelectedText.Substring(1, ta_Note.SelectedText.Length - 2); }
+            else
+            { ta_Note.SelectedText = string.Format("~{0}~", ta_Note.SelectedText); }
+        }
+
+        private void ToggleTextSuperscript()
+        {
+            if (!IsNoteContentActive())
+            { return; }
+
+            if (ta_Note.SelectedText.StartsWith("^") && ta_Note.SelectedText.EndsWith("^"))
+            { ta_Note.SelectedText = ta_Note.SelectedText.Substring(1, ta_Note.SelectedText.Length - 2); }
+            else
+            { ta_Note.SelectedText = string.Format("^{0}^", ta_Note.SelectedText); }
+        }
+
+        private bool IsNoteContentActive()
+        {
+            return ta_Note.IsFocused;
+        }
+
+        private bool CheckIfAddStyle(string textToCheck, string symbol)
+        {
+            bool addStyle = true;
+
+            if (textToCheck.StartsWith(symbol) && textToCheck.EndsWith(symbol))
+            { addStyle = false; }
+
+            if (textToCheck.StartsWith(symbol + symbol))
+            { addStyle = true; }
+
+            if (textToCheck.StartsWith(symbol + symbol + symbol) && textToCheck.EndsWith(symbol + symbol + symbol))
+            { addStyle = false; }
+
+            return addStyle;
         }
 
         private void ToggleNoteList(bool expand)
@@ -285,27 +261,6 @@ namespace SiTE.Views
         {
             // TODO throw save reminder in note was modified
             Application.Current.Shutdown();
-        }
-
-        private void UpdateTextStyle()
-        {/*
-            if (ta_Note.Selection.IsEmpty)
-                return;
-            
-            SetFontFamilySelection(ta_Note.Selection.GetPropertyValue(TextElement.FontFamilyProperty));
-            SetFontSizeSelection(ta_Note.Selection.GetPropertyValue(TextElement.FontSizeProperty).ToString());*/
-        }
-
-        private void SetFontFamilySelection(object fontFamily)
-        {
-            if (!fontFamily.ToString().Contains("UnsetValue"))
-            { cb_Font.SelectedItem = fontFamily; }
-        }
-
-        private void SetFontSizeSelection(string fontSize)
-        {
-            if (!fontSize.Contains("UnsetValue"))
-            { cb_FontSize.Text = fontSize; }
         }
 
         private void ResetAutosave()
@@ -348,7 +303,7 @@ namespace SiTE.Views
             WindowSetup();
 
             if (modifiedDate != null)
-            { lbl_LastSaveTime.Content = (string)FindResource("NoteLastSaveTime") + ": " + modifiedDate; }
+            { lbl_LastSaveTime.Content = modifiedDate; }
         }
 
         private void ToggleEditorMode()
@@ -438,34 +393,34 @@ namespace SiTE.Views
             RedoChanges();
         }
 
-        private void CBFont_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            FontSetFamily();
-        }
-
-        private void CBFontSize_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            FontSetSize();
-        }
-
         private void BtnTBold_Click(object sender, RoutedEventArgs e)
         {
-            FontBold();
+            ToggleTextBold();
         }
 
         private void BtnItalics_Click(object sender, RoutedEventArgs e)
         {
-            FontItalic();
+            ToggleTextItalic();
         }
 
-        private void BtnUnderline_Click(object sender, RoutedEventArgs e)
+        private void BtnHighlight_Click(object sender, RoutedEventArgs e)
         {
-            FontUnderline();
+            ToggleTextHighlight();
         }
 
         private void BtnStrike_Click(object sender, RoutedEventArgs e)
         {
-            FontStrike();
+            ToggleTextStrikethrough();
+        }
+
+        private void BtnSubscript_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleTextSubscript();
+        }
+
+        private void BtnSuperscript_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleTextSuperscript();
         }
 
         private void BtnViewMode_Click(object sender, RoutedEventArgs e)
@@ -496,11 +451,6 @@ namespace SiTE.Views
         private void EXNoteList_Expanded(object sender, RoutedEventArgs e)
         {
             ToggleNoteList(true);
-        }
-
-        private void TANote_SelectionChanged(object sender, RoutedEventArgs e)
-        {
-            UpdateTextStyle();
         }
 
         // TODO add opening web links using browser

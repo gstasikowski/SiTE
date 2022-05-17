@@ -6,7 +6,6 @@
     <system:String x:Key="MenuNewNote">New note</system:String>
     <system:String x:Key="MenuSaveNote">Save note</system:String>
     <system:String x:Key="MenuDeleteNote">Delete note</system:String>
-    <system:String x:Key="MenuPageSettings">Page settings</system:String>
     <system:String x:Key="MenuExit">Exit</system:String>
     <!-- Menu items - [Edit] -->
     <system:String x:Key="MenuEdit">Edit</system:String>
@@ -18,13 +17,14 @@
     <system:String x:Key="MenuRedo">Redo</system:String>
     <system:String x:Key="MenuBold">Bold</system:String>
     <system:String x:Key="MenuItalic">Italic</system:String>
-    <system:String x:Key="MenuUnderline">Underline</system:String>
+    <system:String x:Key="MenuHighlight">Highlight text</system:String>
     <system:String x:Key="MenuStrikethrough">Strikethrough</system:String>
+    <system:String x:Key="MenuSubscript">Subscript</system:String>
+    <system:String x:Key="MenuSuperscript">Superscript</system:String>
     <!-- Menu items - [Format] -->
     <system:String x:Key="MenuFormat">Format</system:String>
     <system:String x:Key="MenuFont">Font</system:String>
     <system:String x:Key="MenuFontColor">Font color</system:String>
-    <system:String x:Key="MenuHighlightColor">Highlight color</system:String>
     <system:String x:Key="MenuWordWrap">Word wrap</system:String>
     <system:String x:Key="MenuViewMode">Cycle editor mode</system:String>
     <!-- Menu items - [Settings] -->
@@ -46,20 +46,17 @@
     <system:String x:Key="TipFontSize">Change font size.</system:String>
     <system:String x:Key="TipBold">Bold selection.</system:String>
     <system:String x:Key="TipItalic">Italicize selection.</system:String>
-    <system:String x:Key="TipUnderline">Underscore selection.</system:String>
+    <system:String x:Key="TipHighlight">Highlight selected text.</system:String>
     <system:String x:Key="TipStrikethrough">Strikethrough selection.</system:String>
+    <system:String x:Key="TipSubscript">n/a</system:String>
+    <system:String x:Key="TipSuperscript">n/a</system:String>
     <system:String x:Key="TipFontColor">Change text color.</system:String>
-    <system:String x:Key="TipHighlightColor">Change text highlight color.</system:String>
-    <system:String x:Key="TipTextLeft">Align text to the left.</system:String>
-    <system:String x:Key="TipTextCenter">Center text.</system:String>
-    <system:String x:Key="TipTextRight">Align text to the right.</system:String>
-    <system:String x:Key="TipTextJustify">Align text to both left and right margin.</system:String>
     <system:String x:Key="TipWordWrap">Toggle word wrapping.</system:String>
     <system:String x:Key="TipViewMode">Toggle view mode (editor / mixed / markdown).</system:String>
     <system:String x:Key="TipNoteList">Toggle note list.</system:String>
     <!-- Note items -->
     <system:String x:Key="NoteTitle">Title</system:String>
-    <system:String x:Key="NoteLastSaveTime">Last save time</system:String>
+    <system:String x:Key="NoteLastSaveTime">Last save time:</system:String>
     <!-- Settings items - [General] -->
     <system:String x:Key="GroupGeneral">General</system:String>
     <system:String x:Key="Language">Language</system:String>

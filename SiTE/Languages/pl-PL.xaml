@@ -6,7 +6,6 @@
     <system:String x:Key="MenuNewNote">Nowa notatka</system:String>
     <system:String x:Key="MenuSaveNote">Zapisz notatkę</system:String>
     <system:String x:Key="MenuDeleteNote">Usuń notatkę</system:String>
-    <system:String x:Key="MenuPageSettings">Ustawienia strony</system:String>
     <system:String x:Key="MenuExit">Zamknij</system:String>
     <!-- Menu items - [Edit] -->
     <system:String x:Key="MenuEdit">Edytuj</system:String>
@@ -18,13 +17,14 @@
     <system:String x:Key="MenuRedo">Powtórz</system:String>
     <system:String x:Key="MenuBold">Pogrubienie</system:String>
     <system:String x:Key="MenuItalic">Kursywa</system:String>
-    <system:String x:Key="MenuUnderline">Podkreślenie</system:String>
+    <system:String x:Key="MenuHighlight">Zakreśl tekst</system:String>
     <system:String x:Key="MenuStrikethrough">Przekreślenie</system:String>
+    <system:String x:Key="MenuSubscript">Indeks</system:String>
+    <system:String x:Key="MenuSuperscript">Napis u góry</system:String>
     <!-- Menu items - [Format] -->
     <system:String x:Key="MenuFormat">Format</system:String>
     <system:String x:Key="MenuFont">Czcionka</system:String>
     <system:String x:Key="MenuFontColor">Kolor czcionki</system:String>
-    <system:String x:Key="MenuHighlightColor">Kolor tła</system:String>
     <system:String x:Key="MenuWordWrap">Zwijaj wiersze</system:String>
     <system:String x:Key="MenuViewMode">Przeącz tryb edycji</system:String>
     <!-- Menu items - [Settings] -->
@@ -46,20 +46,17 @@
     <system:String x:Key="TipFontSize">Zmień rozmiar czcionki.</system:String>
     <system:String x:Key="TipBold">Pogrub zaznaczy tekst.</system:String>
     <system:String x:Key="TipItalic">Przechyl zaznaczony tekst.</system:String>
-    <system:String x:Key="TipUnderline">Podkreśl zaznaczony tekst.</system:String>
+    <system:String x:Key="TipHighlight">Zakreśl wybrany tekst.</system:String>
     <system:String x:Key="TipStrikethrough">Przekreśl zaznaczony tekst.</system:String>
+    <system:String x:Key="TipSubscript">n/a</system:String>
+    <system:String x:Key="TipSuperscript">n/a</system:String>
     <system:String x:Key="TipFontColor">Zmień kolor tekstu.</system:String>
-    <system:String x:Key="TipHighlightColor">Zmień kolor tła tekstu.</system:String>
-    <system:String x:Key="TipTextLeft">Wyrównaj tekst do lewej.</system:String>
-    <system:String x:Key="TipTextCenter">Wyrównaj tekst do środka.</system:String>
-    <system:String x:Key="TipTextRight">Wyrównaj tekst do prawej.</system:String>
-    <system:String x:Key="TipTextJustify">Wyrównaj tekst do obu marginesów.</system:String>
     <system:String x:Key="TipWordWrap">Włącz/wyłącz zwijanie wierszy.</system:String>
     <system:String x:Key="TipViewMode">Zmień tryb edycji (edytor / mieszany / markdown).</system:String>
     <system:String x:Key="TipNoteList">Pokaż/ukryj listę notatek.</system:String>
     <!-- Note items -->
     <system:String x:Key="NoteTitle">Tytuł</system:String>
-    <system:String x:Key="NoteLastSaveTime">Ostatnio zapisano</system:String>
+    <system:String x:Key="NoteLastSaveTime">Ostatni zapis:</system:String>
     <!-- Settings items - [General] -->
     <system:String x:Key="GroupGeneral">Ogólne</system:String>
     <system:String x:Key="Language">Język</system:String>

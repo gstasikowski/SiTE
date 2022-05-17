@@ -23,7 +23,6 @@
                 <MenuItem Header="{DynamicResource MenuSaveNote}" ToolTip="{DynamicResource TipSaveNote}" Click="BtnSaveNote_Click"/>
                 <MenuItem Header="{DynamicResource MenuDeleteNote}" ToolTip="{DynamicResource TipDeleteNote}" Click="BtnDeleteNote_Click"/>
                 <Separator/>
-                <MenuItem Header="{DynamicResource MenuPageSettings}"/>
                 <MenuItem Header="{DynamicResource MenuExit}" Click="MIExit_Click"/>
             </MenuItem>
             <MenuItem Header="{DynamicResource MenuEdit}">
@@ -32,20 +31,15 @@
                 <MenuItem Header="{DynamicResource MenuPaste}" ToolTip="{DynamicResource TipPaste}" Click="BtnPaste_Click"/>
                 <MenuItem Header="{DynamicResource MenuSelectAll}"/>
                 <Separator/>
-                <MenuItem Header="{DynamicResource MenuUndo}" x:Name="btn_UndoMenu"/>
-                <MenuItem Header="{DynamicResource MenuRedo}" x:Name="btn_RedoMenu"/>
+                <MenuItem Header="{DynamicResource MenuUndo}" x:Name="btn_UndoMenu" Click="BtnUndo_Click"/>
+                <MenuItem Header="{DynamicResource MenuRedo}" x:Name="btn_RedoMenu" Click="BtnTRedo_Click"/>
                 <Separator/>
-                <MenuItem Header="{DynamicResource MenuBold}" ToolTip="{DynamicResource TipBold}"/>
-                <MenuItem Header="{DynamicResource MenuItalic}" ToolTip="{DynamicResource TipItalic}"/>
-                <MenuItem Header="{DynamicResource MenuUnderline}" ToolTip="{DynamicResource TipUnderline}"/>
+                <MenuItem Header="{DynamicResource MenuBold}" ToolTip="{DynamicResource TipBold}" Click="BtnTBold_Click"/>
+                <MenuItem Header="{DynamicResource MenuItalic}" ToolTip="{DynamicResource TipItalic}" Click="BtnItalics_Click"/>
+                <MenuItem Header="{DynamicResource MenuHighlight}" ToolTip="{DynamicResource TipHighlight}" Click="BtnHighlight_Click"/>
                 <MenuItem Header="{DynamicResource MenuStrikethrough}" ToolTip="{DynamicResource TipStrikethrough}"/>
-            </MenuItem>
-            <MenuItem Header="{DynamicResource MenuFormat}">
-                <MenuItem Header="{DynamicResource MenuFont}" ToolTip="{DynamicResource TipFont}"/>
-                <MenuItem Header="{DynamicResource MenuFontColor}" ToolTip="{DynamicResource TipFontColor}"/>
-                <MenuItem Header="{DynamicResource MenuHighlightColor}" ToolTip="{DynamicResource TipHighlightColor}"/>
-                <MenuItem Header="{DynamicResource MenuWordWrap}" ToolTip="{DynamicResource TipWordWrap}"/>
-                <MenuItem Header="{DynamicResource MenuSpellcheck}" ToolTip="{DynamicResource TipSpellcheck}"/>
+                <MenuItem Header="{DynamicResource MenuSubscript}" ToolTip="{DynamicResource TipSubscript}"/>
+                <MenuItem Header="{DynamicResource MenuSuperscript}" ToolTip="{DynamicResource TipSuperscript}"/>
             </MenuItem>
             <MenuItem Header="{DynamicResource MenuSettings}" Click="MISettings_Click"/>
             <MenuItem Header="{DynamicResource MenuHelp}">
@@ -93,35 +87,28 @@
                 </Button.Background>
             </Button>
             <Separator/>
-            <ComboBox x:Name="cb_Font" ItemsSource="{Binding Source={x:Static Fonts.SystemFontFamilies}}" SelectedIndex="0" Padding="2,0,2,0" SelectionChanged="CBFont_SelectionChanged" ToolTip="{DynamicResource TipFont}"/>
-            <ComboBox x:Name="cb_FontSize" SelectedIndex="3" Padding="2,0,2,0" IsEditable="True" SelectionChanged="CBFontSize_SelectionChanged" ToolTip="{DynamicResource TipFontSize}">
-                <ComboBoxItem Content="8"/>
-                <ComboBoxItem Content="9"/>
-                <ComboBoxItem Content="10"/>
-                <ComboBoxItem Content="11"/>
-                <ComboBoxItem Content="12"/>
-                <ComboBoxItem Content="14"/>
-                <ComboBoxItem Content="16"/>
-                <ComboBoxItem Content="18"/>
-                <ComboBoxItem Content="20"/>
-                <ComboBoxItem Content="22"/>
-                <ComboBoxItem Content="24"/>
-                <ComboBoxItem Content="26"/>
-                <ComboBoxItem Content="28"/>
-                <ComboBoxItem Content="36"/>
-                <ComboBoxItem Content="48"/>
-                <ComboBoxItem Content="72"/>
-            </ComboBox>
             <Button Width="22" Height="22" Content="B" FontWeight="Bold" Click="BtnTBold_Click" ToolTip="{DynamicResource TipBold}"/>
             <Button Width="22" Height="22" Content="I" FontStyle="Italic" Click="BtnItalics_Click" ToolTip="{DynamicResource TipItalic}"/>
-            <Button Width="22" Height="22" Click="BtnUnderline_Click" ToolTip="{DynamicResource TipUnderline}">
-                <TextBlock TextDecorations="Underline"><Run Text="U"/></TextBlock>
+            <Button Width="22" Height="22" Click="BtnHighlight_Click" ToolTip="{DynamicResource TipHighlight}">
+                <Button.Background>
+                    <ImageBrush ImageSource="/Resources/textHighlight.PNG" Stretch="Uniform"/>
+                </Button.Background>
             </Button>
             <Button Width="30" Height="22" Click="BtnStrike_Click" ToolTip="{DynamicResource TipStrikethrough}">
                 <TextBlock TextDecorations="Strikethrough"><Run Text="abc"/></TextBlock>
             </Button>
+            <Button Width="30" Height="22" Click="BtnSubscript_Click" ToolTip="{DynamicResource TipSubscript}">
+                <Button.Background>
+                    <ImageBrush ImageSource="/Resources/textSubscript.PNG" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>
+            <Button Width="30" Height="22" Click="BtnSuperscript_Click" ToolTip="{DynamicResource TipSuperscript}">
+                <Button.Background>
+                    <ImageBrush ImageSource="/Resources/textSuperscript.PNG" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>
             <Separator/>
-            <Button Width="22" Height="22" Click="BtnViewMode_Click" Content="VM" ToolTip="{DynamicResource TipViewMode}"/>
+            <Button Width="22" Height="22" Click="BtnViewMode_Click" Content="VM" ToolTip="{DynamicResource TipViewMode}" FontSize="11"/>
         </ToolBar>
         <Grid Grid.Row="3" Margin="2,2,0,0">
             <Grid.ColumnDefinitions>
@@ -149,7 +136,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                        <TextBox x:Name="ta_Note" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="100" Background="White" TextChanged="TANoteContent_TextChanged" Margin="0,2,0,0" SelectionChanged="TANote_SelectionChanged" AcceptsReturn="True" AcceptsTab="True" Visibility="Visible" HorizontalContentAlignment="Left" />
+                        <TextBox x:Name="ta_Note" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="100" Background="White" TextChanged="TANoteContent_TextChanged" Margin="0,2,0,0" AcceptsReturn="True" AcceptsTab="True" Visibility="Visible" HorizontalContentAlignment="Left" />
                         <FlowDocumentScrollViewer x:Name="flowDocumentViewer" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="100" Background="Blue" Margin="0,2,0,0" Visibility="Visible" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Column="1" BorderBrush="#FFABADB3" BorderThickness="1" MaxZoom="100">
                             <FlowDocumentScrollViewer.CommandBindings>
                                 <CommandBinding Command="{x:Static md:MarkdownXaml.Hyperlink}" Executed="CommandBinding_Executed" />
@@ -159,6 +146,7 @@
             </Grid>
         </Grid>
         <DockPanel LastChildFill="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="4" Height="25">
+            <Label Content="{DynamicResource NoteLastSaveTime}"/>
             <Label x:Name="lbl_LastSaveTime"/>
         </DockPanel>
     </Grid>
