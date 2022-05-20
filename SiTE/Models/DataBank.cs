@@ -8,6 +8,8 @@ namespace SiTE.Models
     public class DataBank
     {
         #region Variables
+        public readonly string projectUrl = "https://github.com/gstasikowski/SiTE";
+        
         string defaultNotePath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\";
         string defaultDatabasePath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\Journal.data";
         string defaultPIndexPath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\Journal.pixd";
@@ -63,6 +65,7 @@ namespace SiTE.Models
             SetSetting("autoSave", "true");
             SetSetting("autoSaveDelay", "5");
             SetSetting("encryption", "true");
+            SetSetting("editorView", "1");
             SetSetting("password", "abcde1234"); // for testing only! TODO hash and move into a secure place so it's not widely available when app is running
         }
 

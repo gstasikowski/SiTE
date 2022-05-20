@@ -3,10 +3,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
+using Markdig;
+using Neo.Markdig.Xaml;
 
 namespace SiTE.Views
 {
+    enum EditorMode { editor, mixed, render };
+
     /// <summary>
     /// Interaction logic for EditorView.xaml
     /// </summary>
@@ -15,6 +18,7 @@ namespace SiTE.Views
         private Task autosaveTask;
         private CancellationTokenSource cancellationToken;
 
+        private EditorMode mode = EditorMode.editor;
         private bool noteModified = false;
 
         public EditorView()
@@ -27,17 +31,116 @@ namespace SiTE.Views
             NewNote();
         }
 
-        #region Methods
+        #region Methods (window)
         private void WindowSetup()
         {
-            string appTitle = Application.ResourceAssembly.GetName().ToString();
-            Application.Current.MainWindow.Title = appTitle.Substring(0, appTitle.IndexOf(','));
+            Application.Current.MainWindow.Title = Application.ResourceAssembly.GetName().Name;
             lv_NoteList.ItemsSource = Logic.Refs.dataBank.NoteList;
 
             if (noteModified)
                 Application.Current.MainWindow.Title += '*';
+
+            int tempMode;
+            int.TryParse(Logic.Refs.dataBank.GetSetting("editorMode"), out tempMode);
+            mode = (EditorMode)tempMode;
+
+            UpdateEditorView();
         }
 
+        private void OpenAppInfo()
+        {
+            string message = string.Format("{0}\n\nVersion: {1}", Application.ResourceAssembly.GetName().Name, Application.ResourceAssembly.GetName().Version);
+
+            Application.Current.MainWindow.IsEnabled = false;
+            ErrorMessage messageWindow = new ErrorMessage(message);
+            messageWindow.Title = (string)FindResource("MenuAbout");
+            messageWindow.Show();
+        }
+
+        private void OpenSettings()
+        {
+            Logic.Refs.viewControl.CurrentPageViewModel = Logic.Refs.viewControl.PageViewModels[1]; // TODO switch to binding
+        }
+
+        private void ExitApp()
+        {
+            // TODO throw save reminder in note was modified
+            Application.Current.Shutdown();
+        }
+        #endregion Methods (window)
+
+        #region Methods (view)
+        private void UpdateNoteListSelection()
+        {
+            lv_NoteList.SelectedIndex = Logic.Refs.dataBank.GetNoteIndex(tb_Title.Text);
+        }
+
+        private void UpdateMarkdownView()
+        {
+            var doc = MarkdownXaml.ToFlowDocument(ta_Note.Text,
+                new MarkdownPipelineBuilder()
+                .UseXamlSupportedExtensions()
+                .Build()
+            );
+
+            flowDocumentViewer.Document = doc;
+        }
+
+        private void ToggleNoteList(bool expand)
+        {
+            if (!gcl_NoteList.IsLoaded || !gcl_splitter.IsLoaded)
+                return;
+
+            gcl_splitter.IsEnabled = expand;
+            gcl_NoteList.MinWidth = expand ? 130 : 30;
+            gcl_NoteList.Width = GridLength.Auto;
+        }
+
+        private void ToggleEditorMode()
+        {
+            mode++;
+
+            if (mode > EditorMode.render)
+            { mode = 0; }
+
+            UpdateEditorView();
+
+            Logic.Refs.dataBank.SetSetting("editorMode", ((int)mode).ToString());
+            Logic.FileOperations.SaveSettings();
+        }
+
+        private void UpdateEditorView()
+        {
+            grid_editorMode.ColumnDefinitions[0].Width = grid_editorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+
+            switch (mode)
+            {
+                case EditorMode.editor:
+                    ta_Note.Visibility = Visibility.Visible;
+                    flowDocumentViewer.Visibility = Visibility.Collapsed;
+                    grid_editorMode.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+                    grid_editorMode.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Auto);
+                    break;
+
+                case EditorMode.render:
+                    ta_Note.Visibility = Visibility.Collapsed;
+                    flowDocumentViewer.Visibility = Visibility.Visible;
+                    grid_editorMode.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Auto);
+                    grid_editorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+                    break;
+
+                default:
+                    ta_Note.Visibility = Visibility.Visible;
+                    flowDocumentViewer.Visibility = Visibility.Visible;
+                    grid_editorMode.ColumnDefinitions[0].Width = grid_editorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+                    break;
+            }
+
+        }
+
+        #endregion Methods (view)
+
+        #region Methods (note operations)
         private void LoadNoteList()
         {
             Logic.FileOperations.GetNoteList();
@@ -47,30 +150,35 @@ namespace SiTE.Views
         {
             lv_NoteList.SelectedIndex = -1;
             tb_Title.Text = "";
-            ta_Note.Document = new FlowDocument();
-            SetFontFamilySelection(ta_Note.FontFamily);
-            SetFontSizeSelection(ta_Note.FontSize.ToString());
+            ta_Note.Text = string.Empty;
+            btn_DeleteNote.IsEnabled = btn_CreateLink.IsEnabled = false;
             SetModifiedState(false, string.Empty);
         }
 
-        private void OpenNote()
+        private void SelectNote()
         {
             if (lv_NoteList.SelectedIndex < 0 || !CheckSaveReminder())
                 return;
 
-            ta_Note.IsUndoEnabled = false; // TODO figure out a better way to do this
-            
             var tempItem = (Models.NoteModel)lv_NoteList.SelectedItem;
-            var tempNote = Logic.FileOperations.LoadNote(tempItem.ID);
+            OpenNote(tempItem.ID);
+        }
 
+        private void OpenNote(System.Guid noteID)
+        {
+            ta_Note.IsUndoEnabled = false; // TODO figure out a better way to do this
+
+            var tempNote = Logic.FileOperations.LoadNote(noteID);
+            
             tb_Title.Text = tempNote.Title;
-            var tempTextRange = new TextRange(ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
-            tempTextRange.Text = tempNote.Content;
+            ta_Note.Text = tempNote.Content;
 
             SetModifiedState(false, tempNote.Modified.ToString());
             ta_Note.IsUndoEnabled = true; // TODO figure out a better way to do this
+            btn_DeleteNote.IsEnabled = btn_CreateLink.IsEnabled = true;
 
             ResetAutosave();
+            UpdateNoteListSelection();
         }
 
         private void SaveNote()
@@ -83,12 +191,12 @@ namespace SiTE.Views
                 noteID = tempItem.ID.ToString();
             }
 
-            Logic.FileOperations.SaveNote(noteID, tb_Title.Text, ta_Note.Document.ContentStart, ta_Note.Document.ContentEnd);
+            Logic.FileOperations.SaveNote(noteID, tb_Title.Text, ta_Note.Text);
 
             LoadNoteList();
 
             if (lv_NoteList.SelectedIndex < 0)
-            { lv_NoteList.SelectedIndex = Logic.Refs.dataBank.GetNoteIndex(tb_Title.Text); }
+            { UpdateNoteListSelection(); }
 
             SetModifiedState(false, System.DateTime.Now.ToString());
             ResetAutosave();
@@ -105,17 +213,23 @@ namespace SiTE.Views
             LoadNoteList();
         }
 
-        private bool CheckSaveReminder()
+        private void OpenLink(string url)
         {
-            if (ta_Note.CanUndo)
+            if (url.StartsWith("nid:"))
             {
-                // TODO show save prompt (yes/no/cancel)
-                // return false when canceling operation
+                url = url.Replace("nid:", string.Empty);
+                System.Guid tempID = System.Guid.Parse(url);
+                OpenNote(tempID);
             }
-
-            return true;
+            else
+            {
+                url = url.Replace("&", "^&");
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+            }
         }
+        #endregion (note operations)
 
+        #region Methods (text operations)
         private void CutText()
         {
             ta_Note.Cut();
@@ -141,153 +255,130 @@ namespace SiTE.Views
             ta_Note.Redo();
         }
 
-        private void FontSetFamily()
+        private void ToggleTextBold()
         {
-            if (ta_Note == null)
+            if (!IsNoteContentActive())
+            { return; }
+
+            if (ta_Note.SelectedText.StartsWith("**") && ta_Note.SelectedText.EndsWith("**"))
+            { ta_Note.SelectedText = ta_Note.SelectedText.Substring(2, ta_Note.SelectedText.Length - 4); }
+            else
+            { ta_Note.SelectedText = string.Format("**{0}**", ta_Note.SelectedText); }
+        }
+
+        private void ToggleTextItalic()
+        {
+            if (!IsNoteContentActive())
+            { return; }
+
+            if (!CheckIfAddStyle(ta_Note.SelectedText, "*"))
+            { ta_Note.SelectedText = ta_Note.SelectedText.Substring(1, ta_Note.SelectedText.Length - 2); }
+            else
+            { ta_Note.SelectedText = string.Format("*{0}*", ta_Note.SelectedText); }
+        }
+
+        private void ToggleTextHighlight()
+        {
+            if (!IsNoteContentActive())
+            { return; }
+
+            if (ta_Note.SelectedText.StartsWith("==") && ta_Note.SelectedText.EndsWith("=="))
+            { ta_Note.SelectedText = ta_Note.SelectedText.Substring(2, ta_Note.SelectedText.Length - 4); }
+            else
+            { ta_Note.SelectedText = string.Format("=={0}==", ta_Note.SelectedText); }
+        }
+
+        private void ToggleTextStrikethrough()
+        {
+            if (!IsNoteContentActive())
+            { return; }
+
+            if (ta_Note.SelectedText.StartsWith("~~") && ta_Note.SelectedText.EndsWith("~~"))
+            { ta_Note.SelectedText = ta_Note.SelectedText.Substring(2, ta_Note.SelectedText.Length - 4); }
+            else
+            { ta_Note.SelectedText = string.Format("~~{0}~~", ta_Note.SelectedText); }
+        }
+
+        private void ToggleTextSubscript()
+        {
+            if (!IsNoteContentActive())
+            { return; }
+
+            if (!CheckIfAddStyle(ta_Note.SelectedText, "~"))
+            { ta_Note.SelectedText = ta_Note.SelectedText.Substring(1, ta_Note.SelectedText.Length - 2); }
+            else
+            { ta_Note.SelectedText = string.Format("~{0}~", ta_Note.SelectedText); }
+        }
+
+        private void ToggleTextSuperscript()
+        {
+            if (!IsNoteContentActive())
+            { return; }
+
+            if (ta_Note.SelectedText.StartsWith("^") && ta_Note.SelectedText.EndsWith("^"))
+            { ta_Note.SelectedText = ta_Note.SelectedText.Substring(1, ta_Note.SelectedText.Length - 2); }
+            else
+            { ta_Note.SelectedText = string.Format("^{0}^", ta_Note.SelectedText); }
+        }
+        #endregion Methods (text operations)
+
+        #region Methods (helpers)
+        private bool IsNoteContentActive()
+        {
+            return ta_Note.IsFocused;
+        }
+
+        private bool CheckIfAddStyle(string textToCheck, string symbol)
+        {
+            bool addStyle = true;
+
+            if (textToCheck.StartsWith(symbol) && textToCheck.EndsWith(symbol))
+            { addStyle = false; }
+
+            if (textToCheck.StartsWith(symbol + symbol))
+            { addStyle = true; }
+
+            if (textToCheck.StartsWith(symbol + symbol + symbol) && textToCheck.EndsWith(symbol + symbol + symbol))
+            { addStyle = false; }
+
+            return addStyle;
+        }
+
+        private void CreateNoteLink()
+        {
+            if (lv_NoteList.SelectedIndex < 0)
                 return;
 
-            if (ta_Note.Selection != null)
+            var tempNote = (Models.NoteModel)lv_NoteList.SelectedItem;
+            string noteLink = string.Format("[{0}](nID:{1})", tempNote.Title, tempNote.ID);
+            Clipboard.SetText(noteLink);
+        }
+
+        private void SetModifiedState(bool isModified, string modifiedDate)
+        {
+            noteModified = isModified;
+
+            btn_SaveNote.IsEnabled = isModified;
+            btn_UndoMenu.IsEnabled = btn_UndoToolbar.IsEnabled = ta_Note.CanUndo;
+            btn_RedoMenu.IsEnabled = btn_RedoToolbar.IsEnabled = ta_Note.CanRedo;
+
+            WindowSetup();
+
+            if (modifiedDate != null)
+            { lbl_LastSaveTime.Content = modifiedDate; }
+        }
+        #endregion Methods (helpers)
+
+        #region Methods (saving)
+        private bool CheckSaveReminder()
+        {
+            if (ta_Note.CanUndo)
             {
-                ta_Note.Selection.ApplyPropertyValue(TextElement.FontFamilyProperty, cb_Font.SelectedItem);
-                FontSetSize();
-            }
-        }
-
-        private void FontSetSize()
-        {
-            if (ta_Note == null)
-                return;
-
-            string cbValue;
-
-            if (cb_FontSize.SelectedValue == null)
-            {
-                cbValue = cb_FontSize.Text; // TODO attempt to add custom font sizes, doesn't work
-            }
-            else
-            {
-                cbValue = cb_FontSize.SelectedValue.ToString();
-                cbValue = cbValue.Substring(cbValue.LastIndexOf(": ") + 2);
+                // TODO show save prompt (yes/no/cancel)
+                // return false when canceling operation
             }
 
-            double fontSize;
-            double.TryParse(cbValue, out fontSize);
-            
-            if (fontSize > 0)
-                ta_Note.Selection.ApplyPropertyValue(TextElement.FontSizeProperty, fontSize);
-
-            ta_Note.Focus();
-        }
-
-        private void FontBold()
-        {
-            if (ta_Note.Selection.GetPropertyValue(TextElement.FontWeightProperty).ToString() != "Bold")
-                ta_Note.Selection.ApplyPropertyValue(TextElement.FontWeightProperty, "Bold");
-            else
-                ta_Note.Selection.ApplyPropertyValue(TextElement.FontWeightProperty, "Normal");
-        }
-
-        private void FontItalic()
-        {
-            if (ta_Note.Selection.GetPropertyValue(TextElement.FontStyleProperty).ToString() != "Italic")
-                ta_Note.Selection.ApplyPropertyValue(TextElement.FontStyleProperty, "Italic");
-            else
-                ta_Note.Selection.ApplyPropertyValue(TextElement.FontStyleProperty, "Normal");
-        }
-
-        private void FontUnderline() // TODO change to allow for underline + strikethrough
-        {
-            if (ta_Note.Selection.GetPropertyValue(Inline.TextDecorationsProperty) != TextDecorations.Underline)
-                ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
-            else
-                ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Baseline);
-        }
-
-        private void FontStrike() // TODO change to allow for underline + strikethrough
-        {
-            if (ta_Note.Selection.GetPropertyValue(Inline.TextDecorationsProperty) != TextDecorations.Strikethrough)
-                ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Strikethrough);
-            else
-                ta_Note.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Baseline);
-        }
-
-        private void FontColor()
-        {
-            // TODO Implement
-        }
-
-        private void FontHighlight()
-        {
-            // TODO Implement
-        }
-
-        private void TextPosition(object sender)
-        {
-            switch (((Button)sender).Name)
-            {
-                case "textCenter":
-                    ta_Note.Document.TextAlignment = TextAlignment.Center;
-                    break;
-
-                case "textRight":
-                    ta_Note.Document.TextAlignment = TextAlignment.Right;
-                    break;
-
-                case "textJust":
-                    ta_Note.Document.TextAlignment = TextAlignment.Justify;
-                    break;
-
-                default:
-                    ta_Note.Document.TextAlignment = TextAlignment.Left;
-                    break;
-            }
-        }
-
-        private void SpellCheckToggle() // currently non functioning, requires (?) Telerik.Windows.Documents.Proofing.Dictionaries.En-US.dll for EN spellcheck
-        {
-            ta_Note.SpellCheck.IsEnabled = !ta_Note.SpellCheck.IsEnabled;
-        }
-
-        private void ToggleNoteList(bool expand)
-        {
-            if (!gcl_NoteList.IsLoaded || !gcl_splitter.IsLoaded)
-                return;
-
-            gcl_splitter.IsEnabled = expand;
-            gcl_NoteList.MinWidth = expand ? 130 : 30;
-            gcl_NoteList.Width = GridLength.Auto;
-        }
-
-        private void OpenSettings()
-        {
-            Logic.Refs.viewControl.CurrentPageViewModel = Logic.Refs.viewControl.PageViewModels[1]; // TODO switch to binding
-        }
-
-        private void ExitApp()
-        {
-            // TODO throw save reminder in note was modified
-            Application.Current.Shutdown();
-        }
-
-        private void UpdateTextStyle()
-        {
-            if (ta_Note.Selection.IsEmpty)
-                return;
-            
-            SetFontFamilySelection(ta_Note.Selection.GetPropertyValue(TextElement.FontFamilyProperty));
-            SetFontSizeSelection(ta_Note.Selection.GetPropertyValue(TextElement.FontSizeProperty).ToString());
-        }
-
-        private void SetFontFamilySelection(object fontFamily)
-        {
-            if (!fontFamily.ToString().Contains("UnsetValue"))
-            { cb_Font.SelectedItem = fontFamily; }
-        }
-
-        private void SetFontSizeSelection(string fontSize)
-        {
-            if (!fontSize.Contains("UnsetValue"))
-            { cb_FontSize.Text = fontSize; }
+            return true;
         }
 
         private void ResetAutosave()
@@ -318,26 +409,13 @@ namespace SiTE.Views
                 }
             }
         }
-
-        private void SetModifiedState(bool isModified, string modifiedDate)
-        {
-            noteModified = isModified;
-
-
-            btn_UndoMenu.IsEnabled = btn_UndoToolbar.IsEnabled = ta_Note.CanUndo;
-            btn_RedoMenu.IsEnabled = btn_RedoToolbar.IsEnabled = ta_Note.CanRedo;
-
-            WindowSetup();
-
-            if (modifiedDate != null)
-            { lbl_LastSaveTime.Content = (string)FindResource("NoteLastSaveTime") + ": " + modifiedDate; }
-        }
-        #endregion Methods
+        #endregion Methods (autosaving)
 
         #region UI Events
         private void TANoteContent_TextChanged(object sender, TextChangedEventArgs e)
         {
             SetModifiedState(true, null);
+            UpdateMarkdownView();
         }
 
         private void BtnNewNote_Click(object sender, RoutedEventArgs e)
@@ -380,54 +458,39 @@ namespace SiTE.Views
             RedoChanges();
         }
 
-        private void CBFont_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            FontSetFamily();
-        }
-
-        private void CBFontSize_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            FontSetSize();
-        }
-
         private void BtnTBold_Click(object sender, RoutedEventArgs e)
         {
-            FontBold();
+            ToggleTextBold();
         }
 
         private void BtnItalics_Click(object sender, RoutedEventArgs e)
         {
-            FontItalic();
+            ToggleTextItalic();
         }
 
-        private void BtnUnderline_Click(object sender, RoutedEventArgs e)
+        private void BtnHighlight_Click(object sender, RoutedEventArgs e)
         {
-            FontUnderline();
+            ToggleTextHighlight();
         }
 
         private void BtnStrike_Click(object sender, RoutedEventArgs e)
         {
-            FontStrike();
+            ToggleTextStrikethrough();
         }
 
-        private void BtnFontColor_Click(object sender, RoutedEventArgs e)
+        private void BtnSubscript_Click(object sender, RoutedEventArgs e)
         {
-            FontColor();
+            ToggleTextSubscript();
         }
 
-        private void BtnFontHighlight_Click(object sender, RoutedEventArgs e)
+        private void BtnSuperscript_Click(object sender, RoutedEventArgs e)
         {
-            FontHighlight();
+            ToggleTextSuperscript();
         }
 
-        private void BtnTextPosition_Click(object sender, RoutedEventArgs e)
+        private void BtnViewMode_Click(object sender, RoutedEventArgs e)
         {
-            TextPosition(sender);
-        }
-
-        private void BtnSpellCheck_Click(object sender, RoutedEventArgs e)
-        {
-            SpellCheckToggle();
+            ToggleEditorMode();
         }
 
         private void MIExit_Click(object sender, RoutedEventArgs e)
@@ -440,9 +503,19 @@ namespace SiTE.Views
             OpenSettings();
         }
 
+        private void MIGit_Click(object sender, RoutedEventArgs e)
+        {
+            OpenLink(Logic.Refs.dataBank.projectUrl);
+        }
+
+        private void MIAbout_Click(object sender, RoutedEventArgs e)
+        {
+            OpenAppInfo();
+        }
+
         private void LVNoteList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            OpenNote();
+            SelectNote();
         }
 
         private void EXNoteList_Collapsed(object sender, RoutedEventArgs e)
@@ -455,9 +528,14 @@ namespace SiTE.Views
             ToggleNoteList(true);
         }
 
-        private void TANote_SelectionChanged(object sender, RoutedEventArgs e)
+        private void BtnCreateLink_Click(object sender, RoutedEventArgs e)
         {
-            UpdateTextStyle();
+            CreateNoteLink();
+        }
+
+        private void CommandBinding_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            OpenLink(e.Parameter.ToString());
         }
         #endregion UI Events
     }

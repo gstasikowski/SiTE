@@ -80,7 +80,14 @@ namespace SiTE.Views
                 Logic.Refs.dataBank.SetSetting("autoSaveDelay", "5");
 
             Logic.Refs.dataBank.SetSetting("encryption", chkb_Encryption.IsChecked.ToString());
-            Logic.Refs.dataBank.SetSetting("password", tb_EncryptionPassword.Text); // TODO prevent user from setting empty password if encryption is enabled
+
+            if (tb_EncryptionPassword.Text == string.Empty)
+            {
+                chkb_Encryption.IsChecked = false;
+                ToggleEncryption();
+            }
+
+            Logic.Refs.dataBank.SetSetting("password", tb_EncryptionPassword.Text);
 
             Logic.FileOperations.SaveSettings();
             ToggleSettingsStatus(false);

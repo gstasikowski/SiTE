@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Models="clr-namespace:SiTE.Models"
+        xmlns:md="clr-namespace:Neo.Markdig.Xaml;assembly=Neo.Markdig.Xaml"
         x:Class="SiTE.Views.EditorView" 
         mc:Ignorable="d"
         d:DesignHeight="450" d:DesignWidth="800">
@@ -22,7 +23,6 @@
                 <MenuItem Header="{DynamicResource MenuSaveNote}" ToolTip="{DynamicResource TipSaveNote}" Click="BtnSaveNote_Click"/>
                 <MenuItem Header="{DynamicResource MenuDeleteNote}" ToolTip="{DynamicResource TipDeleteNote}" Click="BtnDeleteNote_Click"/>
                 <Separator/>
-                <MenuItem Header="{DynamicResource MenuPageSettings}"/>
                 <MenuItem Header="{DynamicResource MenuExit}" Click="MIExit_Click"/>
             </MenuItem>
             <MenuItem Header="{DynamicResource MenuEdit}">
@@ -31,25 +31,20 @@
                 <MenuItem Header="{DynamicResource MenuPaste}" ToolTip="{DynamicResource TipPaste}" Click="BtnPaste_Click"/>
                 <MenuItem Header="{DynamicResource MenuSelectAll}"/>
                 <Separator/>
-                <MenuItem Header="{DynamicResource MenuUndo}" x:Name="btn_UndoMenu"/>
-                <MenuItem Header="{DynamicResource MenuRedo}" x:Name="btn_RedoMenu"/>
+                <MenuItem Header="{DynamicResource MenuUndo}" x:Name="btn_UndoMenu" Click="BtnUndo_Click"/>
+                <MenuItem Header="{DynamicResource MenuRedo}" x:Name="btn_RedoMenu" Click="BtnTRedo_Click"/>
                 <Separator/>
-                <MenuItem Header="{DynamicResource MenuBold}" ToolTip="{DynamicResource TipBold}"/>
-                <MenuItem Header="{DynamicResource MenuItalic}" ToolTip="{DynamicResource TipItalic}"/>
-                <MenuItem Header="{DynamicResource MenuUnderline}" ToolTip="{DynamicResource TipUnderline}"/>
+                <MenuItem Header="{DynamicResource MenuBold}" ToolTip="{DynamicResource TipBold}" Click="BtnTBold_Click"/>
+                <MenuItem Header="{DynamicResource MenuItalic}" ToolTip="{DynamicResource TipItalic}" Click="BtnItalics_Click"/>
+                <MenuItem Header="{DynamicResource MenuHighlight}" ToolTip="{DynamicResource TipHighlight}" Click="BtnHighlight_Click"/>
                 <MenuItem Header="{DynamicResource MenuStrikethrough}" ToolTip="{DynamicResource TipStrikethrough}"/>
-            </MenuItem>
-            <MenuItem Header="{DynamicResource MenuFormat}">
-                <MenuItem Header="{DynamicResource MenuFont}" ToolTip="{DynamicResource TipFont}"/>
-                <MenuItem Header="{DynamicResource MenuFontColor}" ToolTip="{DynamicResource TipFontColor}"/>
-                <MenuItem Header="{DynamicResource MenuHighlightColor}" ToolTip="{DynamicResource TipHighlightColor}"/>
-                <MenuItem Header="{DynamicResource MenuWordWrap}" ToolTip="{DynamicResource TipWordWrap}"/>
-                <MenuItem Header="{DynamicResource MenuSpellcheck}" ToolTip="{DynamicResource TipSpellcheck}"/>
+                <MenuItem Header="{DynamicResource MenuSubscript}" ToolTip="{DynamicResource TipSubscript}"/>
+                <MenuItem Header="{DynamicResource MenuSuperscript}" ToolTip="{DynamicResource TipSuperscript}"/>
             </MenuItem>
             <MenuItem Header="{DynamicResource MenuSettings}" Click="MISettings_Click"/>
             <MenuItem Header="{DynamicResource MenuHelp}">
-                <MenuItem Header="{DynamicResource MenuGit}"/>
-                <MenuItem Header="{DynamicResource MenuAbout}"/>
+                <MenuItem Header="{DynamicResource MenuGit}" Click="MIGit_Click"/>
+                <MenuItem Header="{DynamicResource MenuAbout}" Click="MIAbout_Click"/>
             </MenuItem>
         </Menu>
         <ToolBar VerticalAlignment="Stretch" Grid.Row="1">
@@ -58,12 +53,12 @@
                     <ImageBrush ImageSource="/Resources/newFile.png" Stretch="Uniform"/>
                 </Button.Background>
             </Button>
-            <Button Width="22" Height="22" Click="BtnSaveNote_Click" ToolTip="{DynamicResource TipSaveNote}">
+            <Button x:Name="btn_SaveNote" Width="22" Height="22" Click="BtnSaveNote_Click" ToolTip="{DynamicResource TipSaveNote}">
                 <Button.Background>
                     <ImageBrush Stretch="Uniform" ImageSource="/Resources/saveFile.png"/>
                 </Button.Background>
             </Button>
-            <Button Width="22" Height="22" Click="BtnDeleteNote_Click" Content="X" FontWeight="Bold" ToolTip="{DynamicResource TipDeleteNote}"/>
+            <Button x:Name="btn_DeleteNote" Width="22" Height="22" Click="BtnDeleteNote_Click" Content="X" FontWeight="Bold" ToolTip="{DynamicResource TipDeleteNote}"/>
             <Separator/>
             <Button Width="22" Height="22" Click="BtnCut_Click" ToolTip="{DynamicResource TipCut}">
                 <Button.Background>
@@ -92,65 +87,29 @@
                 </Button.Background>
             </Button>
             <Separator/>
-            <ComboBox x:Name="cb_Font" ItemsSource="{Binding Source={x:Static Fonts.SystemFontFamilies}}" SelectedIndex="0" Padding="2,0,2,0" SelectionChanged="CBFont_SelectionChanged" ToolTip="{DynamicResource TipFont}"/>
-            <ComboBox x:Name="cb_FontSize" SelectedIndex="3" Padding="2,0,2,0" IsEditable="True" SelectionChanged="CBFontSize_SelectionChanged" ToolTip="{DynamicResource TipFontSize}">
-                <ComboBoxItem Content="8"/>
-                <ComboBoxItem Content="9"/>
-                <ComboBoxItem Content="10"/>
-                <ComboBoxItem Content="11"/>
-                <ComboBoxItem Content="12"/>
-                <ComboBoxItem Content="14"/>
-                <ComboBoxItem Content="16"/>
-                <ComboBoxItem Content="18"/>
-                <ComboBoxItem Content="20"/>
-                <ComboBoxItem Content="22"/>
-                <ComboBoxItem Content="24"/>
-                <ComboBoxItem Content="26"/>
-                <ComboBoxItem Content="28"/>
-                <ComboBoxItem Content="36"/>
-                <ComboBoxItem Content="48"/>
-                <ComboBoxItem Content="72"/>
-            </ComboBox>
             <Button Width="22" Height="22" Content="B" FontWeight="Bold" Click="BtnTBold_Click" ToolTip="{DynamicResource TipBold}"/>
             <Button Width="22" Height="22" Content="I" FontStyle="Italic" Click="BtnItalics_Click" ToolTip="{DynamicResource TipItalic}"/>
-            <Button Width="22" Height="22" Click="BtnUnderline_Click" ToolTip="{DynamicResource TipUnderline}">
-                <TextBlock TextDecorations="Underline"><Run Text="U"/></TextBlock>
+            <Button Width="22" Height="22" Click="BtnHighlight_Click" ToolTip="{DynamicResource TipHighlight}">
+                <Button.Background>
+                    <ImageBrush ImageSource="/Resources/textHighlight.PNG" Stretch="Uniform"/>
+                </Button.Background>
             </Button>
             <Button Width="30" Height="22" Click="BtnStrike_Click" ToolTip="{DynamicResource TipStrikethrough}">
                 <TextBlock TextDecorations="Strikethrough"><Run Text="abc"/></TextBlock>
             </Button>
-            <Button Width="22" Height="22" Click="BtnFontColor_Click" ToolTip="{DynamicResource TipFontColor}">
+            <Button Width="30" Height="22" Click="BtnSubscript_Click" ToolTip="{DynamicResource TipSubscript}">
                 <Button.Background>
-                    <ImageBrush ImageSource="/Resources/fontColor.PNG" Opacity="1" Stretch="None"/>
+                    <ImageBrush ImageSource="/Resources/textSubscript.PNG" Stretch="Uniform"/>
                 </Button.Background>
             </Button>
-            <Button Width="22" Height="22" BorderBrush="Black" Click="BtnFontHighlight_Click" ToolTip="{DynamicResource TipHighlightColor}">
+            <Button Width="30" Height="22" Click="BtnSuperscript_Click" ToolTip="{DynamicResource TipSuperscript}">
                 <Button.Background>
-                    <ImageBrush ImageSource="/Resources/fontBackColor.PNG" Stretch="None"/>
+                    <ImageBrush ImageSource="/Resources/textSuperscript.PNG" Stretch="Uniform"/>
                 </Button.Background>
             </Button>
             <Separator/>
-            <Button x:Name="btn_textLeft" Width="22" Height="22" Click="BtnTextPosition_Click" ToolTip="{DynamicResource TipTextLeft}">
-                <Button.Background>
-                    <ImageBrush ImageSource="/Resources/jLeft.png" Opacity="1" Stretch="None"/>
-                </Button.Background>
-            </Button>
-            <Button x:Name="btn_textCenter" Width="22" Height="22" Click="BtnTextPosition_Click" ToolTip="{DynamicResource TipTextCenter}">
-                <Button.Background>
-                    <ImageBrush ImageSource="/Resources/jCenter.png" Opacity="1" Stretch="None"/>
-                </Button.Background>
-            </Button>
-            <Button x:Name="btn_textRight" Width="22" Height="22" Click="BtnTextPosition_Click" ToolTip="{DynamicResource TipTextRight}">
-                <Button.Background>
-                    <ImageBrush ImageSource="/Resources/jRight.png" Opacity="1" Stretch="None"/>
-                </Button.Background>
-            </Button>
-            <Button x:Name="btn_textJust" Width="22" Height="22" Click="BtnTextPosition_Click" ToolTip="{DynamicResource TipTextJustify}">
-                <Button.Background>
-                    <ImageBrush ImageSource="/Resources/jJustify.png" Stretch="None"/>
-                </Button.Background>
-            </Button>
-            <Button Width="22" Height="22" Click="BtnSpellCheck_Click" Content="SPC" ToolTip="{DynamicResource TipSpellcheck}"/>
+            <Button Width="22" Height="22" Click="BtnViewMode_Click" Content="VM" ToolTip="{DynamicResource TipViewMode}" FontSize="11"/>
+            <Button x:Name="btn_CreateLink" Width="22" Height="22" Click="BtnCreateLink_Click" Content="L" ToolTip="{DynamicResource TipCreateLink}" FontSize="11"/>
         </ToolBar>
         <Grid Grid.Row="3" Margin="2,2,0,0">
             <Grid.ColumnDefinitions>
@@ -173,10 +132,22 @@
                 </Grid.RowDefinitions>
                 <Label x:Name="lbl_Title" HorizontalAlignment="Left" Content="{DynamicResource NoteTitle}"/>
                 <TextBox x:Name="tb_Title" MinWidth="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" TextChanged="TANoteContent_TextChanged" Grid.ColumnSpan="1" Grid.Column="1"/>
-                <RichTextBox x:Name="ta_Note" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="100" Background="White" TextChanged="TANoteContent_TextChanged" IsDocumentEnabled="True" Margin="0,2,0,0" Grid.Row="1" Grid.ColumnSpan="2" SelectionChanged="TANote_SelectionChanged" />
+                <Grid x:Name="grid_editorMode" Grid.Row="1" Grid.ColumnSpan="2" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                        <TextBox x:Name="ta_Note" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="100" Background="White" TextChanged="TANoteContent_TextChanged" Margin="0,2,0,0" AcceptsReturn="True" AcceptsTab="True" Visibility="Visible" HorizontalContentAlignment="Left" />
+                        <FlowDocumentScrollViewer x:Name="flowDocumentViewer" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MinHeight="100" Background="Blue" Margin="0,2,0,0" Visibility="Visible" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Column="1" BorderBrush="#FFABADB3" BorderThickness="1" MaxZoom="100">
+                            <FlowDocumentScrollViewer.CommandBindings>
+                                <CommandBinding Command="{x:Static md:MarkdownXaml.Hyperlink}" Executed="CommandBinding_Executed" />
+                            </FlowDocumentScrollViewer.CommandBindings>
+                        </FlowDocumentScrollViewer>
+                </Grid>
             </Grid>
         </Grid>
         <DockPanel LastChildFill="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="4" Height="25">
+            <Label Content="{DynamicResource NoteLastSaveTime}"/>
             <Label x:Name="lbl_LastSaveTime"/>
         </DockPanel>
     </Grid>

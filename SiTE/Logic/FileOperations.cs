@@ -108,10 +108,8 @@ namespace SiTE.Logic
             { return db.Find(noteID); }
         }
 
-        public static void SaveNote(string noteID, string noteTitle, TextPointer pointerStart, TextPointer pointerEnd)
+        public static void SaveNote(string noteID, string noteTitle, string text)
         {
-            TextRange textRange = new TextRange(pointerStart, pointerEnd);
-
             using (var db = new NoteDatabase(Refs.dataBank.DefaultDBPath))
             {
                 var noteGuid = string.IsNullOrEmpty(noteID) ? Guid.NewGuid() : Guid.Parse(noteID);
@@ -121,7 +119,7 @@ namespace SiTE.Logic
                 {
                     ID = noteGuid,
                     Title = noteTitle,
-                    Content = textRange.Text,
+                    Content = text,
                     Modified = DateTime.Now
                 };
 

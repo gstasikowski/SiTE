@@ -11,17 +11,15 @@
     <None Remove="Resources\clearClipboard.png" />
     <None Remove="Resources\copy.PNG" />
     <None Remove="Resources\cut.PNG" />
-    <None Remove="Resources\fontBackColor.PNG" />
     <None Remove="Resources\fontColor.PNG" />
-    <None Remove="Resources\jCenter.png" />
-    <None Remove="Resources\jJustify.png" />
-    <None Remove="Resources\jLeft.png" />
-    <None Remove="Resources\jRight.png" />
     <None Remove="Resources\newFile.png" />
     <None Remove="Resources\openFile.PNG" />
     <None Remove="Resources\paste.PNG" />
     <None Remove="Resources\redo.PNG" />
     <None Remove="Resources\saveFile.png" />
+    <None Remove="Resources\textHighlight.PNG" />
+    <None Remove="Resources\textSubscript.png" />
+    <None Remove="Resources\textSuperscript.png" />
     <None Remove="Resources\undo.PNG" />
   </ItemGroup>
 
@@ -42,6 +40,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Neo.Markdig.Xaml" Version="1.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="CustomDatabase">
       <HintPath>..\..\CustomDatabase\CustomDatabase\bin\Debug\CustomDatabase.dll</HintPath>
     </Reference>
@@ -57,22 +59,10 @@
     <Resource Include="Resources\cut.PNG">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\fontBackColor.PNG">
+    <Resource Include="Resources\textHighlight.PNG">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\fontColor.PNG">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\jCenter.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\jJustify.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\jLeft.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\jRight.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\newFile.png">
@@ -88,6 +78,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\saveFile.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\textSubscript.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\textSuperscript.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\undo.PNG">

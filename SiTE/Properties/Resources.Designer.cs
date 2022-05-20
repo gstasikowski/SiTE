@@ -93,59 +93,9 @@ namespace SiTE.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] fontBackColor {
-            get {
-                object obj = ResourceManager.GetObject("fontBackColor", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
         internal static byte[] fontColor {
             get {
                 object obj = ResourceManager.GetObject("fontColor", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] jCenter {
-            get {
-                object obj = ResourceManager.GetObject("jCenter", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] jJustify {
-            get {
-                object obj = ResourceManager.GetObject("jJustify", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] jLeft {
-            get {
-                object obj = ResourceManager.GetObject("jLeft", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] jRight {
-            get {
-                object obj = ResourceManager.GetObject("jRight", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -196,6 +146,36 @@ namespace SiTE.Properties {
         internal static byte[] saveFile {
             get {
                 object obj = ResourceManager.GetObject("saveFile", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] textHighlight {
+            get {
+                object obj = ResourceManager.GetObject("textHighlight", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] textSubscript {
+            get {
+                object obj = ResourceManager.GetObject("textSubscript", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] textSuperscript {
+            get {
+                object obj = ResourceManager.GetObject("textSuperscript", resourceCulture);
                 return ((byte[])(obj));
             }
         }
