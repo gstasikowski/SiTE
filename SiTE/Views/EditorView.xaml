@@ -43,8 +43,8 @@
             </MenuItem>
             <MenuItem Header="{DynamicResource MenuSettings}" Click="MISettings_Click"/>
             <MenuItem Header="{DynamicResource MenuHelp}">
-                <MenuItem Header="{DynamicResource MenuGit}"/>
-                <MenuItem Header="{DynamicResource MenuAbout}"/>
+                <MenuItem Header="{DynamicResource MenuGit}" Click="MIGit_Click"/>
+                <MenuItem Header="{DynamicResource MenuAbout}" Click="MIAbout_Click"/>
             </MenuItem>
         </Menu>
         <ToolBar VerticalAlignment="Stretch" Grid.Row="1">
@@ -53,12 +53,12 @@
                     <ImageBrush ImageSource="/Resources/newFile.png" Stretch="Uniform"/>
                 </Button.Background>
             </Button>
-            <Button Width="22" Height="22" Click="BtnSaveNote_Click" ToolTip="{DynamicResource TipSaveNote}">
+            <Button x:Name="btn_SaveNote" Width="22" Height="22" Click="BtnSaveNote_Click" ToolTip="{DynamicResource TipSaveNote}">
                 <Button.Background>
                     <ImageBrush Stretch="Uniform" ImageSource="/Resources/saveFile.png"/>
                 </Button.Background>
             </Button>
-            <Button Width="22" Height="22" Click="BtnDeleteNote_Click" Content="X" FontWeight="Bold" ToolTip="{DynamicResource TipDeleteNote}"/>
+            <Button x:Name="btn_DeleteNote" Width="22" Height="22" Click="BtnDeleteNote_Click" Content="X" FontWeight="Bold" ToolTip="{DynamicResource TipDeleteNote}"/>
             <Separator/>
             <Button Width="22" Height="22" Click="BtnCut_Click" ToolTip="{DynamicResource TipCut}">
                 <Button.Background>
@@ -109,6 +109,7 @@
             </Button>
             <Separator/>
             <Button Width="22" Height="22" Click="BtnViewMode_Click" Content="VM" ToolTip="{DynamicResource TipViewMode}" FontSize="11"/>
+            <Button x:Name="btn_CreateLink" Width="22" Height="22" Click="BtnCreateLink_Click" Content="L" ToolTip="{DynamicResource TipCreateLink}" FontSize="11"/>
         </ToolBar>
         <Grid Grid.Row="3" Margin="2,2,0,0">
             <Grid.ColumnDefinitions>

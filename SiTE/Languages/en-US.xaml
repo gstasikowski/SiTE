@@ -54,6 +54,7 @@
     <system:String x:Key="TipWordWrap">Toggle word wrapping.</system:String>
     <system:String x:Key="TipViewMode">Toggle view mode (editor / mixed / markdown).</system:String>
     <system:String x:Key="TipNoteList">Toggle note list.</system:String>
+    <system:String x:Key="TipCreateLink">Copy markdown link.</system:String>
     <!-- Note items -->
     <system:String x:Key="NoteTitle">Title</system:String>
     <system:String x:Key="NoteLastSaveTime">Last save time:</system:String>

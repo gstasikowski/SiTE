@@ -4,7 +4,6 @@ using System;
 
 namespace SiTE.Logic.Serializers
 {
-    // TODO test date (de)serialization to/from string and binary to find a better option
     class NoteSerializer
     {
         public byte[] Serialize(NoteModel note)

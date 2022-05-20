@@ -54,6 +54,7 @@
     <system:String x:Key="TipWordWrap">Włącz/wyłącz zwijanie wierszy.</system:String>
     <system:String x:Key="TipViewMode">Zmień tryb edycji (edytor / mieszany / markdown).</system:String>
     <system:String x:Key="TipNoteList">Pokaż/ukryj listę notatek.</system:String>
+    <system:String x:Key="TipCreateLink">Kopiuj link markdown.</system:String>
     <!-- Note items -->
     <system:String x:Key="NoteTitle">Tytuł</system:String>
     <system:String x:Key="NoteLastSaveTime">Ostatni zapis:</system:String>

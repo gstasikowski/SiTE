@@ -31,49 +31,48 @@ namespace SiTE.Views
             NewNote();
         }
 
-        #region Methods
+        #region Methods (window)
         private void WindowSetup()
         {
-            string appTitle = Application.ResourceAssembly.GetName().ToString();
-            Application.Current.MainWindow.Title = appTitle.Substring(0, appTitle.IndexOf(','));
+            Application.Current.MainWindow.Title = Application.ResourceAssembly.GetName().Name;
             lv_NoteList.ItemsSource = Logic.Refs.dataBank.NoteList;
 
             if (noteModified)
                 Application.Current.MainWindow.Title += '*';
-            
+
+            int tempMode;
+            int.TryParse(Logic.Refs.dataBank.GetSetting("editorMode"), out tempMode);
+            mode = (EditorMode)tempMode;
+
             UpdateEditorView();
         }
 
-        private void LoadNoteList()
+        private void OpenAppInfo()
         {
-            Logic.FileOperations.GetNoteList();
+            string message = string.Format("{0}\n\nVersion: {1}", Application.ResourceAssembly.GetName().Name, Application.ResourceAssembly.GetName().Version);
+
+            Application.Current.MainWindow.IsEnabled = false;
+            ErrorMessage messageWindow = new ErrorMessage(message);
+            messageWindow.Title = (string)FindResource("MenuAbout");
+            messageWindow.Show();
         }
 
-        private void NewNote()
+        private void OpenSettings()
         {
-            lv_NoteList.SelectedIndex = -1;
-            tb_Title.Text = "";
-            ta_Note.Text = string.Empty;
-            SetModifiedState(false, string.Empty);
+            Logic.Refs.viewControl.CurrentPageViewModel = Logic.Refs.viewControl.PageViewModels[1]; // TODO switch to binding
         }
 
-        private void OpenNote()
+        private void ExitApp()
         {
-            if (lv_NoteList.SelectedIndex < 0 || !CheckSaveReminder())
-                return;
+            // TODO throw save reminder in note was modified
+            Application.Current.Shutdown();
+        }
+        #endregion Methods (window)
 
-            ta_Note.IsUndoEnabled = false; // TODO figure out a better way to do this
-            
-            var tempItem = (Models.NoteModel)lv_NoteList.SelectedItem;
-            var tempNote = Logic.FileOperations.LoadNote(tempItem.ID);
-            
-            tb_Title.Text = tempNote.Title;
-            ta_Note.Text = tempNote.Content;
-
-            SetModifiedState(false, tempNote.Modified.ToString());
-            ta_Note.IsUndoEnabled = true; // TODO figure out a better way to do this
-
-            ResetAutosave();
+        #region Methods (view)
+        private void UpdateNoteListSelection()
+        {
+            lv_NoteList.SelectedIndex = Logic.Refs.dataBank.GetNoteIndex(tb_Title.Text);
         }
 
         private void UpdateMarkdownView()
@@ -85,6 +84,101 @@ namespace SiTE.Views
             );
 
             flowDocumentViewer.Document = doc;
+        }
+
+        private void ToggleNoteList(bool expand)
+        {
+            if (!gcl_NoteList.IsLoaded || !gcl_splitter.IsLoaded)
+                return;
+
+            gcl_splitter.IsEnabled = expand;
+            gcl_NoteList.MinWidth = expand ? 130 : 30;
+            gcl_NoteList.Width = GridLength.Auto;
+        }
+
+        private void ToggleEditorMode()
+        {
+            mode++;
+
+            if (mode > EditorMode.render)
+            { mode = 0; }
+
+            UpdateEditorView();
+
+            Logic.Refs.dataBank.SetSetting("editorMode", ((int)mode).ToString());
+            Logic.FileOperations.SaveSettings();
+        }
+
+        private void UpdateEditorView()
+        {
+            grid_editorMode.ColumnDefinitions[0].Width = grid_editorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+
+            switch (mode)
+            {
+                case EditorMode.editor:
+                    ta_Note.Visibility = Visibility.Visible;
+                    flowDocumentViewer.Visibility = Visibility.Collapsed;
+                    grid_editorMode.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+                    grid_editorMode.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Auto);
+                    break;
+
+                case EditorMode.render:
+                    ta_Note.Visibility = Visibility.Collapsed;
+                    flowDocumentViewer.Visibility = Visibility.Visible;
+                    grid_editorMode.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Auto);
+                    grid_editorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+                    break;
+
+                default:
+                    ta_Note.Visibility = Visibility.Visible;
+                    flowDocumentViewer.Visibility = Visibility.Visible;
+                    grid_editorMode.ColumnDefinitions[0].Width = grid_editorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+                    break;
+            }
+
+        }
+
+        #endregion Methods (view)
+
+        #region Methods (note operations)
+        private void LoadNoteList()
+        {
+            Logic.FileOperations.GetNoteList();
+        }
+
+        private void NewNote()
+        {
+            lv_NoteList.SelectedIndex = -1;
+            tb_Title.Text = "";
+            ta_Note.Text = string.Empty;
+            btn_DeleteNote.IsEnabled = btn_CreateLink.IsEnabled = false;
+            SetModifiedState(false, string.Empty);
+        }
+
+        private void SelectNote()
+        {
+            if (lv_NoteList.SelectedIndex < 0 || !CheckSaveReminder())
+                return;
+
+            var tempItem = (Models.NoteModel)lv_NoteList.SelectedItem;
+            OpenNote(tempItem.ID);
+        }
+
+        private void OpenNote(System.Guid noteID)
+        {
+            ta_Note.IsUndoEnabled = false; // TODO figure out a better way to do this
+
+            var tempNote = Logic.FileOperations.LoadNote(noteID);
+            
+            tb_Title.Text = tempNote.Title;
+            ta_Note.Text = tempNote.Content;
+
+            SetModifiedState(false, tempNote.Modified.ToString());
+            ta_Note.IsUndoEnabled = true; // TODO figure out a better way to do this
+            btn_DeleteNote.IsEnabled = btn_CreateLink.IsEnabled = true;
+
+            ResetAutosave();
+            UpdateNoteListSelection();
         }
 
         private void SaveNote()
@@ -102,7 +196,7 @@ namespace SiTE.Views
             LoadNoteList();
 
             if (lv_NoteList.SelectedIndex < 0)
-            { lv_NoteList.SelectedIndex = Logic.Refs.dataBank.GetNoteIndex(tb_Title.Text); }
+            { UpdateNoteListSelection(); }
 
             SetModifiedState(false, System.DateTime.Now.ToString());
             ResetAutosave();
@@ -119,17 +213,23 @@ namespace SiTE.Views
             LoadNoteList();
         }
 
-        private bool CheckSaveReminder()
+        private void OpenLink(string url)
         {
-            if (ta_Note.CanUndo)
+            if (url.StartsWith("nid:"))
             {
-                // TODO show save prompt (yes/no/cancel)
-                // return false when canceling operation
+                url = url.Replace("nid:", string.Empty);
+                System.Guid tempID = System.Guid.Parse(url);
+                OpenNote(tempID);
             }
-
-            return true;
+            else
+            {
+                url = url.Replace("&", "^&");
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+            }
         }
+        #endregion (note operations)
 
+        #region Methods (text operations)
         private void CutText()
         {
             ta_Note.Cut();
@@ -220,7 +320,9 @@ namespace SiTE.Views
             else
             { ta_Note.SelectedText = string.Format("^{0}^", ta_Note.SelectedText); }
         }
+        #endregion Methods (text operations)
 
+        #region Methods (helpers)
         private bool IsNoteContentActive()
         {
             return ta_Note.IsFocused;
@@ -242,25 +344,41 @@ namespace SiTE.Views
             return addStyle;
         }
 
-        private void ToggleNoteList(bool expand)
+        private void CreateNoteLink()
         {
-            if (!gcl_NoteList.IsLoaded || !gcl_splitter.IsLoaded)
+            if (lv_NoteList.SelectedIndex < 0)
                 return;
 
-            gcl_splitter.IsEnabled = expand;
-            gcl_NoteList.MinWidth = expand ? 130 : 30;
-            gcl_NoteList.Width = GridLength.Auto;
+            var tempNote = (Models.NoteModel)lv_NoteList.SelectedItem;
+            string noteLink = string.Format("[{0}](nID:{1})", tempNote.Title, tempNote.ID);
+            Clipboard.SetText(noteLink);
         }
 
-        private void OpenSettings()
+        private void SetModifiedState(bool isModified, string modifiedDate)
         {
-            Logic.Refs.viewControl.CurrentPageViewModel = Logic.Refs.viewControl.PageViewModels[1]; // TODO switch to binding
-        }
+            noteModified = isModified;
 
-        private void ExitApp()
+            btn_SaveNote.IsEnabled = isModified;
+            btn_UndoMenu.IsEnabled = btn_UndoToolbar.IsEnabled = ta_Note.CanUndo;
+            btn_RedoMenu.IsEnabled = btn_RedoToolbar.IsEnabled = ta_Note.CanRedo;
+
+            WindowSetup();
+
+            if (modifiedDate != null)
+            { lbl_LastSaveTime.Content = modifiedDate; }
+        }
+        #endregion Methods (helpers)
+
+        #region Methods (saving)
+        private bool CheckSaveReminder()
         {
-            // TODO throw save reminder in note was modified
-            Application.Current.Shutdown();
+            if (ta_Note.CanUndo)
+            {
+                // TODO show save prompt (yes/no/cancel)
+                // return false when canceling operation
+            }
+
+            return true;
         }
 
         private void ResetAutosave()
@@ -291,60 +409,7 @@ namespace SiTE.Views
                 }
             }
         }
-
-        private void SetModifiedState(bool isModified, string modifiedDate)
-        {
-            noteModified = isModified;
-
-
-            btn_UndoMenu.IsEnabled = btn_UndoToolbar.IsEnabled = ta_Note.CanUndo;
-            btn_RedoMenu.IsEnabled = btn_RedoToolbar.IsEnabled = ta_Note.CanRedo;
-
-            WindowSetup();
-
-            if (modifiedDate != null)
-            { lbl_LastSaveTime.Content = modifiedDate; }
-        }
-
-        private void ToggleEditorMode()
-        {
-            mode++;
-
-            if (mode > EditorMode.render)
-            { mode = 0; }
-
-            UpdateEditorView();
-        }
-
-        private void UpdateEditorView()
-        { 
-            grid_editorMode.ColumnDefinitions[0].Width = grid_editorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
-            
-            switch (mode)
-            {
-                case EditorMode.editor:
-                    ta_Note.Visibility = Visibility.Visible;
-                    flowDocumentViewer.Visibility = Visibility.Collapsed;
-                    grid_editorMode.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
-                    grid_editorMode.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Auto);
-                    break;
-
-                case EditorMode.render:
-                    ta_Note.Visibility = Visibility.Collapsed;
-                    flowDocumentViewer.Visibility = Visibility.Visible;
-                    grid_editorMode.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Auto);
-                    grid_editorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
-                    break;
-
-                default:
-                    ta_Note.Visibility = Visibility.Visible;
-                    flowDocumentViewer.Visibility = Visibility.Visible;
-                    grid_editorMode.ColumnDefinitions[0].Width = grid_editorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
-                    break;
-            }
-
-        }
-        #endregion Methods
+        #endregion Methods (autosaving)
 
         #region UI Events
         private void TANoteContent_TextChanged(object sender, TextChangedEventArgs e)
@@ -438,9 +503,19 @@ namespace SiTE.Views
             OpenSettings();
         }
 
+        private void MIGit_Click(object sender, RoutedEventArgs e)
+        {
+            OpenLink(Logic.Refs.dataBank.projectUrl);
+        }
+
+        private void MIAbout_Click(object sender, RoutedEventArgs e)
+        {
+            OpenAppInfo();
+        }
+
         private void LVNoteList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            OpenNote();
+            SelectNote();
         }
 
         private void EXNoteList_Collapsed(object sender, RoutedEventArgs e)
@@ -453,11 +528,14 @@ namespace SiTE.Views
             ToggleNoteList(true);
         }
 
-        // TODO add opening web links using browser
-        // TODO add switching notes when using note links
+        private void BtnCreateLink_Click(object sender, RoutedEventArgs e)
+        {
+            CreateNoteLink();
+        }
+
         private void CommandBinding_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
-            MessageBox.Show(System.String.Format("Link clicked: {0}", e.Parameter));
+            OpenLink(e.Parameter.ToString());
         }
         #endregion UI Events
     }
