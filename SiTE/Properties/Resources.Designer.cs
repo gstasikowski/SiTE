@@ -93,6 +93,16 @@ namespace SiTE.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] deleteFile {
+            get {
+                object obj = ResourceManager.GetObject("deleteFile", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] fontColor {
             get {
                 object obj = ResourceManager.GetObject("fontColor", resourceCulture);
@@ -106,6 +116,16 @@ namespace SiTE.Properties {
         internal static byte[] newFile {
             get {
                 object obj = ResourceManager.GetObject("newFile", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] noteLink {
+            get {
+                object obj = ResourceManager.GetObject("noteLink", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -186,6 +206,16 @@ namespace SiTE.Properties {
         internal static byte[] undo {
             get {
                 object obj = ResourceManager.GetObject("undo", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] viewMode {
+            get {
+                object obj = ResourceManager.GetObject("viewMode", resourceCulture);
                 return ((byte[])(obj));
             }
         }

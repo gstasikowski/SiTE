@@ -11,8 +11,10 @@
     <None Remove="Resources\clearClipboard.png" />
     <None Remove="Resources\copy.PNG" />
     <None Remove="Resources\cut.PNG" />
+    <None Remove="Resources\deleteFile.png" />
     <None Remove="Resources\fontColor.PNG" />
     <None Remove="Resources\newFile.png" />
+    <None Remove="Resources\noteLink.png" />
     <None Remove="Resources\openFile.PNG" />
     <None Remove="Resources\paste.PNG" />
     <None Remove="Resources\redo.PNG" />
@@ -21,6 +23,7 @@
     <None Remove="Resources\textSubscript.png" />
     <None Remove="Resources\textSuperscript.png" />
     <None Remove="Resources\undo.PNG" />
+    <None Remove="Resources\viewMode.PNG" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,6 +62,12 @@
     <Resource Include="Resources\cut.PNG">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\deleteFile.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\noteLink.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\textHighlight.PNG">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -87,6 +96,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\undo.PNG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\viewMode.PNG">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
