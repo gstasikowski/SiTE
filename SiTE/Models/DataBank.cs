@@ -9,12 +9,12 @@ namespace SiTE.Models
     {
         #region Variables
         public readonly string projectUrl = "https://github.com/gstasikowski/SiTE";
-        
-        string defaultNotePath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\";
-        string defaultDatabasePath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\Journal.data";
-        string defaultPIndexPath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\Journal.pixd";
-        string defaultSIndexPath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\Journal.sidx";
+
         string defaultConfigPath = AppDomain.CurrentDomain.BaseDirectory;
+        string defaultNotePath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\";
+        string defaultDatabaseFile = "Journal.data";
+        string defaultPIndexFile = "Journal.pixd";
+        string defaultSIndexFile = "Journal.sidx";
         string defaultLanguagePath = AppDomain.CurrentDomain.BaseDirectory + "Languages\\";
 
         Dictionary<string, string> settings = new Dictionary<string, string>();
@@ -27,19 +27,9 @@ namespace SiTE.Models
         #endregion Variables
 
         #region Properties
-        public string DefaultDBPath
+        public string DefaultConfigPath
         {
-            get { return defaultDatabasePath; }
-        }
-
-        public string DefaultPIndexPath
-        {
-            get { return defaultPIndexPath; }
-        }
-
-        public string DefaultSIndexPath
-        {
-            get { return defaultSIndexPath; }
+            get { return defaultConfigPath; }
         }
 
         public string DefaultNotePath
@@ -47,9 +37,19 @@ namespace SiTE.Models
             get { return defaultNotePath; }
         }
 
-        public string DefaultConfigPath
+        public string DefaultDBPath
         {
-            get { return defaultConfigPath; }
+            get { return defaultNotePath + defaultDatabaseFile; }
+        }
+
+        public string DefaultPIndexPath
+        {
+            get { return defaultNotePath + defaultPIndexFile; }
+        }
+
+        public string DefaultSIndexPath
+        {
+            get { return defaultNotePath + defaultSIndexFile; }
         }
 
         public string DefaultLanguagePath
