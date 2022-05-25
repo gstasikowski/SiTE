@@ -8,11 +8,11 @@ namespace SiTE.Logic.Serializers
     {
         public byte[] Serialize(NoteModel note)
         {
-            var titleBytes = System.Text.Encoding.UTF8.GetBytes(note.Title);
-            var contentBytes = System.Text.Encoding.UTF8.GetBytes(note.Content);
-            var createDateBytes = System.Text.Encoding.UTF8.GetBytes(note.Created.ToString());
-            var modifiedDateBytes = System.Text.Encoding.UTF8.GetBytes(note.Modified.ToString());
-            var noteData = new byte[
+            byte[] titleBytes = System.Text.Encoding.UTF8.GetBytes(note.Title);
+            byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(note.Content);
+            byte[] createDateBytes = System.Text.Encoding.UTF8.GetBytes(note.Created.ToString());
+            byte[] modifiedDateBytes = System.Text.Encoding.UTF8.GetBytes(note.Modified.ToString());
+            byte[] noteData = new byte[
                 16 +                   // 16 bytes for Guid ID
                 4 +                    // 4 bytes indicate the length of title string
                 titleBytes.Length +    // n bytes for breed string
@@ -112,7 +112,7 @@ namespace SiTE.Logic.Serializers
             note.ID = BufferHelper.ReadBufferGuid(data, 0);
 
             // Title
-            var titleLength = BufferHelper.ReadBufferInt32(data, 16);
+            int titleLength = BufferHelper.ReadBufferInt32(data, 16);
 
             if (titleLength < 0 || titleLength > (16 * 1024))
             { throw new Exception("Invalid string length: " + titleLength); }
@@ -120,7 +120,7 @@ namespace SiTE.Logic.Serializers
             note.Title = System.Text.Encoding.UTF8.GetString(data, 16 + 4, titleLength);
 
             // Content
-            var contentLength = BufferHelper.ReadBufferInt32(data, 16 + 4 + titleLength);
+            int contentLength = BufferHelper.ReadBufferInt32(data, 16 + 4 + titleLength);
 
             if (contentLength < 0 || contentLength > (16 * 1024))
             { throw new Exception("Invalid string length: " + contentLength); }
@@ -128,7 +128,7 @@ namespace SiTE.Logic.Serializers
             note.Content = System.Text.Encoding.UTF8.GetString(data, 16 + 4 + titleLength + 4, contentLength);
 
             // Create date
-            var createDateLength = BufferHelper.ReadBufferInt32(data, 16 + 4 + titleLength + 4 + contentLength);
+            int createDateLength = BufferHelper.ReadBufferInt32(data, 16 + 4 + titleLength + 4 + contentLength);
 
             if (createDateLength < 0 || createDateLength > (16 * 1024))
             { throw new Exception("Invalid string length: " + createDateLength); }
@@ -137,7 +137,7 @@ namespace SiTE.Logic.Serializers
             note.Created = createDate;
 
             // Modify date
-            var modifyDateLength = BufferHelper.ReadBufferInt32(data, 16 + 4 + titleLength + 4 + contentLength + 4 + createDateLength);
+            int modifyDateLength = BufferHelper.ReadBufferInt32(data, 16 + 4 + titleLength + 4 + contentLength + 4 + createDateLength);
 
             if (modifyDateLength < 0 || modifyDateLength > (16 * 1024))
             { throw new Exception("Invalid string length: " + modifyDateLength); }
@@ -155,7 +155,7 @@ namespace SiTE.Logic.Serializers
             note.ID = BufferHelper.ReadBufferGuid(data, 0);
 
             // Title
-            var titleLength = BufferHelper.ReadBufferInt32(data, 16);
+            int titleLength = BufferHelper.ReadBufferInt32(data, 16);
 
             if (titleLength < 0 || titleLength > (16 * 1024))
             { throw new Exception("Invalid string length: " + titleLength); }

@@ -11,20 +11,20 @@ namespace SiTE.Logic
         {
             string filePath = Refs.dataBank.DefaultLanguagePath;
 
-            var dict = new ResourceDictionary
+            var dictionary = new ResourceDictionary
             {
                 Source = new Uri(string.Format("pack://{0}{1}.xaml", filePath, cultureInfo.Name))
             };
 
-            var existingDict = Application.Current.Resources.MergedDictionaries.FirstOrDefault(
+            var existingDictionary = Application.Current.Resources.MergedDictionaries.FirstOrDefault(
                 rd => rd.Source.OriginalString.StartsWith("pack://" + filePath));
 
-            if (existingDict != null)
+            if (existingDictionary != null)
             {
-                Application.Current.Resources.MergedDictionaries.Remove(existingDict);
+                Application.Current.Resources.MergedDictionaries.Remove(existingDictionary);
             }
 
-            Application.Current.Resources.MergedDictionaries.Add(dict);
+            Application.Current.Resources.MergedDictionaries.Add(dictionary);
         }
 
         public void SwitchLanguage(string cultureCode)

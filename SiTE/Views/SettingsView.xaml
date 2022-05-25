@@ -20,12 +20,12 @@
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="{DynamicResource Language}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="cb_LanguageList" SelectionChanged="CBLanguageList_SelectionChanged"/>
+                    <ComboBox x:Name="cboLanguageList" SelectionChanged="CBLanguageList_SelectionChanged"/>
                 </StackPanel>
-                <CheckBox Grid.Row="1" x:Name="chkb_AutoSaveEnable" Content="{DynamicResource AutoSave}" VerticalAlignment="Center" Margin="4,0,0,0" Checked="ChkbAutoSaveEnable_Toggled" Unchecked="ChkbAutoSaveEnable_Toggled" />
+                <CheckBox Grid.Row="1" x:Name="chkAutoSaveEnable" Content="{DynamicResource AutoSave}" VerticalAlignment="Center" Margin="4,0,0,0" Checked="ChkbAutoSaveEnable_Toggled" Unchecked="ChkbAutoSaveEnable_Toggled" />
                 <StackPanel Grid.Row="2" Orientation="Horizontal">
                     <Label Content="{DynamicResource Delay}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                    <TextBox x:Name="tb_AutoSaveDelay" Height="20" MinWidth="50" TextChanged="TBAutoSaveDelay_TextChanged" />
+                    <TextBox x:Name="txtAutoSaveDelay" Height="20" MinWidth="50" TextChanged="TBAutoSaveDelay_TextChanged" />
                 </StackPanel>
             </Grid>
         </Expander>
@@ -35,10 +35,10 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <CheckBox x:Name="chkb_Encryption" Content="{DynamicResource EncryptionToggle}" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="ChkbEncryption_Toggled" Unchecked="ChkbEncryption_Toggled" Margin="4,0,0,0"/>
+                <CheckBox x:Name="chkEncryption" Content="{DynamicResource EncryptionToggle}" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="ChkbEncryption_Toggled" Unchecked="ChkbEncryption_Toggled" Margin="4,0,0,0"/>
                 <StackPanel Grid.Row="1" Orientation="Horizontal">
                     <Label Content="{DynamicResource Password}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                    <TextBox x:Name="tb_EncryptionPassword" Height="20" MinWidth="300" TextChanged="TBEncryptionPassword_TextChanged"/>
+                    <TextBox x:Name="txtEncryptionPassword" Height="20" MinWidth="300" TextChanged="TBEncryptionPassword_TextChanged"/>
                 </StackPanel>
             </Grid>
         </Expander>

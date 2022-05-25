@@ -18,27 +18,27 @@ namespace SiTE.Views
         private void LoadSettings()
         {
             // Language
-            cb_LanguageList.Items.Clear();
+            cboLanguageList.Items.Clear();
 
             foreach (string language in Logic.Refs.dataBank.LanguageList)
-            { cb_LanguageList.Items.Add(language.Substring(0, language.IndexOf('[') - 1)); }
+            { cboLanguageList.Items.Add(language.Substring(0, language.IndexOf('[') - 1)); }
             
-            cb_LanguageList.SelectedIndex = Logic.Refs.dataBank.LanguageIndex(Logic.Refs.dataBank.GetSetting("languageID"));
+            cboLanguageList.SelectedIndex = Logic.Refs.dataBank.LanguageIndex(Logic.Refs.dataBank.GetSetting("languageID"));
             SelectLanguage();
 
             // AutoSave
-            chkb_AutoSaveEnable.IsChecked = System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("autoSave"));
+            chkAutoSaveEnable.IsChecked = System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("autoSave"));
             ToggleAutoSave();
 
             // Encryption
-            chkb_Encryption.IsChecked = System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("encryption"));
+            chkEncryption.IsChecked = System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("encryption"));
             ToggleEncryption();
             ToggleSettingsStatus(false);
         }
 
         private void SelectLanguage()
         {
-            string currentLanguage = Logic.Refs.dataBank.LanguageList[cb_LanguageList.SelectedIndex];
+            string currentLanguage = Logic.Refs.dataBank.LanguageList[cboLanguageList.SelectedIndex];
             int codePosition = currentLanguage.IndexOf('[') + 1;
             string cultureCode = currentLanguage.Substring(codePosition, currentLanguage.Length - (codePosition + 1));
             Logic.Refs.dataBank.SetSetting("languageID", cultureCode);
@@ -47,24 +47,24 @@ namespace SiTE.Views
 
         private void ToggleEncryption()
         {
-            tb_EncryptionPassword.IsEnabled = (bool)chkb_Encryption.IsChecked;
+            txtEncryptionPassword.IsEnabled = (bool)chkEncryption.IsChecked;
 
-            if (!tb_EncryptionPassword.IsEnabled)
-                tb_EncryptionPassword.Text = "";
+            if (!txtEncryptionPassword.IsEnabled)
+                txtEncryptionPassword.Text = "";
             else
-                tb_EncryptionPassword.Text = Logic.Refs.dataBank.GetSetting("password"); // temporary for testing
+                txtEncryptionPassword.Text = Logic.Refs.dataBank.GetSetting("password"); // temporary for testing
             
             ToggleSettingsStatus(true);
         }
 
         private void ToggleAutoSave()
         {
-            tb_AutoSaveDelay.IsEnabled = (bool)chkb_AutoSaveEnable.IsChecked;
+            txtAutoSaveDelay.IsEnabled = (bool)chkAutoSaveEnable.IsChecked;
 
-            if (!tb_AutoSaveDelay.IsEnabled)
-                tb_AutoSaveDelay.Text = "";
+            if (!txtAutoSaveDelay.IsEnabled)
+                txtAutoSaveDelay.Text = "";
             else
-                tb_AutoSaveDelay.Text = Logic.Refs.dataBank.GetSetting("autoSaveDelay");
+                txtAutoSaveDelay.Text = Logic.Refs.dataBank.GetSetting("autoSaveDelay");
 
             ToggleSettingsStatus(true);
         }
@@ -72,22 +72,22 @@ namespace SiTE.Views
         private void ApplySettings()
         {
             SelectLanguage();
-            Logic.Refs.dataBank.SetSetting("autoSave", chkb_AutoSaveEnable.IsChecked.ToString());
+            Logic.Refs.dataBank.SetSetting("autoSave", chkAutoSaveEnable.IsChecked.ToString());
             
-            if (int.TryParse(tb_AutoSaveDelay.Text, out _))
-                Logic.Refs.dataBank.SetSetting("autoSaveDelay", tb_AutoSaveDelay.Text);
+            if (int.TryParse(txtAutoSaveDelay.Text, out _))
+                Logic.Refs.dataBank.SetSetting("autoSaveDelay", txtAutoSaveDelay.Text);
             else
                 Logic.Refs.dataBank.SetSetting("autoSaveDelay", "5");
 
-            Logic.Refs.dataBank.SetSetting("encryption", chkb_Encryption.IsChecked.ToString());
+            Logic.Refs.dataBank.SetSetting("encryption", chkEncryption.IsChecked.ToString());
 
-            if (tb_EncryptionPassword.Text == string.Empty)
+            if (txtEncryptionPassword.Text == string.Empty)
             {
-                chkb_Encryption.IsChecked = false;
+                chkEncryption.IsChecked = false;
                 ToggleEncryption();
             }
 
-            Logic.Refs.dataBank.SetSetting("password", tb_EncryptionPassword.Text);
+            Logic.Refs.dataBank.SetSetting("password", txtEncryptionPassword.Text);
 
             Logic.FileOperations.SaveSettings();
             ToggleSettingsStatus(false);
@@ -106,7 +106,6 @@ namespace SiTE.Views
 
             Logic.Refs.viewControl.SettingsModified = modified;
         }
-
         #endregion Methods
 
         #region UI Events

@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Windows;
-using System.Windows.Documents;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
@@ -40,7 +38,7 @@ namespace SiTE.Logic
         }
 
         #region Database IO
-        private static void EncryptDatabase()
+        public static void EncryptDatabase()
         {
             if (Refs.dataBank.GetSetting("encryption") == "False")
                 return;
@@ -88,68 +86,7 @@ namespace SiTE.Logic
             DeleteFile(Refs.dataBank.DefaultSIndexPath);
         }
         #endregion Database IO
-
-        #region Note file IO
-        public static void GetNoteList()
-        {
-            using (var db = new NoteDatabase(Refs.dataBank.DefaultDBPath))
-            {
-                var noteList = db.GetAll();
-                Refs.dataBank.NoteList.Clear();
-
-                foreach (var note in noteList)
-                { Refs.dataBank.NoteList.Add(note); }
-            }
-        }
-
-        public static Models.NoteModel LoadNote(Guid noteID)
-        {
-            using (var db = new NoteDatabase(Refs.dataBank.DefaultDBPath))
-            { return db.Find(noteID); }
-        }
-
-        public static void SaveNote(string noteID, string noteTitle, string text)
-        {
-            using (var db = new NoteDatabase(Refs.dataBank.DefaultDBPath))
-            {
-                var noteGuid = string.IsNullOrEmpty(noteID) ? Guid.NewGuid() : Guid.Parse(noteID);
-                var oldNote = db.Find(noteGuid);
-
-                Models.NoteModel freshNote = new Models.NoteModel
-                {
-                    ID = noteGuid,
-                    Title = noteTitle,
-                    Content = text,
-                    Modified = DateTime.Now
-                };
-
-                if (oldNote == null)
-                {
-                    freshNote.Created = DateTime.Now;
-                    db.Insert(freshNote);
-                }
-                else
-                {
-                    freshNote.Created = oldNote.Created;
-                    db.Update(freshNote);
-                }
-            }
-
-            EncryptDatabase();
-        }
-
-        public static void DeleteNote(Guid noteID)
-        {
-            using (var db = new NoteDatabase(Refs.dataBank.DefaultDBPath))
-            {
-                var noteToRemove = db.Find(noteID);
-                db.Delete(noteToRemove);
-            }
-
-            EncryptDatabase();
-        }
-        #endregion Note file IO
-
+        
         #region Encryption
         static byte[] GenerateRandomSalt()
         {
@@ -173,7 +110,7 @@ namespace SiTE.Logic
 
             if (!File.Exists(filePath))
             {
-                new ErrorHandler(Application.Current, "ErrorNoFile");
+                new ErrorHandler("ErrorNoFile");
                 return;
             }
 
@@ -224,7 +161,7 @@ namespace SiTE.Logic
             }
             catch (Exception ex)
             {
-                new ErrorHandler(Application.Current, "ErrorWrongPassword", ex.Message);
+                new ErrorHandler("ErrorWrongPassword", ex.Message);
             }
             finally
             {
@@ -243,7 +180,7 @@ namespace SiTE.Logic
         {
             if (!File.Exists(inputFile))
             {
-                new ErrorHandler(Application.Current, "ErrorNoFile");
+                new ErrorHandler("ErrorNoFile");
                 return;
             }
 
@@ -279,11 +216,11 @@ namespace SiTE.Logic
             }
             catch (CryptographicException ex_CryptographicException)
             {
-                new ErrorHandler(Application.Current, "ErrorCryptographicException", ex_CryptographicException.Message);
+                new ErrorHandler("ErrorCryptographicException", ex_CryptographicException.Message);
             }
             catch (Exception ex)
             {
-                new ErrorHandler(Application.Current, "ErrorDefault", ex.Message);
+                new ErrorHandler("ErrorDefault", ex.Message);
             }
 
             try
@@ -292,7 +229,7 @@ namespace SiTE.Logic
             }
             catch (Exception ex)
             {
-                new ErrorHandler(Application.Current, "ErrorCryptoStream", ex.Message);
+                new ErrorHandler("ErrorCryptoStream", ex.Message);
             }
             finally
             {
@@ -323,8 +260,8 @@ namespace SiTE.Logic
             foreach (string filePath in Directory.EnumerateFiles(Refs.dataBank.DefaultLanguagePath))
             {
                 string cultureCode = filePath.Substring(filePath.LastIndexOf('\\') + 1).Replace(".xaml", "");
-                var tempCulture = System.Globalization.CultureInfo.GetCultureInfo(cultureCode);
-                Refs.dataBank.AddAvailableLanguage(string.Format("{0} [{1}]", tempCulture.DisplayName, tempCulture.Name));
+                var newCulture = System.Globalization.CultureInfo.GetCultureInfo(cultureCode);
+                Refs.dataBank.AddAvailableLanguage(string.Format("{0} [{1}]", newCulture.DisplayName, newCulture.Name));
             }
         }
 

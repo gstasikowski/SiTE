@@ -85,7 +85,7 @@ namespace SiTE.Logic
             if (disposed)
             { throw new ObjectDisposedException("NoteDatabase"); }
 
-            var recordID = this.noteRecords.Create(this.noteSerializer.Serialize(note));
+            uint recordID = this.noteRecords.Create(this.noteSerializer.Serialize(note));
 
             this.primaryIndex.Insert(note.ID, recordID);
             // TODO Change to change second string to a note related property that can be used for search (add tags?).

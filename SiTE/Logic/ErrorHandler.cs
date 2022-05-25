@@ -4,18 +4,17 @@ namespace SiTE.Logic
 {
     public class ErrorHandler
     {
-        public ErrorHandler(Application app, string errorCode) => new ErrorHandler(app, errorCode, string.Empty);
+        public ErrorHandler(string errorCode) => new ErrorHandler(errorCode, string.Empty);
 
-        public ErrorHandler(Application app, string errorCode, string exceptionMessage)
+        public ErrorHandler(string errorCode, string exceptionMessage)
         {
             string message = (exceptionMessage != string.Empty) ? string.Format("\n\nException message: {0}", exceptionMessage) : exceptionMessage;
 
             try
-            { message = (string)app.FindResource(errorCode) + message; }
+            { message = (string)Application.Current.FindResource(errorCode) + message; }
             catch
-            { message = (string)app.FindResource("ErrorDefault") + message; }
+            { message = (string)Application.Current.FindResource("ErrorDefault") + message; }
 
-            Application.Current.MainWindow.IsEnabled = false;
             Views.ErrorMessage messageWindow = new Views.ErrorMessage(message);
             messageWindow.Show();
         }

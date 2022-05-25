@@ -20,12 +20,12 @@ namespace SiTE.Helpers
             // public, instance property on this object.
             if (TypeDescriptor.GetProperties(this)[propertyName] == null)
             {
-                string msg = "Invalid property name: " + propertyName;
+                string message = "Invalid property name: " + propertyName;
 
                 if (this.ThrowOnInvalidPropertyName)
-                    throw new Exception(msg);
+                    throw new Exception(message);
                 else
-                    Debug.Fail(msg);
+                    Debug.Fail(message);
             }
         }
 
@@ -65,8 +65,8 @@ namespace SiTE.Helpers
             PropertyChangedEventHandler handler = this.PropertyChanged;
             if (handler != null)
             {
-                var e = new PropertyChangedEventArgs(propertyName);
-                handler(this, e);
+                var eventProperty = new PropertyChangedEventArgs(propertyName);
+                handler(this, eventProperty);
             }
         }
         #endregion INotifyPropertyChanged Members

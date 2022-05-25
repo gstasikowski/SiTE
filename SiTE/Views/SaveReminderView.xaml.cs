@@ -1,28 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace SiTE.Views
 {
     /// <summary>
     /// Interaction logic for SaveReminderView.xaml
     /// </summary>
-    public partial class SaveReminderView : Page
+    public partial class SaveReminderView : Window
     {
+        public int dialogChoice = -1;
+
         public SaveReminderView()
         {
             InitializeComponent();
+            Application.Current.MainWindow.IsEnabled = false;
+        }
+
+        private void SetDialogChoice(int choice)
+        {
+            dialogChoice = choice;
+            Application.Current.MainWindow.IsEnabled = true;
+            Close();
+        }
+
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        {
+            SetDialogChoice(0);
+        }
+
+        private void BtnProceed_Click(object sender, RoutedEventArgs e)
+        {
+            SetDialogChoice(1);
+        }
+
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            SetDialogChoice(-1);
         }
     }
 }

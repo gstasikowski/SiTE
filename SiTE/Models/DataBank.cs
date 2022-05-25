@@ -9,21 +9,17 @@ namespace SiTE.Models
     {
         #region Variables
         public readonly string projectUrl = "https://github.com/gstasikowski/SiTE";
-
-        string defaultConfigPath = AppDomain.CurrentDomain.BaseDirectory;
-        string defaultNotePath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\";
-        string defaultDatabaseFile = "Journal.data";
-        string defaultPIndexFile = "Journal.pixd";
-        string defaultSIndexFile = "Journal.sidx";
-        string defaultLanguagePath = AppDomain.CurrentDomain.BaseDirectory + "Languages\\";
+        
+        readonly string defaultConfigPath = AppDomain.CurrentDomain.BaseDirectory;
+        readonly string defaultNotePath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\";
+        readonly string defaultDatabaseFile = "Journal.data";
+        readonly string defaultPIndexFile = "Journal.pixd";
+        readonly string defaultSIndexFile = "Journal.sidx";
+        readonly string defaultLanguagePath = AppDomain.CurrentDomain.BaseDirectory + "Languages\\";
 
         Dictionary<string, string> settings = new Dictionary<string, string>();
-
         List<string> languageList = new List<string>();
         ObservableCollection<NoteModel> noteList = new();
-        
-        string noteCurrentOpen = string.Empty;
-        string noteLastSaveTime = string.Empty;
         #endregion Variables
 
         #region Properties
@@ -56,6 +52,13 @@ namespace SiTE.Models
         {
             get { return defaultLanguagePath; }
         }
+
+        public ObservableCollection<NoteModel> NoteList
+        {
+            get { return noteList; }
+            set { noteList = value; }
+        }
+
         #endregion Properties
 
         #region Methods
@@ -65,7 +68,7 @@ namespace SiTE.Models
             SetSetting("autoSave", "true");
             SetSetting("autoSaveDelay", "5");
             SetSetting("encryption", "true");
-            SetSetting("editorView", "1");
+            SetSetting("editorMode", "1");
             SetSetting("password", "abcde1234"); // for testing only! TODO hash and move into a secure place so it's not widely available when app is running
         }
 
@@ -101,12 +104,6 @@ namespace SiTE.Models
         public List<string> LanguageList
         {
             get { return languageList; }
-        }
-
-        public ObservableCollection<NoteModel> NoteList
-        {
-            get { return noteList; }
-            set { noteList = value; }
         }
 
         public string GetNoteTitle(Guid noteID)
