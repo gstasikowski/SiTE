@@ -21,7 +21,7 @@ namespace SiTE
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-            Logic.FileOperations.CheckForPlainDatabaseFiles();
+            Logic.FileOperations.ClearTempDatabaseFiles();
         }
     }
 }

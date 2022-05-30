@@ -11,5 +11,11 @@ namespace SiTE
         {
             InitializeComponent();
         }
+        
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var temp = Logic.Refs.viewControl.PageViewModels[0] as Views.EditorView;
+            e.Cancel = !temp.AreUnsavedChangesHandled();
+        }
     }
 }

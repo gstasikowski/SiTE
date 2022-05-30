@@ -21,7 +21,7 @@ namespace SiTE.Views
             cboLanguageList.Items.Clear();
 
             foreach (string language in Logic.Refs.dataBank.LanguageList)
-            { cboLanguageList.Items.Add(language.Substring(0, language.IndexOf('[') - 1)); }
+            { cboLanguageList.Items.Add(language.Substring(0, language.IndexOf('(') - 1)); }
             
             cboLanguageList.SelectedIndex = Logic.Refs.dataBank.LanguageIndex(Logic.Refs.dataBank.GetSetting("languageID"));
             SelectLanguage();

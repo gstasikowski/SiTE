@@ -35,6 +35,7 @@ namespace SiTE.Views
         #region Methods (window)
         private void WindowSetup()
         {
+            // TODO remove hard references to MainWindow
             Application.Current.MainWindow.Title = Application.ResourceAssembly.GetName().Name;
             lvwNoteList.ItemsSource = Logic.Refs.dataBank.NoteList;
 
@@ -65,8 +66,7 @@ namespace SiTE.Views
 
         private void ExitApp()
         {
-            // TODO throw save reminder in note was modified
-            Application.Current.Shutdown();
+            Application.Current.MainWindow.Close();
         }
         #endregion Methods (window)
 
@@ -379,7 +379,7 @@ namespace SiTE.Views
         #endregion Methods (helpers)
 
         #region Methods (saving)
-        private bool AreUnsavedChangesHandled()
+        public bool AreUnsavedChangesHandled()
         {
             if (isNoteModified)
             {
@@ -432,7 +432,7 @@ namespace SiTE.Views
             }
         }
         #endregion Methods (autosaving)
-
+        
         #region UI Events
         private void TANoteContent_TextChanged(object sender, TextChangedEventArgs e)
         {

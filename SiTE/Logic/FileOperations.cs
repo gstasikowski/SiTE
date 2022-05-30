@@ -13,20 +13,26 @@ namespace SiTE.Logic
     {
         public static void InitialSetup()
         {
-            CheckConfigDirectories();
+            CheckAppDirectories();
             LoadTranslations();
             LoadSettings();
-            CheckForPlainDatabaseFiles(); // remove remnant temp files on startup (in case of crash)
-            CheckForEncryptedDatabaseFiles();
+            ClearTempDatabaseFiles(); // remove remnant temp files on startup (in case of crash)
+            DencryptDatabase();
         }
 
-        static void CheckConfigDirectories()
+        static void CheckAppDirectories()
         {
             if (!Directory.Exists(Refs.dataBank.DefaultNotePath))
-                Directory.CreateDirectory(Refs.dataBank.DefaultNotePath);
+            { Directory.CreateDirectory(Refs.dataBank.DefaultNotePath); }
+        }
 
-            if (!Directory.Exists(Refs.dataBank.DefaultConfigPath))
-                Directory.CreateDirectory(Refs.dataBank.DefaultConfigPath);
+        static bool CheckDatabaseFilesExist(bool encrypted)
+        {
+            string encryptionExtention = encrypted ? Refs.dataBank.EncryptionExtention : string.Empty;
+
+            return (File.Exists(Refs.dataBank.DefaultDBPath + encryptionExtention)
+                && File.Exists(Refs.dataBank.DefaultPIndexPath + encryptionExtention)
+                && File.Exists(Refs.dataBank.DefaultSIndexPath + encryptionExtention));
         }
 
         static void DeleteFile(string filePath)
@@ -41,11 +47,9 @@ namespace SiTE.Logic
         public static void EncryptDatabase()
         {
             if (Refs.dataBank.GetSetting("encryption") == "False")
-                return;
+            { return; }
 
-            if (File.Exists(Refs.dataBank.DefaultDBPath) 
-                && File.Exists(Refs.dataBank.DefaultPIndexPath) 
-                && File.Exists(Refs.dataBank.DefaultSIndexPath))
+            if (CheckDatabaseFilesExist(false))
             {
                 FileEncrypt(Refs.dataBank.DefaultDBPath, Refs.dataBank.GetSetting("password"));
                 FileEncrypt(Refs.dataBank.DefaultPIndexPath, Refs.dataBank.GetSetting("password"));
@@ -56,30 +60,20 @@ namespace SiTE.Logic
         private static void DencryptDatabase()
         {
             if (Refs.dataBank.GetSetting("encryption") == "False")
-                return;
+            { return; }
 
-            if (File.Exists(Refs.dataBank.DefaultDBPath + ".aes")
-                && File.Exists(Refs.dataBank.DefaultPIndexPath + ".aes")
-                && File.Exists(Refs.dataBank.DefaultSIndexPath + ".aes"))
+            if (CheckDatabaseFilesExist(true))
             {
-                FileDecrypt(Refs.dataBank.DefaultDBPath + ".aes", Refs.dataBank.DefaultDBPath, Refs.dataBank.GetSetting("password"));
-                FileDecrypt(Refs.dataBank.DefaultPIndexPath + ".aes", Refs.dataBank.DefaultPIndexPath, Refs.dataBank.GetSetting("password"));
-                FileDecrypt(Refs.dataBank.DefaultSIndexPath + ".aes", Refs.dataBank.DefaultSIndexPath, Refs.dataBank.GetSetting("password"));
+                FileDecrypt(Refs.dataBank.DefaultDBPath + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultDBPath, Refs.dataBank.GetSetting("password"));
+                FileDecrypt(Refs.dataBank.DefaultPIndexPath + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultPIndexPath, Refs.dataBank.GetSetting("password"));
+                FileDecrypt(Refs.dataBank.DefaultSIndexPath + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultSIndexPath, Refs.dataBank.GetSetting("password"));
             }
-            }
-
-        public static void CheckForEncryptedDatabaseFiles()
-        {            
-            if (File.Exists(Refs.dataBank.DefaultDBPath + ".aes")
-                && File.Exists(Refs.dataBank.DefaultPIndexPath + ".aes")
-                && File.Exists(Refs.dataBank.DefaultSIndexPath + ".aes"))
-            { DencryptDatabase(); }
         }
 
-        public static void CheckForPlainDatabaseFiles()
+        public static void ClearTempDatabaseFiles()
         {
             if (Refs.dataBank.GetSetting("encryption") == "False")
-                return;
+            { return; }
 
             DeleteFile(Refs.dataBank.DefaultDBPath);
             DeleteFile(Refs.dataBank.DefaultPIndexPath);
@@ -118,7 +112,7 @@ namespace SiTE.Logic
             byte[] salt = GenerateRandomSalt();
 
             //create output file name
-            FileStream fileStreamCrypt = new FileStream(filePath + ".aes", FileMode.Create);
+            FileStream fileStreamCrypt = new FileStream(filePath + Refs.dataBank.EncryptionExtention, FileMode.Create);
 
             //convert password string to byte arrray
             byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
@@ -246,9 +240,9 @@ namespace SiTE.Logic
         {
             if (Refs.dataBank.GetSetting("encryption") == "False")
             {
-                DeleteFile(Refs.dataBank.DefaultDBPath + ".aes");
-                DeleteFile(Refs.dataBank.DefaultPIndexPath + ".aes");
-                DeleteFile(Refs.dataBank.DefaultSIndexPath + ".aes");
+                DeleteFile(Refs.dataBank.DefaultDBPath + Refs.dataBank.EncryptionExtention);
+                DeleteFile(Refs.dataBank.DefaultPIndexPath + Refs.dataBank.EncryptionExtention);
+                DeleteFile(Refs.dataBank.DefaultSIndexPath + Refs.dataBank.EncryptionExtention);
             }
             else
             { EncryptDatabase(); }
@@ -268,7 +262,7 @@ namespace SiTE.Logic
         #region Settings
         public static void LoadSettings()
         {
-            string configFilePath = Refs.dataBank.DefaultConfigPath + "Config.xml";
+            string configFilePath = Refs.dataBank.DefaultConfigPath;
 
             if (File.Exists(configFilePath))
             {
@@ -292,7 +286,7 @@ namespace SiTE.Logic
             Dictionary<string, string> appSettings = Refs.dataBank.GetAllSettings();
 
             FileStream fileStream;
-            fileStream = new FileStream(Refs.dataBank.DefaultConfigPath + "Config.xml", FileMode.Create);
+            fileStream = new FileStream(Refs.dataBank.DefaultConfigPath, FileMode.Create);
 
             XElement rootElement = new XElement("Config", appSettings.Select(kv => new XElement(kv.Key, kv.Value)));
             XmlSerializer serializer = new XmlSerializer(rootElement.GetType());

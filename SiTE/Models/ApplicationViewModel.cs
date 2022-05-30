@@ -20,7 +20,7 @@ namespace SiTE.Models
         {
             PageViewModels.Add(new Views.EditorView());
             PageViewModels.Add(new Views.SettingsView());
-
+            
             CurrentPageViewModel = PageViewModels[0];
             SettingsModified = false;
         }
