@@ -166,7 +166,8 @@ namespace SiTE.Views
 
         private void OpenNote(System.Guid noteID)
         {
-            if (lvwNoteList.SelectedIndex == selectedNote)
+            // TODO simplify this check (switch selectedNote from int to noteID?)
+            if (selectedNote >= 0 && ((Models.NoteModel)lvwNoteList.Items[selectedNote]).ID == noteID)
                 return;
 
             if (!AreUnsavedChangesHandled())
