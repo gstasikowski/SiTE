@@ -20,7 +20,7 @@ namespace SiTE.Views
 
         private EditorMode editorMode = EditorMode.editor;
         private bool isNoteModified;
-        private int selectedNote;
+        private System.Guid selectedNote;
 
         public EditorView()
         {
@@ -73,7 +73,8 @@ namespace SiTE.Views
         #region Methods (view)
         private void UpdateNoteListSelection()
         {
-            selectedNote = lvwNoteList.SelectedIndex = Logic.Refs.dataBank.GetNoteIndex(txtTitle.Text);
+            lvwNoteList.SelectedIndex = Logic.Refs.dataBank.GetNoteIndexFromTitle(txtTitle.Text);
+            selectedNote = ((Models.NoteModel)lvwNoteList.SelectedItem).ID;
         }
 
         private void UpdateMarkdownView()
@@ -148,7 +149,8 @@ namespace SiTE.Views
 
         private void NewNote()
         {
-            selectedNote = lvwNoteList.SelectedIndex = -1;
+            lvwNoteList.SelectedIndex = -1;
+            selectedNote = System.Guid.Empty;
             txtTitle.Text = "";
             txtNoteContent.Text = string.Empty;
             btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = false;
@@ -166,13 +168,12 @@ namespace SiTE.Views
 
         private void OpenNote(System.Guid noteID)
         {
-            // TODO simplify this check (switch selectedNote from int to noteID?)
-            if (selectedNote >= 0 && ((Models.NoteModel)lvwNoteList.Items[selectedNote]).ID == noteID)
+            if (selectedNote == noteID)
                 return;
 
             if (!AreUnsavedChangesHandled())
             {
-                lvwNoteList.SelectedIndex = selectedNote;
+                lvwNoteList.SelectedIndex = Logic.Refs.dataBank.GetNoteIndex(selectedNote);
                 return;
             }
 
@@ -193,15 +194,7 @@ namespace SiTE.Views
 
         private void SaveNote()
         {
-            string noteID = null;
-
-            if (selectedNote >= 0)
-            {
-                var tempItem = (Models.NoteModel)lvwNoteList.Items[selectedNote];
-                noteID = tempItem.ID.ToString();
-            }
-
-            Logic.DatabaseOperations.SaveNote(noteID, txtTitle.Text, txtNoteContent.Text);
+            Logic.DatabaseOperations.SaveNote(selectedNote, txtTitle.Text, txtNoteContent.Text);
 
             LoadNoteList();
             SetModifiedState(false, System.DateTime.Now.ToString());

@@ -22,11 +22,11 @@ namespace SiTE.Logic
             { return database.Find(noteID); }
         }
 
-        public static void SaveNote(string noteID, string noteTitle, string text)
+        public static void SaveNote(Guid noteID, string noteTitle, string text)
         {
             using (var database = new NoteDatabase(Refs.dataBank.DefaultDBPath))
             {
-                Guid noteGuid = string.IsNullOrEmpty(noteID) ? Guid.NewGuid() : Guid.Parse(noteID);
+                Guid noteGuid = (noteID == Guid.Empty) ? Guid.NewGuid() : noteID;
                 var oldNote = database.Find(noteGuid);
 
                 Models.NoteModel freshNote = new Models.NoteModel

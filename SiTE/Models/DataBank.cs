@@ -117,7 +117,13 @@ namespace SiTE.Models
             return NoteList.FirstOrDefault(n => n.ID == noteID).Title;
         }
 
-        public int GetNoteIndex(string noteTitle)
+        public int GetNoteIndex(Guid noteID)
+        {
+            NoteModel note = NoteList.FirstOrDefault(n => n.ID.Equals(noteID));
+            return NoteList.IndexOf(note);
+        }
+
+        public int GetNoteIndexFromTitle(string noteTitle)
         {
             NoteModel note = NoteList.FirstOrDefault(n => n.Title.Equals(noteTitle));
             return NoteList.IndexOf(note);
