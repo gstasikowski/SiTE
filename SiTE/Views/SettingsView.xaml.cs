@@ -33,6 +33,8 @@ namespace SiTE.Views
             // Encryption
             chkEncryption.IsChecked = System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("encryption"));
             ToggleEncryption();
+            chkPassword.IsChecked = (Logic.Refs.dataBank.UserPassword != string.Empty);
+            TogglePasswordProtection();
             ToggleSettingsStatus(false);
         }
 
@@ -47,13 +49,18 @@ namespace SiTE.Views
 
         private void ToggleEncryption()
         {
-            txtEncryptionPassword.IsEnabled = (bool)chkEncryption.IsChecked;
+            ToggleSettingsStatus(true);
+        }
 
-            if (!txtEncryptionPassword.IsEnabled)
-                txtEncryptionPassword.Text = "";
-            else
-                txtEncryptionPassword.Text = Logic.Refs.dataBank.GetSetting("password"); // temporary for testing
+        private void TogglePasswordProtection()
+        {
+            txtEncryptionPassword.IsEnabled = (bool)chkPassword.IsChecked;
             
+            if (!(bool)chkPassword.IsChecked)
+            { Logic.Refs.dataBank.UpdatePassword(string.Empty, false); }
+
+            txtEncryptionPassword.Text = Logic.Refs.dataBank.UserPassword;
+
             ToggleSettingsStatus(true);
         }
 
@@ -83,11 +90,11 @@ namespace SiTE.Views
 
             if (txtEncryptionPassword.Text == string.Empty)
             {
-                chkEncryption.IsChecked = false;
-                ToggleEncryption();
+                chkPassword.IsChecked = false;
+                TogglePasswordProtection();
             }
 
-            Logic.Refs.dataBank.SetSetting("password", txtEncryptionPassword.Text);
+            Logic.Refs.dataBank.UpdatePassword(txtEncryptionPassword.Text, false);
 
             Logic.FileOperations.SaveSettings();
             ToggleSettingsStatus(false);
@@ -109,13 +116,12 @@ namespace SiTE.Views
         #endregion Methods
 
         #region UI Events
-
         private void CBLanguageList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             ToggleSettingsStatus(true);
         }
 
-        private void ChkbAutoSaveEnable_Toggled(object sender, RoutedEventArgs e)
+        private void ChkAutoSaveEnable_Toggled(object sender, RoutedEventArgs e)
         {
             ToggleAutoSave();
         }
@@ -125,9 +131,14 @@ namespace SiTE.Views
             ToggleSettingsStatus(true);
         }
 
-        private void ChkbEncryption_Toggled(object sender, RoutedEventArgs e)
+        private void ChkEncryption_Toggled(object sender, RoutedEventArgs e)
         {
             ToggleEncryption();
+        }
+
+        private void ChkPasswordProtection_Toggled(object sender, RoutedEventArgs e)
+        {
+            TogglePasswordProtection();
         }
 
         private void TBEncryptionPassword_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -144,7 +155,6 @@ namespace SiTE.Views
         {
             CloseSettingsView();
         }
-
         #endregion UI Events
     }
 }

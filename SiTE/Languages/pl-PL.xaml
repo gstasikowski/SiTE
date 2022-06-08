@@ -66,6 +66,7 @@
     <!-- Settings items - [Encryption] -->
     <system:String x:Key="GroupEncryption">Szyfrowanie</system:String>
     <system:String x:Key="EncryptionToggle">Włącz szyfrowanie</system:String>
+    <system:String x:Key="PasswordToggle">Włącz ochronę hasłem</system:String>
     <system:String x:Key="Password">Hasło</system:String>
     <!-- Buttons -->
     <system:String x:Key="ButtonApply">Potwierdź</system:String>
@@ -75,14 +76,17 @@
     <system:String x:Key="ButtonCancel">Anuluj</system:String>
     <!-- WindowTitles -->
     <system:String x:Key="WindowError">Wystąpił błąd</system:String>
+    <system:String x:Key="WindowPasswordInput">Podaj hasło</system:String>
     <system:String x:Key="WindowSaveReminder">Niezapisane zmiany</system:String>
     <!-- Messages -->
+    <system:String x:Key="PasswordInputMessage">Baza notatek jest zabezpieczona. Podaj hasło aby ją odblokować.</system:String>
     <system:String x:Key="MessageSaveReminder">Notka zawiera niezapisane zmiany.&#10;Zapisać przed kontynuowaniem?</system:String>
     <!-- ErrorMessages -->
     <system:String x:Key="ErrorDefault">Wystąpił nieznany błąd, spróbuj ponownie.</system:String>
     <system:String x:Key="ErrorWrongPassword" xml:space="preserve">Błędne hasło szyfrowania. &#10;Upewnij się że szyfrowanie jest włączone w opcjach a hasło zgadza się z użytym przy zapisaniu notatki.</system:String>
     <system:String x:Key="ErrorCryptographicException">Wystąpił błąd podczas odszyfrowywania pliku.</system:String>
     <system:String x:Key="ErrorCryptoStream">Wystąpił błąd przy zamykaniu CryptoStream.</system:String>
-    <system:String x:Key="ErrorNoFile">Brak dostępu do pliku notki. &#10;Spróbuj ponownie.</system:String>
+    <system:String x:Key="ErrorNoFileEncrypt">Nie znaleziono pliku do zaszyfrowania.</system:String>
+    <system:String x:Key="ErrorNoFileDecrypt">Nie znaleziono pliku do odszyfrowania</system:String>
     <!--<system:String x:Key=""></system:String>-->
 </ResourceDictionary>

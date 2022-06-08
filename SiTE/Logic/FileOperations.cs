@@ -16,8 +16,9 @@ namespace SiTE.Logic
             CheckAppDirectories();
             LoadTranslations();
             LoadSettings();
-            ClearTempDatabaseFiles(); // remove remnant temp files on startup (in case of crash)
+            //ClearTempDatabaseFiles(); // remove remnant temp files on startup (in case of crash)
             DencryptDatabase();
+            PrepareMasterPassword();
         }
 
         static void CheckAppDirectories()
@@ -51,9 +52,9 @@ namespace SiTE.Logic
 
             if (CheckDatabaseFilesExist(false))
             {
-                FileEncrypt(Refs.dataBank.DefaultDBPath, Refs.dataBank.GetSetting("password"));
-                FileEncrypt(Refs.dataBank.DefaultPIndexPath, Refs.dataBank.GetSetting("password"));
-                FileEncrypt(Refs.dataBank.DefaultSIndexPath, Refs.dataBank.GetSetting("password"));
+                FileEncrypt(Refs.dataBank.DefaultDBPath, PrepareMasterPassword());
+                FileEncrypt(Refs.dataBank.DefaultPIndexPath, PrepareMasterPassword());
+                FileEncrypt(Refs.dataBank.DefaultSIndexPath, PrepareMasterPassword());
             }
         }
 
@@ -64,9 +65,10 @@ namespace SiTE.Logic
 
             if (CheckDatabaseFilesExist(true))
             {
-                FileDecrypt(Refs.dataBank.DefaultDBPath + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultDBPath, Refs.dataBank.GetSetting("password"));
-                FileDecrypt(Refs.dataBank.DefaultPIndexPath + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultPIndexPath, Refs.dataBank.GetSetting("password"));
-                FileDecrypt(Refs.dataBank.DefaultSIndexPath + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultSIndexPath, Refs.dataBank.GetSetting("password"));
+                DecryptMasterKeyFile();
+                FileDecrypt(Refs.dataBank.DefaultDBPath + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultDBPath, PrepareMasterPassword());
+                FileDecrypt(Refs.dataBank.DefaultPIndexPath + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultPIndexPath, PrepareMasterPassword());
+                FileDecrypt(Refs.dataBank.DefaultSIndexPath + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultSIndexPath, PrepareMasterPassword());
             }
         }
 
@@ -75,6 +77,9 @@ namespace SiTE.Logic
             if (Refs.dataBank.GetSetting("encryption") == "False")
             { return; }
 
+            if (File.Exists(Refs.dataBank.DefaultMasterKeyFile + Refs.dataBank.EncryptionExtention))
+            { DeleteFile(Refs.dataBank.DefaultMasterKeyFile); }
+
             DeleteFile(Refs.dataBank.DefaultDBPath);
             DeleteFile(Refs.dataBank.DefaultPIndexPath);
             DeleteFile(Refs.dataBank.DefaultSIndexPath);
@@ -82,6 +87,47 @@ namespace SiTE.Logic
         #endregion Database IO
         
         #region Encryption
+        private static string PrepareMasterPassword()
+        {
+            string masterPassword = string.Empty;
+
+            if (File.Exists(Refs.dataBank.DefaultMasterKeyFile))
+            { masterPassword = File.ReadAllText(Refs.dataBank.DefaultMasterKeyFile); }
+            else
+            {
+                masterPassword = GenerateMasterPassword();
+                
+                FileStream fileStream = new FileStream(Refs.dataBank.DefaultMasterKeyFile, FileMode.Create);
+
+                fileStream.Write(Encoding.UTF8.GetBytes(masterPassword));
+                fileStream.Close();
+            }
+
+            return masterPassword;
+        }
+
+        static string GenerateMasterPassword()
+        {
+            string password = string.Empty;
+
+            List<char> charList = new List<char>();
+            Random rng = new Random();
+
+            for (int i = 0; i < 26; i++)
+                charList.Add((char)('a' + i));
+        
+            for (int i = 0; i< 26; i++)
+                charList.Add((char)('A' + i));
+            
+            for (int i = 48; i< 58; i++)
+                charList.Add((char) i);
+
+            for (int i = 0;  i < 256; i++)
+            { password += charList[rng.Next(0, charList.Count)]; }
+
+            return password;
+        }
+
         static byte[] GenerateRandomSalt()
         {
             byte[] data = new byte[32];
@@ -104,7 +150,7 @@ namespace SiTE.Logic
 
             if (!File.Exists(filePath))
             {
-                new ErrorHandler("ErrorNoFile");
+                new ErrorHandler("ErrorNoFileEncrypt", filePath);
                 return;
             }
 
@@ -122,10 +168,10 @@ namespace SiTE.Logic
             AES.KeySize = 256;
             AES.BlockSize = 128;
             AES.Padding = PaddingMode.PKCS7;
-
+            
             //http://stackoverflow.com/questions/2659214/why-do-i-need-to-use-the-rfc2898derivebytes-class-in-net-instead-of-directly
             //"What it does is repeatedly hash the user password along with the salt." High iteration counts.
-            var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000);
+            var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000, HashAlgorithmName.SHA256);
             AES.Key = key.GetBytes(AES.KeySize / 8);
             AES.IV = key.GetBytes(AES.BlockSize / 8);
 
@@ -155,7 +201,7 @@ namespace SiTE.Logic
             }
             catch (Exception ex)
             {
-                new ErrorHandler("ErrorWrongPassword", ex.Message);
+                new ErrorHandler("ErrorDefault", ex.Message);
             }
             finally
             {
@@ -170,13 +216,15 @@ namespace SiTE.Logic
         /// <param name="inputFile"></param>
         /// <param name="outputFile"></param>
         /// <param name="password"></param>
-        private static void FileDecrypt(string inputFile, string outputFile, string password)
+        private static bool FileDecrypt(string inputFile, string outputFile, string password)
         {
             if (!File.Exists(inputFile))
             {
-                new ErrorHandler("ErrorNoFile");
-                return;
+                new ErrorHandler("ErrorNoFileDecrypt", inputFile);
+                return false;
             }
+
+            bool isSuccess = true;
 
             byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
             byte[] salt = new byte[32];
@@ -187,7 +235,7 @@ namespace SiTE.Logic
             RijndaelManaged AES = new RijndaelManaged();
             AES.KeySize = 256;
             AES.BlockSize = 128;
-            var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000);
+            var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000, HashAlgorithmName.SHA256);
             AES.Key = key.GetBytes(AES.KeySize / 8);
             AES.IV = key.GetBytes(AES.BlockSize / 8);
             AES.Padding = PaddingMode.PKCS7;
@@ -210,10 +258,12 @@ namespace SiTE.Logic
             }
             catch (CryptographicException ex_CryptographicException)
             {
+                isSuccess = false;
                 new ErrorHandler("ErrorCryptographicException", ex_CryptographicException.Message);
             }
             catch (Exception ex)
             {
+                isSuccess = false;
                 new ErrorHandler("ErrorDefault", ex.Message);
             }
 
@@ -223,6 +273,7 @@ namespace SiTE.Logic
             }
             catch (Exception ex)
             {
+                isSuccess = false;
                 new ErrorHandler("ErrorCryptoStream", ex.Message);
             }
             finally
@@ -230,22 +281,42 @@ namespace SiTE.Logic
                 fsOut.Close();
                 fsCrypt.Close();
             }
+
+            return isSuccess;
+        }
+
+        private static void DecryptMasterKeyFile()
+        {
+            if (!File.Exists(Refs.dataBank.DefaultMasterKeyFile + Refs.dataBank.EncryptionExtention))
+            { return; }
+
+            bool isPasswordAccepted = false;
+
+            while (!isPasswordAccepted)
+            {
+                new UserPasswordHandler();
+                isPasswordAccepted = FileDecrypt(Refs.dataBank.DefaultMasterKeyFile + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultMasterKeyFile, Refs.dataBank.UserPassword);
+            }
         }
 
         /// <summary>
         /// Delete encrypted files when disabling encryption
-        /// or reencrypt database files on password change.
+        /// or reencrypt masterKey file on password change.
         /// </summary>
         public static void UpdateEncryption()
         {
             if (Refs.dataBank.GetSetting("encryption") == "False")
             {
+                DeleteFile(Refs.dataBank.DefaultMasterKeyFile);
                 DeleteFile(Refs.dataBank.DefaultDBPath + Refs.dataBank.EncryptionExtention);
                 DeleteFile(Refs.dataBank.DefaultPIndexPath + Refs.dataBank.EncryptionExtention);
                 DeleteFile(Refs.dataBank.DefaultSIndexPath + Refs.dataBank.EncryptionExtention);
             }
+
+            if (Refs.dataBank.UserPassword == string.Empty)
+            { DeleteFile(Refs.dataBank.DefaultMasterKeyFile + Refs.dataBank.EncryptionExtention); }
             else
-            { EncryptDatabase(); }
+            { FileEncrypt(Refs.dataBank.DefaultMasterKeyFile, Refs.dataBank.UserPassword); }
         }
         #endregion Encryption
 
