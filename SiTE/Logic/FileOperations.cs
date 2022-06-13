@@ -16,9 +16,10 @@ namespace SiTE.Logic
             CheckAppDirectories();
             LoadTranslations();
             LoadSettings();
-            //ClearTempDatabaseFiles(); // remove remnant temp files on startup (in case of crash)
-            DencryptDatabase();
-            PrepareMasterPassword();
+            ClearTempDatabaseFiles(); // remove remnant temp files on startup (in case of crash)
+            
+            if (DencryptDatabase())
+            { PrepareMasterPassword(); }
         }
 
         static void CheckAppDirectories()
@@ -58,18 +59,24 @@ namespace SiTE.Logic
             }
         }
 
-        private static void DencryptDatabase()
+        private static bool DencryptDatabase()
         {
             if (Refs.dataBank.GetSetting("encryption") == "False")
-            { return; }
+            { return true; }
 
             if (CheckDatabaseFilesExist(true))
             {
-                DecryptMasterKeyFile();
-                FileDecrypt(Refs.dataBank.DefaultDBPath + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultDBPath, PrepareMasterPassword());
-                FileDecrypt(Refs.dataBank.DefaultPIndexPath + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultPIndexPath, PrepareMasterPassword());
-                FileDecrypt(Refs.dataBank.DefaultSIndexPath + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultSIndexPath, PrepareMasterPassword());
+                if (DecryptMasterKeyFile())
+                {
+                    FileDecrypt(Refs.dataBank.DefaultDBPath + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultDBPath, PrepareMasterPassword());
+                    FileDecrypt(Refs.dataBank.DefaultPIndexPath + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultPIndexPath, PrepareMasterPassword());
+                    FileDecrypt(Refs.dataBank.DefaultSIndexPath + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultSIndexPath, PrepareMasterPassword());
+                }
+                else
+                { return false; }
             }
+
+            return true;
         }
 
         public static void ClearTempDatabaseFiles()
@@ -285,18 +292,24 @@ namespace SiTE.Logic
             return isSuccess;
         }
 
-        private static void DecryptMasterKeyFile()
+        private static bool DecryptMasterKeyFile()
         {
             if (!File.Exists(Refs.dataBank.DefaultMasterKeyFile + Refs.dataBank.EncryptionExtention))
-            { return; }
+            { return true; }
 
             bool isPasswordAccepted = false;
 
             while (!isPasswordAccepted)
             {
-                new UserPasswordHandler();
-                isPasswordAccepted = FileDecrypt(Refs.dataBank.DefaultMasterKeyFile + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultMasterKeyFile, Refs.dataBank.UserPassword);
+                UserPasswordHandler passwordHandler = new UserPasswordHandler();
+
+                if (passwordHandler.canUnlockDatabase)
+                { isPasswordAccepted = FileDecrypt(Refs.dataBank.DefaultMasterKeyFile + Refs.dataBank.EncryptionExtention, Refs.dataBank.DefaultMasterKeyFile, Refs.dataBank.UserPassword); }
+                else
+                { return false; }
             }
+
+            return true;
         }
 
         /// <summary>

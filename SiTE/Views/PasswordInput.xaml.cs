@@ -16,7 +16,17 @@ namespace SiTE.Views
         {
             Logic.Refs.dataBank.UpdatePassword(txtPassword.Password, true);
             Application.Current.MainWindow.IsEnabled = true;
+            DialogResult = true;
             Close();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (DialogResult == null)
+            {
+                Logic.Refs.dataBank.UpdatePassword("-1", true); 
+                App.Current.Shutdown();
+            }
         }
     }
 }

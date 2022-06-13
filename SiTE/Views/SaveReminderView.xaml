@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:SiTE.Views"
       mc:Ignorable="d" 
       d:DesignHeight="200" d:DesignWidth="800"
-      Title="{DynamicResource WindowSaveReminder}" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
+      Title="{DynamicResource WindowSaveReminder}" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner">
 
     <Grid>
         <StackPanel>

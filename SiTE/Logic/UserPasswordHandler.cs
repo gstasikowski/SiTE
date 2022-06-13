@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SiTE.Logic
+﻿namespace SiTE.Logic
 {
     public class UserPasswordHandler
     {
+        public bool canUnlockDatabase = false;
+
         public UserPasswordHandler()
         {
             Views.PasswordInput passwordWindow = new Views.PasswordInput();
             passwordWindow.ShowDialog();
+            canUnlockDatabase = (bool)passwordWindow.DialogResult;
         }
     }
 }

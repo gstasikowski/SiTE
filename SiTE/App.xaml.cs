@@ -17,6 +17,7 @@ namespace SiTE
             Logic.Refs.viewControl = context;
             app.DataContext = context;
             app.Show();
+            app.isDoneLoading = true;
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)
