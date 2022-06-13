@@ -12,11 +12,14 @@ namespace SiTE.Models
         
         readonly string defaultConfigPath = AppDomain.CurrentDomain.BaseDirectory + "Config.xml";
         readonly string defaultNotePath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\";
+        readonly string defaultMasterKeyFile = "master.key";
         readonly string defaultDatabaseFile = "Journal.data";
         readonly string defaultPIndexFile = "Journal.pixd";
         readonly string defaultSIndexFile = "Journal.sidx";
         readonly string defaultLanguagePath = AppDomain.CurrentDomain.BaseDirectory + "Languages\\";
         readonly string encryptionExtention = ".aes";
+
+        string userPassword = string.Empty;
 
         Dictionary<string, string> settings = new Dictionary<string, string>();
         List<string> languageList = new List<string>();
@@ -32,6 +35,11 @@ namespace SiTE.Models
         public string DefaultNotePath
         {
             get { return defaultNotePath; }
+        }
+
+        public string DefaultMasterKeyFile
+        {
+            get { return defaultNotePath + defaultMasterKeyFile; }
         }
 
         public string DefaultDBPath
@@ -59,6 +67,11 @@ namespace SiTE.Models
             get { return encryptionExtention; } 
         }
 
+        public string UserPassword
+        { 
+            get { return userPassword; } 
+        }
+
         public ObservableCollection<NoteModel> NoteList
         {
             get { return noteList; }
@@ -68,6 +81,14 @@ namespace SiTE.Models
         #endregion Properties
 
         #region Methods
+        public void UpdatePassword(string newPassword, bool onStart)
+        {
+            userPassword = newPassword;
+
+            if (!onStart)
+            { Logic.FileOperations.UpdateEncryption(); }
+        }
+
         public void RestoreDefaultSettings()
         {            
             SetSetting("languageID", "en-US");
@@ -93,9 +114,6 @@ namespace SiTE.Models
             if (settings.ContainsKey(key))
             {
                 settings[key] = value;
-
-                if (key == "password")
-                    Logic.FileOperations.UpdateEncryption();
             }
             else
             { settings.Add(key, value); }

@@ -16,7 +16,7 @@ namespace SiTE.Logic
             { message = (string)Application.Current.FindResource("ErrorDefault") + message; }
 
             Views.ErrorMessage messageWindow = new Views.ErrorMessage(message);
-            messageWindow.Show();
+            messageWindow.ShowDialog();
         }
     }
 }
