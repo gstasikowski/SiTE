@@ -54,7 +54,7 @@ namespace SiTE.Views
             string message = string.Format("{0}\n\nVersion: {1}", Application.ResourceAssembly.GetName().Name, Application.ResourceAssembly.GetName().Version);
 
             Application.Current.MainWindow.IsEnabled = false;
-            ErrorMessage messageWindow = new ErrorMessage(message);
+            ErrorMessage messageWindow = new ErrorMessage(message, string.Empty);
             messageWindow.Title = (string)FindResource("MenuAbout");
             messageWindow.Show();
         }

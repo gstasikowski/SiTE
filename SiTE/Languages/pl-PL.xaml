@@ -79,7 +79,9 @@
     <system:String x:Key="WindowPasswordInput">Podaj hasło</system:String>
     <system:String x:Key="WindowSaveReminder">Niezapisane zmiany</system:String>
     <!-- Messages -->
-    <system:String x:Key="PasswordInputMessage">Baza notatek jest zabezpieczona. Podaj hasło aby ją odblokować.</system:String>
+    <system:String x:Key="MessageDetails">Szczegóły</system:String>
+    <system:String x:Key="MessageErrorDetails">Treść błędu</system:String>
+    <system:String x:Key="MessagePasswordInput">Baza notatek jest zabezpieczona. Podaj hasło aby ją odblokować.</system:String>
     <system:String x:Key="MessageSaveReminder">Notka zawiera niezapisane zmiany.&#10;Zapisać przed kontynuowaniem?</system:String>
     <!-- ErrorMessages -->
     <system:String x:Key="ErrorDefault">Wystąpił nieznany błąd, spróbuj ponownie.</system:String>

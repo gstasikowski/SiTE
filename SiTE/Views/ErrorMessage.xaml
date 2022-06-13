@@ -6,7 +6,11 @@
         mc:Ignorable="d"
         Title="{DynamicResource WindowError}" Height="120" Width="500" ResizeMode="NoResize" ShowInTaskbar="False" SizeToContent="WidthAndHeight" Topmost="True" WindowStartupLocation="CenterOwner" Closing="Window_Closing">
     <Grid Height="Auto" Width="Auto">
-        <Label x:Name="lblErrorContent" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,10,5,0"/>
-        <!--<Button Content="OK" />-->
+        <StackPanel>
+            <Label x:Name="lblErrorContent" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,10,5,0"/>
+            <Expander x:Name="expErrorDetails" Header="{DynamicResource MessageDetails}" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top">
+                <Label x:Name="lblErrorDetails" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" />
+            </Expander>
+        </StackPanel>
     </Grid>
 </Window>

@@ -49,7 +49,7 @@ namespace SiTE.Logic
                 }
             }
 
-            FileOperations.EncryptDatabase();
+            EncryptionOperations.EncryptDatabase();
         }
 
         public static void DeleteNote(Guid noteID)
@@ -60,7 +60,7 @@ namespace SiTE.Logic
                 database.Delete(noteToRemove);
             }
 
-            FileOperations.EncryptDatabase();
+            EncryptionOperations.EncryptDatabase();
         }
     }
 }

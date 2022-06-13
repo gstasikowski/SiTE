@@ -86,7 +86,7 @@ namespace SiTE.Models
             userPassword = newPassword;
 
             if (!onStart)
-            { Logic.FileOperations.UpdateEncryption(); }
+            { Logic.EncryptionOperations.UpdateEncryption(); }
         }
 
         public void RestoreDefaultSettings()

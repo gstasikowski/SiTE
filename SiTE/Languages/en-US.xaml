@@ -79,7 +79,9 @@
     <system:String x:Key="WindowPasswordInput">Password required</system:String>
     <system:String x:Key="WindowSaveReminder">Unsaved changes</system:String>
     <!-- Messages -->
-    <system:String x:Key="PasswordInputMessage">Note database is protected with password. Please input your password to unlock it.</system:String>
+    <system:String x:Key="MessageDetails">Details</system:String>
+    <system:String x:Key="MessageErrorDetails">Exception content</system:String>
+    <system:String x:Key="MessagePasswordInput">Note database is protected with password. Please input your password to unlock it.</system:String>
     <system:String x:Key="MessageSaveReminder">Note contains unsaved changes.&#10;Would you like to save them before proceeding?</system:String>
     <!-- ErrorMessages -->
     <system:String x:Key="ErrorDefault">Unkown error has occured. Please try again.</system:String>

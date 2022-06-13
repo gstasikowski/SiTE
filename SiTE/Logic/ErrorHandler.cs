@@ -8,14 +8,15 @@ namespace SiTE.Logic
 
         public ErrorHandler(string errorCode, string exceptionMessage)
         {
-            string message = (exceptionMessage != string.Empty) ? string.Format("\n\nException message: {0}", exceptionMessage) : exceptionMessage;
+            string message;
+            string details = (exceptionMessage != string.Empty) ? string.Format("{0}: {1}", (string)Application.Current.FindResource("MessageErrorDetails"), exceptionMessage) : string.Empty;
 
             try
-            { message = (string)Application.Current.FindResource(errorCode) + message; }
+            { message = (string)Application.Current.FindResource(errorCode); }
             catch
-            { message = (string)Application.Current.FindResource("ErrorDefault") + message; }
+            { message = (string)Application.Current.FindResource("ErrorDefault"); }
 
-            Views.ErrorMessage messageWindow = new Views.ErrorMessage(message);
+            Views.ErrorMessage messageWindow = new Views.ErrorMessage(message, details);
             messageWindow.ShowDialog();
         }
     }
