@@ -1,4 +1,4 @@
-﻿using CustomDatabase.Helpers;
+using CustomDatabase.Helpers;
 using SiTE.Models;
 using System;
 
@@ -147,6 +147,7 @@ namespace SiTE.Logic.Serializers
 
             return note;
         }
+        
         public NoteModel DeserializeSimple(byte[] data)
         {
             var note = new NoteModel();

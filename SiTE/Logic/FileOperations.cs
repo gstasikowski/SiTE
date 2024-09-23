@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -85,7 +85,7 @@ namespace SiTE.Logic
                 SaveSettings(); 
             }
 
-            Refs.localizationHandler.SwitchLanguage(Refs.dataBank.GetSetting("languageID"));
+            Localizer.Instance.LoadLanguage(Refs.dataBank.GetSetting("languageID"));
         }
 
         public static void SaveSettings()

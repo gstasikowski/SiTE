@@ -1,4 +1,4 @@
-﻿using CustomDatabase.Helpers;
+using CustomDatabase.Helpers;
 using CustomDatabase.Interfaces;
 using System;
 

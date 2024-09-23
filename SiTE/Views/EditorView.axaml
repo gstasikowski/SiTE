@@ -1,0 +1,143 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:SiTE.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        x:Class="SiTE.Views.EditorView"
+        x:DataType="vm:EditorViewModel"
+        x:CompileBindings="True"
+        xmlns:lang="clr-namespace:SiTE.Logic"
+        mc:Ignorable="d">
+	<Design.DataContext>
+		<vm:EditorViewModel />
+	</Design.DataContext>
+    <Grid Grid.IsSharedSizeScope="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Menu VerticalAlignment="Top">
+            <MenuItem Header="{lang:Localize MenuFile}">
+                <MenuItem Header="{lang:Localize MenuNewNote}" ToolTip.Tip="{lang:Localize TipNewNote}" Click="BtnNewNote_Click"/>
+                <MenuItem Header="{lang:Localize MenuSaveNote}" ToolTip.Tip="{lang:Localize TipSaveNote}" Click="BtnSaveNote_Click"/>
+                <MenuItem Header="{lang:Localize MenuDeleteNote}" ToolTip.Tip="{lang:Localize TipDeleteNote}" Click="BtnDeleteNote_Click"/>
+                <Separator/>
+                <MenuItem Header="{lang:Localize MenuExit}" Click="MIExit_Click"/>
+            </MenuItem>
+            <MenuItem Header="{lang:Localize MenuEdit}">
+                <MenuItem Header="{lang:Localize MenuCut}" ToolTip.Tip="{lang:Localize TipCut}" Click="BtnCut_Click"/>
+                <MenuItem Header="{lang:Localize MenuCopy}" ToolTip.Tip="{lang:Localize TipCopy}" Click="BtnCopy_Click"/>
+                <MenuItem Header="{lang:Localize MenuPaste}" ToolTip.Tip="{lang:Localize TipPaste}" Click="BtnPaste_Click"/>
+                <MenuItem Header="{lang:Localize MenuSelectAll}"/>
+                <Separator/>
+                <MenuItem Header="{lang:Localize MenuUndo}" x:Name="btnUndoMenu" Click="BtnUndo_Click"/>
+                <MenuItem Header="{lang:Localize MenuRedo}" x:Name="btnRedoMenu" Click="BtnTRedo_Click"/>
+                <Separator/>
+                <MenuItem Header="{lang:Localize MenuBold}" ToolTip.Tip="{lang:Localize TipBold}" Click="BtnTBold_Click"/>
+                <MenuItem Header="{lang:Localize MenuItalic}" ToolTip.Tip="{lang:Localize TipItalic}" Click="BtnItalics_Click"/>
+                <MenuItem Header="{lang:Localize MenuHighlight}" ToolTip.Tip="{lang:Localize TipHighlight}" Click="BtnHighlight_Click"/>
+                <MenuItem Header="{lang:Localize MenuStrikethrough}" ToolTip.Tip="{lang:Localize TipStrikethrough}"/>
+                <MenuItem Header="{lang:Localize MenuSubscript}" ToolTip.Tip="{lang:Localize TipSubscript}"/>
+                <MenuItem Header="{lang:Localize MenuSuperscript}" ToolTip.Tip="{lang:Localize TipSuperscript}"/>
+            </MenuItem>
+            <MenuItem Header="{lang:Localize MenuSettings}" Click="MISettings_Click"/>
+            <MenuItem Header="{lang:Localize MenuHelp}">
+                <MenuItem Header="{lang:Localize MenuGit}" Click="MIGit_Click"/>
+                <MenuItem Header="{lang:Localize MenuAbout}" Click="MIAbout_Click"/>
+            </MenuItem>
+        </Menu>
+        <Menu VerticalAlignment="Stretch" Grid.Row="1">
+            <Button Width="22" Height="22" Click="BtnNewNote_Click" ToolTip.Tip="{lang:Localize TipNewNote}" Padding="0">
+                <Image Source="/Resources/newFile.png"/>
+            </Button>
+            <Button x:Name="btnSaveNote" Width="22" Height="22" Click="BtnSaveNote_Click" ToolTip.Tip="{lang:Localize TipSaveNote}" Padding="0">
+                <Image Source="/Resources/saveFile.png"/>
+            </Button>
+            <Button x:Name="btnDeleteNote" Width="22" Height="22" Click="BtnDeleteNote_Click" ToolTip.Tip="{lang:Localize TipDeleteNote}" Padding="0">
+                <Image Source="/Resources/deleteFile.PNG"/>
+            </Button>
+            <Separator/>
+            <Button Width="22" Height="22" Click="BtnCut_Click" ToolTip.Tip="{lang:Localize TipCut}" Padding="0">
+                <Image Source="/Resources/cut.PNG"/>
+            </Button>
+            <Button Width="22" Height="22" Click="BtnCopy_Click" ToolTip.Tip="{lang:Localize TipCopy}" Padding="0">
+                <Image Source="/Resources/copy.PNG"/>
+            </Button>
+            <Button Width="22" Height="22" Click="BtnPaste_Click" ToolTip.Tip="{lang:Localize TipPaste}" Padding="0">
+                <Image Source="/Resources/paste.PNG"/>
+            </Button>
+            <Separator/>
+            <Button x:Name="btnUndoToolbar" Width="22" Height="22" Click="BtnUndo_Click" ToolTip.Tip="{lang:Localize TipUndo}" Padding="0">
+                <Image Source="/Resources/undo.PNG"/>
+            </Button>
+            <Button x:Name="btnRedoToolbar" Width="22" Height="22" Click="BtnTRedo_Click" ToolTip.Tip="{lang:Localize TipRedo}" Padding="0">
+                <Image Source="/Resources/redo.PNG" Opacity="1"/>
+            </Button>
+            <Separator/>
+            <Button Width="22" Height="22" Content="B" FontWeight="Bold" Click="BtnTBold_Click" ToolTip.Tip="{lang:Localize TipBold}"/>
+            <Button Width="22" Height="22" Content="I" FontStyle="Italic" Click="BtnItalics_Click" ToolTip.Tip="{lang:Localize TipItalic}"/>
+            <Button Width="22" Height="22" Click="BtnHighlight_Click" ToolTip.Tip="{lang:Localize TipHighlight}" Padding="0">
+                <Image Source="/Resources/textHighlight.PNG"/>
+            </Button>
+            <Button Width="30" Height="22" Click="BtnStrike_Click" ToolTip.Tip="{lang:Localize TipStrikethrough}" >
+                <TextBlock TextDecorations="Strikethrough"><Run Text="abc"/></TextBlock>
+            </Button>
+            <Button Width="30" Height="22" Click="BtnSubscript_Click" ToolTip.Tip="{lang:Localize TipSubscript}" Padding="0">
+                <Image Source="/Resources/textSubscript.PNG"/>
+            </Button>
+            <Button Width="30" Height="22" Click="BtnSuperscript_Click" ToolTip.Tip="{lang:Localize TipSuperscript}" Padding="0">
+                <Image Source="/Resources/textSuperscript.PNG"/>
+            </Button>
+            <Separator/>
+            <Button Width="22" Height="22" Click="BtnViewMode_Click" ToolTip.Tip="{lang:Localize TipViewMode}" Padding="0">
+                <Image Source="/Resources/viewMode.PNG" />
+            </Button>
+            <Button x:Name="btnCreateLink" Width="22" Height="22" Click="BtnCreateLink_Click" ToolTip.Tip="{lang:Localize TipCreateLink}" Padding="0">
+                <Image Source="/Resources/noteLink.PNG"/>
+            </Button>
+        </Menu>
+        <Grid Grid.Row="3" Margin="2,2,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="2"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Expander ExpandDirection="Right" IsExpanded="True" Collapsed="EXNoteList_Collapsed" Expanded="EXNoteList_Expanded" VerticalContentAlignment="Stretch"  ToolTip.Tip="{lang:Localize TipNoteList}">
+                <ListBox x:Name="lvwNoteList" SelectionChanged="LVNoteList_SelectionChanged" Margin="2,0,0,-1" ScrollViewer.VerticalScrollBarVisibility="Auto" MinWidth="130"/>
+            </Expander>
+            <GridSplitter x:Name="gclSplitter" Grid.Column="1" HorizontalAlignment="Stretch" Width="2" />
+            <Grid Grid.Column="2" Margin="0,0,2,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label x:Name="lbl_Title" HorizontalAlignment="Left" Content="{lang:Localize NoteTitle}"/>
+                <TextBox x:Name="txtTitle" MinWidth="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" TextChanged="TANoteContent_TextChanged" Grid.ColumnSpan="1" Grid.Column="1"/>
+                <Grid x:Name="grdEditorMode" Grid.Row="1" Grid.ColumnSpan="2" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                        <TextBox x:Name="txtNoteContent" VerticalAlignment="Stretch" MinHeight="100" Background="White" TextChanged="TANoteContent_TextChanged" Margin="0,2,0,0" AcceptsReturn="True" AcceptsTab="True" HorizontalContentAlignment="Left" />
+                        <ScrollViewer VerticalAlignment="Stretch" MinHeight="100" Background="Blue" Margin="0,2,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Column="1" BorderBrush="#FFABADB3" BorderThickness="1">
+                            <!-- <ScrollViewer.CommandBindings> -->
+                                <!-- <CommandBinding Command="{x:Static md:MarkdownXaml.Hyperlink}" Executed="CommandBinding_Executed" /> -->
+                            <!-- </ScrollViewer.CommandBindings> -->
+                        <TextBlock x:Name="markdownContent"/>
+                        </ScrollViewer>
+                </Grid>
+            </Grid>
+        </Grid>
+        <DockPanel LastChildFill="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="4" Height="25">
+            <Label Content="{lang:Localize NoteLastSaveTime}"/>
+            <Label x:Name="lblLastSaveTime"/>
+        </DockPanel>
+    </Grid>
+</UserControl>

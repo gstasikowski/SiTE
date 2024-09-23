@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows; // TODO replace
 
 namespace SiTE.Logic
 {
@@ -9,15 +9,19 @@ namespace SiTE.Logic
         public ErrorHandler(string errorCode, string exceptionMessage)
         {
             string message;
-            string details = (exceptionMessage != string.Empty) ? string.Format("{0}: {1}", (string)Application.Current.FindResource("MessageErrorDetails"), exceptionMessage) : string.Empty;
+            string details = (exceptionMessage != string.Empty) ? string.Format("{0}: {1}", (string)Logic.Localizer.Instance["MessageErrorDetails"], exceptionMessage) : string.Empty;
 
             try
-            { message = (string)Application.Current.FindResource(errorCode); }
+            {
+                message = (string)Logic.Localizer.Instance[errorCode];
+            }
             catch
-            { message = (string)Application.Current.FindResource("ErrorDefault"); }
+            {
+                message = (string)Logic.Localizer.Instance["ErrorDefault"];
+            }
 
-            Views.ErrorMessage messageWindow = new Views.ErrorMessage(message, details);
-            messageWindow.ShowDialog();
+            Views.ErrorMessageView messageWindow = new Views.ErrorMessageView(message, details);
+            // messageWindow.ShowDialog(); // TODO: ShowDialog needs an owner window for the dialog
         }
     }
 }
