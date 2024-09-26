@@ -11,12 +11,12 @@ namespace SiTE.Models
         public readonly string projectUrl = "https://github.com/gstasikowski/SiTE";
         
         readonly string defaultConfigPath = AppDomain.CurrentDomain.BaseDirectory + "Config.xml";
-        readonly string defaultNotePath = AppDomain.CurrentDomain.BaseDirectory + "Notes\\";
+        readonly string defaultNotePath = AppDomain.CurrentDomain.BaseDirectory + "Notes/";
         readonly string defaultMasterKeyFile = "master.key";
         readonly string defaultDatabaseFile = "Journal.data";
         readonly string defaultPIndexFile = "Journal.pixd";
         readonly string defaultSIndexFile = "Journal.sidx";
-        readonly string defaultLanguagePath = AppDomain.CurrentDomain.BaseDirectory + "Languages\\";
+        readonly string defaultLanguagePath = AppDomain.CurrentDomain.BaseDirectory + "Languages/";
         readonly string encryptionExtention = ".aes";
 
         string userPassword = string.Empty;
@@ -86,7 +86,9 @@ namespace SiTE.Models
             userPassword = newPassword;
 
             if (!onStart)
-            { Logic.EncryptionOperations.UpdateEncryption(); }
+            {
+                Logic.EncryptionOperations.UpdateEncryption();
+            }
         }
 
         public void RestoreDefaultSettings()
@@ -116,16 +118,20 @@ namespace SiTE.Models
                 settings[key] = value;
             }
             else
-            { settings.Add(key, value); }
+            {
+                settings.Add(key, value);
+            }
         }
 
         public void AddAvailableLanguage(string languageCode)
         {
             if (!languageList.Contains(languageCode))
-            { languageList.Add(languageCode); }
+            {
+                languageList.Add(languageCode);
+            }
         }
 
-        public List<string> LanguageList
+        public List<string> LanguageList // TODO: use binding with the lang list in the Localizer class
         {
             get { return languageList; }
         }

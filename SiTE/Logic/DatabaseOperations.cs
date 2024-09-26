@@ -12,7 +12,9 @@ namespace SiTE.Logic
                 Refs.dataBank.NoteList.Clear();
 
                 foreach (var note in noteList)
-                { Refs.dataBank.NoteList.Add(note); }
+                {
+                    Refs.dataBank.NoteList.Add(note);
+                }
             }
         }
 

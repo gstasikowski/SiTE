@@ -14,7 +14,7 @@ namespace SiTE.Logic
         public static void InitialSetup()
         {
             CheckAppDirectories();
-            LoadTranslations();
+            // LoadTranslations();
             LoadSettings();
             ClearTempDatabaseFiles(); // remove remnant temp files on startup (in case of crash)
             EncryptionOperations.PrepareEncryptedFiles();
@@ -23,7 +23,9 @@ namespace SiTE.Logic
         static void CheckAppDirectories()
         {
             if (!Directory.Exists(Refs.dataBank.DefaultNotePath))
-            { Directory.CreateDirectory(Refs.dataBank.DefaultNotePath); }
+            {
+                Directory.CreateDirectory(Refs.dataBank.DefaultNotePath);
+            }
         }
 
         public static bool CheckDatabaseFilesExist(bool encrypted)
@@ -38,7 +40,9 @@ namespace SiTE.Logic
         public static void DeleteFile(string filePath)
         {
             if (!File.Exists(filePath))
-            { return; }
+            {
+                return;
+            }
             
             File.Delete(filePath);
         }
@@ -46,17 +50,21 @@ namespace SiTE.Logic
         public static void ClearTempDatabaseFiles()
         {
             if (Refs.dataBank.GetSetting("encryption") == "False")
-            { return; }
+            {
+                return;
+            }
 
             if (File.Exists(Refs.dataBank.DefaultMasterKeyFile + Refs.dataBank.EncryptionExtention))
-            { DeleteFile(Refs.dataBank.DefaultMasterKeyFile); }
+            {
+                DeleteFile(Refs.dataBank.DefaultMasterKeyFile);
+            }
 
             DeleteFile(Refs.dataBank.DefaultDBPath);
             DeleteFile(Refs.dataBank.DefaultPIndexPath);
             DeleteFile(Refs.dataBank.DefaultSIndexPath);
         }
         
-        public static void LoadTranslations()
+        public static void LoadTranslations() // TODO: use method from the Localizer class instead
         {
             foreach (string filePath in Directory.EnumerateFiles(Refs.dataBank.DefaultLanguagePath))
             {
@@ -77,7 +85,9 @@ namespace SiTE.Logic
                 XElement rootElement = XElement.Parse(configFile);
 
                 foreach (var element in rootElement.Elements())
-                { Refs.dataBank.SetSetting(element.Name.LocalName, element.Value); }
+                {
+                    Refs.dataBank.SetSetting(element.Name.LocalName, element.Value);
+                }
             }
             else
             {

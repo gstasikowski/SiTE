@@ -24,7 +24,9 @@ namespace SiTE.Logic
         public NoteDatabase(string pathToDBFile)
         {
             if (pathToDBFile == null)
-            { throw new ArgumentNullException("pathToDBFile"); }
+            {
+                throw new ArgumentNullException("pathToDBFile");
+            }
 
             // Open the stream and (create) database files.
             this.mainDatabaseFile = new FileStream(Refs.dataBank.DefaultDBPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 4096);
@@ -62,12 +64,16 @@ namespace SiTE.Logic
         public void Update(NoteModel note)
         {
             if (disposed)
-            { throw new ObjectDisposedException("NoteDatabase"); }
+            {
+                throw new ObjectDisposedException("NoteDatabase");
+            }
 
             var entry = this.primaryIndex.Get(note.ID);
 
             if (entry == null)
-            { return; }
+            {
+                return;
+            }
 
             var temp = new Tuple<string, string>(Refs.dataBank.GetNoteTitle(note.ID), string.Empty);
             this.secondaryIndex.Delete(temp, entry.Item2);
@@ -83,7 +89,9 @@ namespace SiTE.Logic
         public void Insert(NoteModel note)
         {
             if (disposed)
-            { throw new ObjectDisposedException("NoteDatabase"); }
+            {
+                throw new ObjectDisposedException("NoteDatabase");
+            }
 
             uint recordID = this.noteRecords.Create(this.noteSerializer.Serialize(note));
 
@@ -98,12 +106,16 @@ namespace SiTE.Logic
         public NoteModel Find(Guid ID)
         {
             if (disposed)
-            { throw new ObjectDisposedException("NoteDatabase"); }
+            {
+                throw new ObjectDisposedException("NoteDatabase");
+            }
 
             var entry = this.primaryIndex.Get(ID);
 
             if (entry == null)
-            { return null; }
+            {
+                return null;
+            }
 
             return this.noteSerializer.Deserialize(this.noteRecords.Find(entry.Item2));
         }
@@ -120,7 +132,9 @@ namespace SiTE.Logic
             {
                 // Stop upon reaching key larger than provided
                 if (comparer.Compare(entry.Item1, searchKey) > 0)
-                { break; }
+                {
+                    break;
+                }
 
                 yield return this.noteSerializer.Deserialize(this.noteRecords.Find(entry.Item2));
             }
@@ -136,7 +150,9 @@ namespace SiTE.Logic
             foreach (var entry in elements)
             {
                 if (entry == null)
+                {
                     break;
+                }
 
                 // Using DeserializeSimple because we DON'T need all the note content when asking for note list
                 yield return this.noteSerializer.DeserializeSimple(this.noteRecords.Find(entry.Item2));
@@ -151,7 +167,9 @@ namespace SiTE.Logic
             var entry = this.primaryIndex.Get(note.ID);
 
             if (entry == null)
-            { return; }
+            {
+                return;
+            }
 
             var temp = new Tuple<string, string>(note.Title, string.Empty);
             this.secondaryIndex.Delete(temp, entry.Item2);
