@@ -36,7 +36,6 @@ namespace SiTE.Views
         {
             // TODO remove hard references to MainWindow
             ((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.Title = "SiTE";//App.ResourceAssembly.GetName().Name;
-            lvwNoteList.ItemsSource = Logic.Refs.dataBank.NoteList;
 
             if (isNoteModified)
             {
