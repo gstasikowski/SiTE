@@ -56,7 +56,7 @@ namespace SiTE.Views
             ((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.IsEnabled = false;
             ErrorMessageView messageWindow = new ErrorMessageView(message, string.Empty);
             messageWindow.Title = (string)Logic.Localizer.Instance["MenuAbout"];
-            messageWindow.Show();
+            messageWindow.ShowDialog(((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow);
         }
 
         private void OpenSettings()
