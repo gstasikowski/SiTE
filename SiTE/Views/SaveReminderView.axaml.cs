@@ -13,13 +13,13 @@ namespace SiTE.Views
         {
             InitializeComponent();
             ((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.IsEnabled = false;
+            this.Closing += ClosePrompt;
         }
 
         private void SetDialogChoice(int choice)
         {
             dialogChoice = choice;
-            ((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.IsEnabled = true;
-            Close();
+            Close(dialogChoice);
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
@@ -35,6 +35,11 @@ namespace SiTE.Views
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             SetDialogChoice(-1);
+        }
+
+        private void ClosePrompt(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.IsEnabled = true;
         }
     }
 }
