@@ -51,52 +51,52 @@
         </Menu>
         <Menu VerticalAlignment="Stretch" Grid.Row="1">
             <Button Width="22" Height="22" Click="BtnNewNote_Click" ToolTip.Tip="{lang:Localize TipNewNote}" Padding="0">
-                <Image Source="/Resources/newFile.png"/>
+                <Image Source="/Assets/Icons/newFile.png"/>
             </Button>
             <Button x:Name="btnSaveNote" Width="22" Height="22" Click="BtnSaveNote_Click" ToolTip.Tip="{lang:Localize TipSaveNote}" Padding="0">
-                <Image Source="/Resources/saveFile.png"/>
+                <Image Source="/Assets/Icons/saveFile.png"/>
             </Button>
             <Button x:Name="btnDeleteNote" Width="22" Height="22" Click="BtnDeleteNote_Click" ToolTip.Tip="{lang:Localize TipDeleteNote}" Padding="0">
-                <Image Source="/Resources/deleteFile.PNG"/>
+                <Image Source="/Assets/Icons/deleteFile.png"/>
             </Button>
             <Separator/>
             <Button Width="22" Height="22" Click="BtnCut_Click" ToolTip.Tip="{lang:Localize TipCut}" Padding="0">
-                <Image Source="/Resources/cut.PNG"/>
+                <Image Source="/Assets/Icons/cut.png"/>
             </Button>
             <Button Width="22" Height="22" Click="BtnCopy_Click" ToolTip.Tip="{lang:Localize TipCopy}" Padding="0">
-                <Image Source="/Resources/copy.PNG"/>
+                <Image Source="/Assets/Icons/copy.png"/>
             </Button>
             <Button Width="22" Height="22" Click="BtnPaste_Click" ToolTip.Tip="{lang:Localize TipPaste}" Padding="0">
-                <Image Source="/Resources/paste.PNG"/>
+                <Image Source="/Assets/Icons/paste.png"/>
             </Button>
             <Separator/>
             <Button x:Name="btnUndoToolbar" Width="22" Height="22" Click="BtnUndo_Click" ToolTip.Tip="{lang:Localize TipUndo}" Padding="0">
-                <Image Source="/Resources/undo.PNG"/>
+                <Image Source="/Assets/Icons/undo.png"/>
             </Button>
             <Button x:Name="btnRedoToolbar" Width="22" Height="22" Click="BtnTRedo_Click" ToolTip.Tip="{lang:Localize TipRedo}" Padding="0">
-                <Image Source="/Resources/redo.PNG" Opacity="1"/>
+                <Image Source="/Assets/Icons/redo.png" Opacity="1"/>
             </Button>
             <Separator/>
             <Button Width="22" Height="22" Content="B" FontWeight="Bold" Click="BtnTBold_Click" ToolTip.Tip="{lang:Localize TipBold}"/>
             <Button Width="22" Height="22" Content="I" FontStyle="Italic" Click="BtnItalics_Click" ToolTip.Tip="{lang:Localize TipItalic}"/>
             <Button Width="22" Height="22" Click="BtnHighlight_Click" ToolTip.Tip="{lang:Localize TipHighlight}" Padding="0">
-                <Image Source="/Resources/textHighlight.PNG"/>
+                <Image Source="/Assets/Icons/textHighlight.png"/>
             </Button>
             <Button Width="30" Height="22" Click="BtnStrike_Click" ToolTip.Tip="{lang:Localize TipStrikethrough}" >
                 <TextBlock TextDecorations="Strikethrough"><Run Text="abc"/></TextBlock>
             </Button>
             <Button Width="30" Height="22" Click="BtnSubscript_Click" ToolTip.Tip="{lang:Localize TipSubscript}" Padding="0">
-                <Image Source="/Resources/textSubscript.PNG"/>
+                <Image Source="/Assets/Icons/textSubscript.png"/>
             </Button>
             <Button Width="30" Height="22" Click="BtnSuperscript_Click" ToolTip.Tip="{lang:Localize TipSuperscript}" Padding="0">
-                <Image Source="/Resources/textSuperscript.PNG"/>
+                <Image Source="/Assets/Icons/textSuperscript.png"/>
             </Button>
             <Separator/>
             <Button Width="22" Height="22" Click="BtnViewMode_Click" ToolTip.Tip="{lang:Localize TipViewMode}" Padding="0">
-                <Image Source="/Resources/viewMode.PNG" />
+                <Image Source="/Assets/Icons/viewMode.png" />
             </Button>
             <Button x:Name="btnCreateLink" Width="22" Height="22" Click="BtnCreateLink_Click" ToolTip.Tip="{lang:Localize TipCreateLink}" Padding="0">
-                <Image Source="/Resources/noteLink.PNG"/>
+                <Image Source="/Assets/Icons/noteLink.png"/>
             </Button>
         </Menu>
         <Grid Grid.Row="3" Margin="2,2,0,0">
