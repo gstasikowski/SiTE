@@ -13,11 +13,13 @@ namespace SiTE.Views
             lblErrorDetails.Content = errorDetails;
 
             expErrorDetails.IsVisible = (errorDetails == string.Empty) ? false : true;
+            
+            this.Closing += EnableMainWindow;
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void EnableMainWindow(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            // App.Current.MainWindow.IsEnabled = true; // TODO: replace with a proper call for Avalonia
+            ((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.IsEnabled = true;
         }
     }
 }
