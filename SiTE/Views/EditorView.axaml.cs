@@ -157,7 +157,7 @@ namespace SiTE.Views
         {
             lvwNoteList.SelectedIndex = -1;
             selectedNote = System.Guid.Empty;
-            txtTitle.Text = "";
+            txtTitle.Text = string.Empty;
             txtNoteContent.Text = string.Empty;
             btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = false;
             SetModifiedState(false, string.Empty);
