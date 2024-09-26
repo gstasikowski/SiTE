@@ -174,14 +174,16 @@ namespace SiTE.Views
             OpenNote(tempItem.ID);
         }
 
-        private void OpenNote(System.Guid noteID)
+        private async Task OpenNote(System.Guid noteID)
         {
             if (selectedNote == noteID)
             {
                 return;
             }
 
-            if (!AreUnsavedChangesHandled())
+            await DisplaySaveReminder();
+
+            if (!continueNoteSwitch)
             {
                 lvwNoteList.SelectedIndex = Logic.Refs.dataBank.GetNoteIndex(selectedNote);
                 return;
@@ -194,12 +196,12 @@ namespace SiTE.Views
             txtTitle.Text = tempNote.Title;
             txtNoteContent.Text = tempNote.Content;
 
-            SetModifiedState(false, tempNote.Modified.ToString());
             txtNoteContent.IsUndoEnabled = true; // TODO figure out a better way to do this
             btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = true;
 
+            selectedNote = noteID;
             ResetAutosave();
-            UpdateNoteListSelection();
+            SetModifiedState(false, tempNote.Modified.ToString());
         }
 
         private void SaveNote()
