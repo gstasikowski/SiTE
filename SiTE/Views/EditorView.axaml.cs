@@ -18,6 +18,7 @@ namespace SiTE.Views
 
         private EditorMode editorMode = EditorMode.editor;
         private bool isNoteModified;
+        private bool continueNoteSwitch = true;
         private System.Guid selectedNote;
 
         public EditorView()
@@ -433,28 +434,29 @@ namespace SiTE.Views
         #endregion Methods (helpers)
 
         #region Methods (saving)
-        public bool AreUnsavedChangesHandled()
+        public async Task DisplaySaveReminder()
         {
             if (isNoteModified)
             {
                 var saveWindow = new SaveReminderView();
-                saveWindow.ShowDialog(((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow);
+                int saveChoice = await saveWindow.ShowDialog<int>(((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow);
 
-                switch (saveWindow.dialogChoice)
+                switch (saveChoice)
                 {
                     case 0:
                         SaveNote();
-                        return true;
+                        break;
 
                     case 1:
-                        return true;
+                        break;
 
                     default:
-                        return false;
+                        continueNoteSwitch = false;
+                        return;
                 }
             }
 
-            return true;
+            continueNoteSwitch = true;
         }
 
         private void ResetAutosave()
