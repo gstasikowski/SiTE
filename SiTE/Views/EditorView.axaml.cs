@@ -495,7 +495,10 @@ namespace SiTE.Views
         #region UI Events
         private void TANoteContent_TextChanged(object sender, TextChangedEventArgs e)
         {
-            SetModifiedState(true, null);
+            if (((TextBox)sender).IsFocused)
+            {
+                SetModifiedState(true, string.Empty);
+            }
             UpdateMarkdownView();
         }
 
