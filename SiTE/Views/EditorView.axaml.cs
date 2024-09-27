@@ -28,7 +28,6 @@ namespace SiTE.Views
 
             WindowSetup();
             LoadNoteList();
-            NewNote();
         }
 
         #region Methods (window)
@@ -73,8 +72,8 @@ namespace SiTE.Views
         #region Methods (view)
         private void UpdateNoteListSelection()
         {
-            lvwNoteList.SelectedIndex = Logic.Refs.dataBank.GetNoteIndexFromTitle(txtTitle.Text);
-            _selectedNote = ((Models.NoteModel)lvwNoteList.SelectedItem).ID;
+            lvwNoteList.SelectedIndex = Logic.Refs.dataBank.GetNoteIndexFromTitle(((ViewModels.EditorViewModel)this.DataContext).ActiveNote.Title);
+            _selectedNote = (lvwNoteList.SelectedIndex > -1) ? ((Models.NoteModel)lvwNoteList.SelectedItem).ID : System.Guid.Empty;
         }
 
         private void UpdateMarkdownView()
@@ -145,6 +144,13 @@ namespace SiTE.Views
             }
 
         }
+
+        private void UpdateNoteDisplay() // TODO: remove once binding is working properly
+        {
+            _selectedNote = ((ViewModels.EditorViewModel)this.DataContext).ActiveNote.ID;
+            txtTitle.Text = ((ViewModels.EditorViewModel)this.DataContext).ActiveNote.Title;
+            txtNoteContent.Text = ((ViewModels.EditorViewModel)this.DataContext).ActiveNote.Content;
+        }
         #endregion Methods (view)
 
         #region Methods (note operations)
@@ -156,9 +162,9 @@ namespace SiTE.Views
         private void NewNote()
         {
             lvwNoteList.SelectedIndex = -1;
-            _selectedNote = System.Guid.Empty;
-            txtTitle.Text = string.Empty;
-            txtNoteContent.Text = string.Empty;
+            ((ViewModels.EditorViewModel)this.DataContext).NewNote();
+            UpdateNoteDisplay();
+
             btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = false;
             SetModifiedState(false, string.Empty);
         }
@@ -191,22 +197,22 @@ namespace SiTE.Views
 
             txtNoteContent.IsUndoEnabled = false; // TODO figure out a better way to do this
 
-            var tempNote = Logic.DatabaseOperations.LoadNote(noteID);
-            System.Console.WriteLine("[EditorView] >> loading note: " + tempNote.Title);
-            txtTitle.Text = tempNote.Title;
-            txtNoteContent.Text = tempNote.Content;
+            ((ViewModels.EditorViewModel)this.DataContext).OpenNote(noteID);
+            UpdateNoteDisplay();
 
             txtNoteContent.IsUndoEnabled = true; // TODO figure out a better way to do this
             btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = true;
 
-            _selectedNote = noteID;
             ResetAutosave();
-            SetModifiedState(false, tempNote.Modified.ToString());
+            SetModifiedState(false, ((ViewModels.EditorViewModel)this.DataContext).ActiveNote.Modified.ToString());
         }
 
         private void SaveNote()
         {
-            Logic.DatabaseOperations.SaveNote(_selectedNote, txtTitle.Text, txtNoteContent.Text);
+            ((ViewModels.EditorViewModel)this.DataContext).ActiveNote.Title = txtTitle.Text; // TODO: remove once binding is working properly
+            ((ViewModels.EditorViewModel)this.DataContext).ActiveNote.Content = txtNoteContent.Text; // TODO: remove once binding is working properly
+
+            ((ViewModels.EditorViewModel)this.DataContext).SaveNote();
 
             LoadNoteList();
             SetModifiedState(false, System.DateTime.Now.ToString());
@@ -225,9 +231,8 @@ namespace SiTE.Views
             {
                 return;
             }
-
-            var tempItem = (Models.NoteModel)lvwNoteList.SelectedItem;
-            Logic.DatabaseOperations.DeleteNote(tempItem.ID);
+            
+            ((ViewModels.EditorViewModel)this.DataContext).DeleteNote();
             NewNote();
             LoadNoteList();
         }

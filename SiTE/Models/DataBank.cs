@@ -9,7 +9,7 @@ namespace SiTE.Models
     {
         #region Variables
         public readonly string projectUrl = "https://github.com/gstasikowski/SiTE";
-        
+
         private readonly string _defaultConfigPath = AppDomain.CurrentDomain.BaseDirectory + "Config.xml";
         private readonly string _defaultNotePath = AppDomain.CurrentDomain.BaseDirectory + "Notes/";
         private readonly string _defaultMasterKeyFile = "master.key";
@@ -24,6 +24,7 @@ namespace SiTE.Models
         private Dictionary<string, string> _settings = new Dictionary<string, string>();
         private List<string> _languageList = new List<string>();
         private ObservableCollection<NoteModel> _noteList = new();
+        private NoteModel _activeNote = new NoteModel();
         #endregion Variables
 
         #region Properties
@@ -78,6 +79,11 @@ namespace SiTE.Models
             set { _noteList = value; }
         }
 
+        public NoteModel ActiveNote
+        {
+            get { return _activeNote; }
+            set { _activeNote = value; }
+        }
         #endregion Properties
 
         #region Methods
@@ -156,6 +162,27 @@ namespace SiTE.Models
         public int LanguageIndex(string languageCode)
         {
             return _languageList.FindIndex(x => x.Contains(languageCode));
+        }
+
+        public void NewNote()
+        {
+            ActiveNote = new NoteModel();
+        }
+
+        public void OpenNote(System.Guid noteID)
+        {
+            var tempNote = Logic.DatabaseOperations.LoadNote(noteID);
+            ActiveNote = tempNote;
+        }
+
+        public void SaveNote()
+        {
+            Logic.DatabaseOperations.SaveNote(ActiveNote.ID, ActiveNote.Title, ActiveNote.Content);
+        }
+
+        public void DeleteNote()
+        {
+            Logic.DatabaseOperations.DeleteNote(ActiveNote.ID);
         }
         #endregion Methods
     }
