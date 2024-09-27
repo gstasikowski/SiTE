@@ -13,13 +13,13 @@ namespace SiTE.Views
 
     public partial class EditorView : UserControl
     {
-        private Task autosaveTask;
-        private CancellationTokenSource cancellationToken;
+        private Task _autosaveTask;
+        private CancellationTokenSource _cancellationToken;
 
-        private EditorMode editorMode = EditorMode.editor;
-        private bool isNoteModified;
-        private bool continueNoteSwitch = true;
-        private System.Guid selectedNote;
+        private EditorMode _editorMode = EditorMode.editor;
+        private bool _isNoteModified;
+        private bool _continueNoteSwitch = true;
+        private System.Guid _selectedNote;
 
         public EditorView()
         {
@@ -37,14 +37,14 @@ namespace SiTE.Views
             // TODO remove hard references to MainWindow
             ((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.Title = "SiTE";//App.ResourceAssembly.GetName().Name;
 
-            if (isNoteModified)
+            if (_isNoteModified)
             {
                 ((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.Title += '*';
             }
 
             int tempMode;
             int.TryParse(Logic.Refs.dataBank.GetSetting("editorMode"), out tempMode);
-            editorMode = (EditorMode)tempMode;
+            _editorMode = (EditorMode)tempMode;
 
             UpdateEditorView();
         }
@@ -74,7 +74,7 @@ namespace SiTE.Views
         private void UpdateNoteListSelection()
         {
             lvwNoteList.SelectedIndex = Logic.Refs.dataBank.GetNoteIndexFromTitle(txtTitle.Text);
-            selectedNote = ((Models.NoteModel)lvwNoteList.SelectedItem).ID;
+            _selectedNote = ((Models.NoteModel)lvwNoteList.SelectedItem).ID;
         }
 
         private void UpdateMarkdownView()
@@ -104,16 +104,16 @@ namespace SiTE.Views
 
         private void ToggleEditorMode()
         {
-            editorMode++;
+            _editorMode++;
 
-            if (editorMode > EditorMode.render)
+            if (_editorMode > EditorMode.render)
             {
-                editorMode = 0;
+                _editorMode = 0;
             }
 
             UpdateEditorView();
 
-            Logic.Refs.dataBank.SetSetting("editorMode", ((int)editorMode).ToString());
+            Logic.Refs.dataBank.SetSetting("_editorMode", ((int)_editorMode).ToString());
             Logic.FileOperations.SaveSettings();
         }
 
@@ -121,7 +121,7 @@ namespace SiTE.Views
         {
             grdEditorMode.ColumnDefinitions[0].Width = grdEditorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
 
-            switch (editorMode)
+            switch (_editorMode)
             {
                 case EditorMode.editor:
                     txtNoteContent.IsVisible = true;
@@ -156,7 +156,7 @@ namespace SiTE.Views
         private void NewNote()
         {
             lvwNoteList.SelectedIndex = -1;
-            selectedNote = System.Guid.Empty;
+            _selectedNote = System.Guid.Empty;
             txtTitle.Text = string.Empty;
             txtNoteContent.Text = string.Empty;
             btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = false;
@@ -176,37 +176,37 @@ namespace SiTE.Views
 
         private async Task OpenNote(System.Guid noteID)
         {
-            if (selectedNote == noteID)
+            if (_selectedNote == noteID)
             {
                 return;
             }
 
             await DisplaySaveReminder();
 
-            if (!continueNoteSwitch)
+            if (!_continueNoteSwitch)
             {
-                lvwNoteList.SelectedIndex = Logic.Refs.dataBank.GetNoteIndex(selectedNote);
+                lvwNoteList.SelectedIndex = Logic.Refs.dataBank.GetNoteIndex(_selectedNote);
                 return;
             }
 
             txtNoteContent.IsUndoEnabled = false; // TODO figure out a better way to do this
 
             var tempNote = Logic.DatabaseOperations.LoadNote(noteID);
-            
+            System.Console.WriteLine("[EditorView] >> loading note: " + tempNote.Title);
             txtTitle.Text = tempNote.Title;
             txtNoteContent.Text = tempNote.Content;
 
             txtNoteContent.IsUndoEnabled = true; // TODO figure out a better way to do this
             btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = true;
 
-            selectedNote = noteID;
+            _selectedNote = noteID;
             ResetAutosave();
             SetModifiedState(false, tempNote.Modified.ToString());
         }
 
         private void SaveNote()
         {
-            Logic.DatabaseOperations.SaveNote(selectedNote, txtTitle.Text, txtNoteContent.Text);
+            Logic.DatabaseOperations.SaveNote(_selectedNote, txtTitle.Text, txtNoteContent.Text);
 
             LoadNoteList();
             SetModifiedState(false, System.DateTime.Now.ToString());
@@ -419,7 +419,8 @@ namespace SiTE.Views
 
         private void SetModifiedState(bool isModified, string modifiedDate)
         {
-            isNoteModified = isModified;
+            System.Console.WriteLine("[EditorView] setting modified state to: " + isModified + " -> " + modifiedDate);
+            _isNoteModified = isModified;
 
             btnSaveNote.IsEnabled = isModified;
             btnUndoMenu.IsEnabled = btnUndoToolbar.IsEnabled = txtNoteContent.CanUndo;
@@ -437,7 +438,7 @@ namespace SiTE.Views
         #region Methods (saving)
         public async Task DisplaySaveReminder()
         {
-            if (isNoteModified)
+            if (_isNoteModified)
             {
                 var saveWindow = new SaveReminderView();
                 int saveChoice = await saveWindow.ShowDialog<int>(((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow);
@@ -452,35 +453,35 @@ namespace SiTE.Views
                         break;
 
                     default:
-                        continueNoteSwitch = false;
+                        _continueNoteSwitch = false;
                         return;
                 }
             }
 
-            continueNoteSwitch = true;
+            _continueNoteSwitch = true;
         }
 
         private void ResetAutosave()
         {
-            if (autosaveTask != null && !autosaveTask.IsCompleted)
+            if (_autosaveTask != null && !_autosaveTask.IsCompleted)
             { 
-                cancellationToken.Cancel();
+                _cancellationToken.Cancel();
 
-                if (autosaveTask.IsCanceled)
+                if (_autosaveTask.IsCanceled)
                 {
-                    autosaveTask.Dispose();
+                    _autosaveTask.Dispose();
                 }
             }
 
-            cancellationToken = new CancellationTokenSource();
-            autosaveTask = AutoSaveTask();
+            _cancellationToken = new CancellationTokenSource();
+            _autosaveTask = AutosaveTask();
         }
 
-        private async Task AutoSaveTask()
+        private async Task AutosaveTask()
         {
             if (System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("autoSave")) && lvwNoteList.SelectedIndex >= 0)
             {
-                using (cancellationToken)
+                using (_cancellationToken)
                 {
                     int autoSaveDelay = 5;
                     int.TryParse(Logic.Refs.dataBank.GetSetting("autoSaveDelay"), out autoSaveDelay);

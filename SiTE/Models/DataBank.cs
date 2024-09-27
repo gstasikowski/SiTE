@@ -10,72 +10,72 @@ namespace SiTE.Models
         #region Variables
         public readonly string projectUrl = "https://github.com/gstasikowski/SiTE";
         
-        readonly string defaultConfigPath = AppDomain.CurrentDomain.BaseDirectory + "Config.xml";
-        readonly string defaultNotePath = AppDomain.CurrentDomain.BaseDirectory + "Notes/";
-        readonly string defaultMasterKeyFile = "master.key";
-        readonly string defaultDatabaseFile = "Journal.data";
-        readonly string defaultPIndexFile = "Journal.pixd";
-        readonly string defaultSIndexFile = "Journal.sidx";
-        readonly string defaultLanguagePath = AppDomain.CurrentDomain.BaseDirectory + "Languages/";
-        readonly string encryptionExtention = ".aes";
+        private readonly string _defaultConfigPath = AppDomain.CurrentDomain.BaseDirectory + "Config.xml";
+        private readonly string _defaultNotePath = AppDomain.CurrentDomain.BaseDirectory + "Notes/";
+        private readonly string _defaultMasterKeyFile = "master.key";
+        private readonly string _defaultDatabaseFile = "Journal.data";
+        private readonly string _defaultPIndexFile = "Journal.pixd";
+        private readonly string _defaultSIndexFile = "Journal.sidx";
+        private readonly string _defaultLanguagePath = AppDomain.CurrentDomain.BaseDirectory + "Languages/";
+        private readonly string _encryptionExtention = ".aes";
 
-        string userPassword = string.Empty;
+        private string _userPassword = string.Empty;
 
-        Dictionary<string, string> settings = new Dictionary<string, string>();
-        List<string> languageList = new List<string>();
-        ObservableCollection<NoteModel> noteList = new();
+        private Dictionary<string, string> _settings = new Dictionary<string, string>();
+        private List<string> _languageList = new List<string>();
+        private ObservableCollection<NoteModel> _noteList = new();
         #endregion Variables
 
         #region Properties
         public string DefaultConfigPath
         {
-            get { return defaultConfigPath; }
+            get { return _defaultConfigPath; }
         }
 
         public string DefaultNotePath
         {
-            get { return defaultNotePath; }
+            get { return _defaultNotePath; }
         }
 
         public string DefaultMasterKeyFile
         {
-            get { return defaultNotePath + defaultMasterKeyFile; }
+            get { return _defaultNotePath + _defaultMasterKeyFile; }
         }
 
         public string DefaultDBPath
         {
-            get { return defaultNotePath + defaultDatabaseFile; }
+            get { return _defaultNotePath + _defaultDatabaseFile; }
         }
 
         public string DefaultPIndexPath
         {
-            get { return defaultNotePath + defaultPIndexFile; }
+            get { return _defaultNotePath + _defaultPIndexFile; }
         }
 
         public string DefaultSIndexPath
         {
-            get { return defaultNotePath + defaultSIndexFile; }
+            get { return _defaultNotePath + _defaultSIndexFile; }
         }
 
         public string DefaultLanguagePath
         {
-            get { return defaultLanguagePath; }
+            get { return _defaultLanguagePath; }
         }
 
         public string EncryptionExtention
         { 
-            get { return encryptionExtention; } 
+            get { return _encryptionExtention; } 
         }
 
         public string UserPassword
         { 
-            get { return userPassword; } 
+            get { return _userPassword; } 
         }
 
         public ObservableCollection<NoteModel> NoteList
         {
-            get { return noteList; }
-            set { noteList = value; }
+            get { return _noteList; }
+            set { _noteList = value; }
         }
 
         #endregion Properties
@@ -83,7 +83,7 @@ namespace SiTE.Models
         #region Methods
         public void UpdatePassword(string newPassword, bool onStart)
         {
-            userPassword = newPassword;
+            _userPassword = newPassword;
 
             if (!onStart)
             {
@@ -103,37 +103,37 @@ namespace SiTE.Models
 
         public Dictionary<string, string> GetAllSettings()
         {
-            return settings;
+            return _settings;
         }
 
         public string GetSetting(string key)
         {
-            return settings[key];
+            return _settings[key];
         }
 
         public void SetSetting(string key, string value)
         {
-            if (settings.ContainsKey(key))
+            if (_settings.ContainsKey(key))
             {
-                settings[key] = value;
+                _settings[key] = value;
             }
             else
             {
-                settings.Add(key, value);
+                _settings.Add(key, value);
             }
         }
 
         public void AddAvailableLanguage(string languageCode)
         {
-            if (!languageList.Contains(languageCode))
+            if (!_languageList.Contains(languageCode))
             {
-                languageList.Add(languageCode);
+                _languageList.Add(languageCode);
             }
         }
 
         public List<string> LanguageList // TODO: use binding with the lang list in the Localizer class
         {
-            get { return languageList; }
+            get { return _languageList; }
         }
 
         public string GetNoteTitle(Guid noteID)
@@ -155,7 +155,7 @@ namespace SiTE.Models
 
         public int LanguageIndex(string languageCode)
         {
-            return languageList.FindIndex(x => x.Contains(languageCode));
+            return _languageList.FindIndex(x => x.Contains(languageCode));
         }
         #endregion Methods
     }

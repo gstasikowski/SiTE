@@ -7,7 +7,7 @@ namespace SiTE.Views
 {
     public partial class SaveReminderView : Window
     {
-        public int dialogChoice = -1;
+        private int _dialogChoice = -1;
 
         public SaveReminderView()
         {
@@ -18,8 +18,8 @@ namespace SiTE.Views
 
         private void SetDialogChoice(int choice)
         {
-            dialogChoice = choice;
-            Close(dialogChoice);
+            _dialogChoice = choice;
+            Close(_dialogChoice);
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
