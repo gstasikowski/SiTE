@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace SiTE.Logic
 {
@@ -11,7 +13,7 @@ namespace SiTE.Logic
                 List<Models.NoteModel> noteList = new List<Models.NoteModel>(database.GetAll());
                 Models.DataBank.Instance.NoteList.Clear();
 
-                foreach (var note in noteList)
+                foreach (var note in noteList.OrderBy(note => note.Title))
                 {
                     Models.DataBank.Instance.NoteList.Add(note);
                 }
