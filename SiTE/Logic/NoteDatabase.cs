@@ -29,9 +29,9 @@ namespace SiTE.Logic
             }
 
             // Open the stream and (create) database files.
-            this.mainDatabaseFile = new FileStream(Refs.dataBank.DefaultDBPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 4096);
-            this.primaryIndexFile = new FileStream(Refs.dataBank.DefaultPIndexPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 4096);
-            this.secondaryIndexFile = new FileStream(Refs.dataBank.DefaultSIndexPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 4096);
+            this.mainDatabaseFile = new FileStream(Models.DataBank.Instance.DefaultDBPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 4096);
+            this.primaryIndexFile = new FileStream(Models.DataBank.Instance.DefaultPIndexPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 4096);
+            this.secondaryIndexFile = new FileStream(Models.DataBank.Instance.DefaultSIndexPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 4096);
 
             // Create a RecordStorage for main cow data
             this.noteRecords = new RecordStorage(new BlockStorage(this.mainDatabaseFile, 4096, 48));
@@ -75,7 +75,7 @@ namespace SiTE.Logic
                 return;
             }
 
-            var temp = new Tuple<string, string>(Refs.dataBank.GetNoteTitle(note.ID), string.Empty);
+            var temp = new Tuple<string, string>(Models.DataBank.Instance.GetNoteTitle(note.ID), string.Empty);
             this.secondaryIndex.Delete(temp, entry.Item2);
 
             var serializedNote = this.noteSerializer.Serialize(note);

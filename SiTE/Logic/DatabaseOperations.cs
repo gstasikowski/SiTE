@@ -6,27 +6,27 @@ namespace SiTE.Logic
     {
         public static void GetNoteList()
         {
-            using (var database = new NoteDatabase(Refs.dataBank.DefaultDBPath))
+            using (var database = new NoteDatabase(Models.DataBank.Instance.DefaultDBPath))
             {
-                var noteList = database.GetAll();
-                Refs.dataBank.NoteList.Clear();
+                List<Models.NoteModel> noteList = new List<Models.NoteModel>(database.GetAll());
+                Models.DataBank.Instance.NoteList.Clear();
 
                 foreach (var note in noteList)
                 {
-                    Refs.dataBank.NoteList.Add(note);
+                    Models.DataBank.Instance.NoteList.Add(note);
                 }
             }
         }
 
         public static Models.NoteModel LoadNote(Guid noteID)
         {
-            using (var database = new NoteDatabase(Refs.dataBank.DefaultDBPath))
+            using (var database = new NoteDatabase(Models.DataBank.Instance.DefaultDBPath))
             { return database.Find(noteID); }
         }
 
         public static void SaveNote(Guid noteID, string noteTitle, string text)
         {
-            using (var database = new NoteDatabase(Refs.dataBank.DefaultDBPath))
+            using (var database = new NoteDatabase(Models.DataBank.Instance.DefaultDBPath))
             {
                 Guid noteGuid = (noteID == Guid.Empty) ? Guid.NewGuid() : noteID;
                 var oldNote = database.Find(noteGuid);
@@ -56,7 +56,7 @@ namespace SiTE.Logic
 
         public static void DeleteNote(Guid noteID)
         {
-            using (var database = new NoteDatabase(Refs.dataBank.DefaultDBPath))
+            using (var database = new NoteDatabase(Models.DataBank.Instance.DefaultDBPath))
             {
                 var noteToRemove = database.Find(noteID);
                 database.Delete(noteToRemove);

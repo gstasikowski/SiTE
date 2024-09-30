@@ -22,19 +22,19 @@ namespace SiTE.Logic
 
         static void CheckAppDirectories()
         {
-            if (!Directory.Exists(Refs.dataBank.DefaultNotePath))
+            if (!Directory.Exists(Models.DataBank.Instance.DefaultNotePath))
             {
-                Directory.CreateDirectory(Refs.dataBank.DefaultNotePath);
+                Directory.CreateDirectory(Models.DataBank.Instance.DefaultNotePath);
             }
         }
 
         public static bool CheckDatabaseFilesExist(bool encrypted)
         {
-            string encryptionExtention = encrypted ? Refs.dataBank.EncryptionExtention : string.Empty;
+            string encryptionExtention = encrypted ? Models.DataBank.Instance.EncryptionExtention : string.Empty;
 
-            return (File.Exists(Refs.dataBank.DefaultDBPath + encryptionExtention)
-                && File.Exists(Refs.dataBank.DefaultPIndexPath + encryptionExtention)
-                && File.Exists(Refs.dataBank.DefaultSIndexPath + encryptionExtention));
+            return (File.Exists(Models.DataBank.Instance.DefaultDBPath + encryptionExtention)
+                && File.Exists(Models.DataBank.Instance.DefaultPIndexPath + encryptionExtention)
+                && File.Exists(Models.DataBank.Instance.DefaultSIndexPath + encryptionExtention));
         }
 
         public static void DeleteFile(string filePath)
@@ -49,35 +49,35 @@ namespace SiTE.Logic
 
         public static void ClearTempDatabaseFiles()
         {
-            if (Refs.dataBank.GetSetting("encryption") == "False")
+            if (Models.DataBank.Instance.GetSetting("encryption") == "False")
             {
                 return;
             }
 
-            if (File.Exists(Refs.dataBank.DefaultMasterKeyFile + Refs.dataBank.EncryptionExtention))
+            if (File.Exists(Models.DataBank.Instance.DefaultMasterKeyFile + Models.DataBank.Instance.EncryptionExtention))
             {
-                DeleteFile(Refs.dataBank.DefaultMasterKeyFile);
+                DeleteFile(Models.DataBank.Instance.DefaultMasterKeyFile);
             }
 
-            DeleteFile(Refs.dataBank.DefaultDBPath);
-            DeleteFile(Refs.dataBank.DefaultPIndexPath);
-            DeleteFile(Refs.dataBank.DefaultSIndexPath);
+            DeleteFile(Models.DataBank.Instance.DefaultDBPath);
+            DeleteFile(Models.DataBank.Instance.DefaultPIndexPath);
+            DeleteFile(Models.DataBank.Instance.DefaultSIndexPath);
         }
         
         public static void LoadTranslations() // TODO: use method from the Localizer class instead
         {
-            foreach (string filePath in Directory.EnumerateFiles(Refs.dataBank.DefaultLanguagePath))
+            foreach (string filePath in Directory.EnumerateFiles(Models.DataBank.Instance.DefaultLanguagePath))
             {
                 string cultureCode = filePath.Substring(filePath.LastIndexOf('\\') + 1).Replace(".xaml", "");
                 var newCulture = System.Globalization.CultureInfo.GetCultureInfo(cultureCode);
-                Refs.dataBank.AddAvailableLanguage(string.Format("{0} [{1}]", newCulture.DisplayName, newCulture.Name));
+                Models.DataBank.Instance.AddAvailableLanguage(string.Format("{0} [{1}]", newCulture.DisplayName, newCulture.Name));
             }
         }
 
         #region Settings
         public static void LoadSettings()
         {
-            string configFilePath = Refs.dataBank.DefaultConfigPath;
+            string configFilePath = Models.DataBank.Instance.DefaultConfigPath;
 
             if (File.Exists(configFilePath))
             {
@@ -86,24 +86,24 @@ namespace SiTE.Logic
 
                 foreach (var element in rootElement.Elements())
                 {
-                    Refs.dataBank.SetSetting(element.Name.LocalName, element.Value);
+                    Models.DataBank.Instance.SetSetting(element.Name.LocalName, element.Value);
                 }
             }
             else
             {
-                Refs.dataBank.RestoreDefaultSettings();
+                Models.DataBank.Instance.RestoreDefaultSettings();
                 SaveSettings(); 
             }
 
-            Localizer.Instance.LoadLanguage(Refs.dataBank.GetSetting("languageID"));
+            Localizer.Instance.LoadLanguage(Models.DataBank.Instance.GetSetting("languageID"));
         }
 
         public static void SaveSettings()
         {
-            Dictionary<string, string> appSettings = Refs.dataBank.GetAllSettings();
+            Dictionary<string, string> appSettings = Models.DataBank.Instance.GetAllSettings();
 
             FileStream fileStream;
-            fileStream = new FileStream(Refs.dataBank.DefaultConfigPath, FileMode.Create);
+            fileStream = new FileStream(Models.DataBank.Instance.DefaultConfigPath, FileMode.Create);
 
             XElement rootElement = new XElement("Config", appSettings.Select(kv => new XElement(kv.Key, kv.Value)));
             XmlSerializer serializer = new XmlSerializer(rootElement.GetType());

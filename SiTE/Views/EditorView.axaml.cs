@@ -42,7 +42,7 @@ namespace SiTE.Views
             }
 
             int tempMode;
-            int.TryParse(Logic.Refs.dataBank.GetSetting("editorMode"), out tempMode);
+            int.TryParse(Models.DataBank.Instance.GetSetting("editorMode"), out tempMode);
             _editorMode = (EditorMode)tempMode;
 
             UpdateEditorView();
@@ -72,8 +72,8 @@ namespace SiTE.Views
         #region Methods (view)
         private void UpdateNoteListSelection()
         {
-            lvwNoteList.SelectedIndex = Logic.Refs.dataBank.GetNoteIndexFromTitle(((ViewModels.EditorViewModel)this.DataContext).ActiveNote.Title);
-            _selectedNote = (lvwNoteList.SelectedIndex > -1) ? ((Models.NoteModel)lvwNoteList.SelectedItem).ID : System.Guid.Empty;
+            lvwNoteList.SelectedIndex = Models.DataBank.Instance.GetNoteIndex(((ViewModels.EditorViewModel)this.DataContext).ActiveNote.ID);
+            _selectedNote = (lvwNoteList.SelectedIndex > -1) ? ((ViewModels.EditorViewModel)this.DataContext).ActiveNote.ID : System.Guid.Empty;
         }
 
         private void UpdateMarkdownView()
@@ -112,7 +112,7 @@ namespace SiTE.Views
 
             UpdateEditorView();
 
-            Logic.Refs.dataBank.SetSetting("_editorMode", ((int)_editorMode).ToString());
+            Models.DataBank.Instance.SetSetting("_editorMode", ((int)_editorMode).ToString());
             Logic.FileOperations.SaveSettings();
         }
 
@@ -191,7 +191,7 @@ namespace SiTE.Views
 
             if (!_continueNoteSwitch)
             {
-                lvwNoteList.SelectedIndex = Logic.Refs.dataBank.GetNoteIndex(_selectedNote);
+                lvwNoteList.SelectedIndex = Models.DataBank.Instance.GetNoteIndex(_selectedNote);
                 return;
             }
 
@@ -484,12 +484,12 @@ namespace SiTE.Views
 
         private async Task AutosaveTask()
         {
-            if (System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("autoSave")) && lvwNoteList.SelectedIndex >= 0)
+            if (System.Convert.ToBoolean(Models.DataBank.Instance.GetSetting("autoSave")) && lvwNoteList.SelectedIndex >= 0)
             {
                 using (_cancellationToken)
                 {
                     int autoSaveDelay = 5;
-                    int.TryParse(Logic.Refs.dataBank.GetSetting("autoSaveDelay"), out autoSaveDelay);
+                    int.TryParse(Models.DataBank.Instance.GetSetting("autoSaveDelay"), out autoSaveDelay);
                     await Task.Delay(autoSaveDelay * 30000);
                         
                     SaveNote();
@@ -595,7 +595,7 @@ namespace SiTE.Views
 
         private void MIGit_Click(object sender, RoutedEventArgs e)
         {
-            OpenLink(Logic.Refs.dataBank.projectUrl);
+            OpenLink(Models.DataBank.Instance.projectUrl);
         }
 
         private void MIAbout_Click(object sender, RoutedEventArgs e)

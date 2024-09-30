@@ -6,33 +6,38 @@ namespace SiTE.ViewModels
 	{
 		public ObservableCollection<Models.NoteModel> NoteList
 		{
-			get { return Logic.Refs.dataBank.NoteList; }
+			get { return DB.NoteList; }
 		}
 
 		public Models.NoteModel ActiveNote
 		{
-			get { return Logic.Refs.dataBank.ActiveNote; }
-			set { Logic.Refs.dataBank.ActiveNote = value; }
+			get { return DB.ActiveNote; }
+			set { DB.ActiveNote = value; }
 		}
 
 		public void NewNote()
 		{
-			Logic.Refs.dataBank.NewNote();
+			DB.NewNote();
 		}
 
 		public void OpenNote(System.Guid noteID)
 		{
-			Logic.Refs.dataBank.OpenNote(noteID);
+			DB.OpenNote(noteID);
 		}
 
 		public void SaveNote()
 		{
-			Logic.Refs.dataBank.SaveNote();
+			DB.SaveNote();
 		}
 
 		public void DeleteNote()
 		{
-			Logic.Refs.dataBank.DeleteNote();
+			DB.DeleteNote();
+		}
+
+		private Models.DataBank DB
+		{
+			get { return Models.DataBank.Instance; }
 		}
 	}
 }

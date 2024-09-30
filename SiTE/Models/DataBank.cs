@@ -87,6 +87,8 @@ namespace SiTE.Models
         #endregion Properties
 
         #region Methods
+		public static DataBank Instance { get; set; } = new DataBank();
+
         public void UpdatePassword(string newPassword, bool onStart)
         {
             _userPassword = newPassword;

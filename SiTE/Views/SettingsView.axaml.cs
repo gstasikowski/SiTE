@@ -19,30 +19,30 @@ namespace SiTE.Views
             // Language
             cboLanguageList.Items.Clear();
 
-            foreach (string language in Logic.Refs.dataBank.LanguageList)
+            foreach (string language in Models.DataBank.Instance.LanguageList)
             { cboLanguageList.Items.Add(language.Substring(0, language.IndexOf('(') - 1)); }
             
-            cboLanguageList.SelectedIndex = Logic.Refs.dataBank.LanguageIndex(Logic.Refs.dataBank.GetSetting("languageID"));
+            cboLanguageList.SelectedIndex = Models.DataBank.Instance.LanguageIndex(Models.DataBank.Instance.GetSetting("languageID"));
             SelectLanguage();
 
             // AutoSave
-            chkAutoSaveEnable.IsChecked = System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("autoSave"));
+            chkAutoSaveEnable.IsChecked = System.Convert.ToBoolean(Models.DataBank.Instance.GetSetting("autoSave"));
             ToggleAutoSave();
 
             // Encryption
-            chkEncryption.IsChecked = System.Convert.ToBoolean(Logic.Refs.dataBank.GetSetting("encryption"));
+            chkEncryption.IsChecked = System.Convert.ToBoolean(Models.DataBank.Instance.GetSetting("encryption"));
             ToggleEncryption();
-            chkPassword.IsChecked = (Logic.Refs.dataBank.UserPassword != string.Empty);
+            chkPassword.IsChecked = (Models.DataBank.Instance.UserPassword != string.Empty);
             TogglePasswordProtection();
             ToggleSettingsStatus(false);
         }
 
         private void SelectLanguage()
         {
-            string currentLanguage = Logic.Refs.dataBank.LanguageList[cboLanguageList.SelectedIndex];
+            string currentLanguage = Models.DataBank.Instance.LanguageList[cboLanguageList.SelectedIndex];
             int codePosition = currentLanguage.IndexOf('[') + 1;
             string cultureCode = currentLanguage.Substring(codePosition, currentLanguage.Length - (codePosition + 1));
-            Logic.Refs.dataBank.SetSetting("languageID", cultureCode);
+            Models.DataBank.Instance.SetSetting("languageID", cultureCode);
             // Logic.Refs.localizationHandler.SwitchLanguage(cultureCode);
         }
 
@@ -56,9 +56,9 @@ namespace SiTE.Views
             txtEncryptionPassword.IsEnabled = (bool)chkPassword.IsChecked;
             
             if (!(bool)chkPassword.IsChecked)
-            { Logic.Refs.dataBank.UpdatePassword(string.Empty, false); }
+            { Models.DataBank.Instance.UpdatePassword(string.Empty, false); }
 
-            txtEncryptionPassword.Text = Logic.Refs.dataBank.UserPassword;
+            txtEncryptionPassword.Text = Models.DataBank.Instance.UserPassword;
 
             ToggleSettingsStatus(true);
         }
@@ -70,7 +70,7 @@ namespace SiTE.Views
             if (!txtAutoSaveDelay.IsEnabled)
                 txtAutoSaveDelay.Text = "";
             else
-                txtAutoSaveDelay.Text = Logic.Refs.dataBank.GetSetting("autoSaveDelay");
+                txtAutoSaveDelay.Text = Models.DataBank.Instance.GetSetting("autoSaveDelay");
 
             ToggleSettingsStatus(true);
         }
@@ -78,14 +78,14 @@ namespace SiTE.Views
         private void ApplySettings()
         {
             SelectLanguage();
-            Logic.Refs.dataBank.SetSetting("autoSave", chkAutoSaveEnable.IsChecked.ToString());
+            Models.DataBank.Instance.SetSetting("autoSave", chkAutoSaveEnable.IsChecked.ToString());
             
             if (int.TryParse(txtAutoSaveDelay.Text, out _))
-                Logic.Refs.dataBank.SetSetting("autoSaveDelay", txtAutoSaveDelay.Text);
+                Models.DataBank.Instance.SetSetting("autoSaveDelay", txtAutoSaveDelay.Text);
             else
-                Logic.Refs.dataBank.SetSetting("autoSaveDelay", "5");
+                Models.DataBank.Instance.SetSetting("autoSaveDelay", "5");
 
-            Logic.Refs.dataBank.SetSetting("encryption", chkEncryption.IsChecked.ToString());
+            Models.DataBank.Instance.SetSetting("encryption", chkEncryption.IsChecked.ToString());
 
             if (txtEncryptionPassword.Text == string.Empty)
             {
@@ -93,7 +93,7 @@ namespace SiTE.Views
                 TogglePasswordProtection();
             }
 
-            Logic.Refs.dataBank.UpdatePassword(txtEncryptionPassword.Text, false);
+            Models.DataBank.Instance.UpdatePassword(txtEncryptionPassword.Text, false);
 
             Logic.FileOperations.SaveSettings();
             ToggleSettingsStatus(false);
