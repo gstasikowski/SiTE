@@ -106,7 +106,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Expander ExpandDirection="Right" IsExpanded="True" Collapsed="EXNoteList_Collapsed" Expanded="EXNoteList_Expanded" VerticalContentAlignment="Stretch"  ToolTip.Tip="{lang:Localize TipNoteList}">
-                <ListBox x:Name="lvwNoteList" ItemsSource="{Binding NoteList}" DisplayMemberBinding="{Binding Title}" SelectionChanged="LVNoteList_SelectionChanged" Margin="2,0,0,-1" ScrollViewer.VerticalScrollBarVisibility="Auto" MinWidth="130"/>
+                <ListBox x:Name="NoteList" ItemsSource="{Binding NoteList}" DisplayMemberBinding="{Binding Title}" SelectionChanged="LVNoteList_SelectionChanged" Margin="2,0,0,-1" ScrollViewer.VerticalScrollBarVisibility="Auto" MinWidth="130"/>
             </Expander>
             <GridSplitter x:Name="gclSplitter" Grid.Column="1" HorizontalAlignment="Stretch" Width="2" />
             <Grid Grid.Column="2" Margin="0,0,2,0">
@@ -118,9 +118,9 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Label x:Name="lbl_Title" HorizontalAlignment="Left" Content="{lang:Localize NoteTitle}"/>
+                <Label HorizontalAlignment="Left" Content="{lang:Localize NoteTitle}"/>
                 <TextBox x:Name="NoteTitle" MinWidth="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" Text="{Binding ActiveNote.Title, Mode=TwoWay}" TextChanged="TANoteContent_TextChanged" Grid.ColumnSpan="1" Grid.Column="1"/>
-                <Grid x:Name="grdEditorMode" Grid.Row="1" Grid.ColumnSpan="2" >
+                <Grid x:Name="EditorGrid" Grid.Row="1" Grid.ColumnSpan="2" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -130,14 +130,14 @@
                             <!-- <ScrollViewer.CommandBindings> -->
                                 <!-- <CommandBinding Command="{x:Static md:MarkdownXaml.Hyperlink}" Executed="CommandBinding_Executed" /> -->
                             <!-- </ScrollViewer.CommandBindings> -->
-                        <TextBlock x:Name="markdownContent"/>
+                            <TextBlock x:Name="NoteMarkdownDisplay"/>
                         </ScrollViewer>
                 </Grid>
             </Grid>
         </Grid>
         <DockPanel LastChildFill="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="4" Height="25">
             <Label Content="{lang:Localize NoteLastSaveTime}"/>
-            <Label x:Name="lblLastSaveTime" Content="{Binding ActiveNote.Modified}" IsVisible="False"/>
+            <Label x:Name="LastSaveTime" Content="{Binding ActiveNote.Modified}" IsVisible="False"/>
         </DockPanel>
     </Grid>
 </UserControl>

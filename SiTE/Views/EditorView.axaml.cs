@@ -72,8 +72,8 @@ namespace SiTE.Views
         #region Methods (view)
         private void UpdateNoteListSelection()
         {
-            lvwNoteList.SelectedIndex = Models.DataBank.Instance.GetNoteIndex(((ViewModels.EditorViewModel)this.DataContext).ActiveNote.ID);
-            _selectedNote = (lvwNoteList.SelectedIndex > -1) ? ((ViewModels.EditorViewModel)this.DataContext).ActiveNote.ID : System.Guid.Empty;
+            NoteList.SelectedIndex = Models.DataBank.Instance.GetNoteIndex(((ViewModels.EditorViewModel)this.DataContext).ActiveNote.ID);
+            _selectedNote = (NoteList.SelectedIndex > -1) ? ((ViewModels.EditorViewModel)this.DataContext).ActiveNote.ID : System.Guid.Empty;
         }
 
         private void UpdateMarkdownView()
@@ -85,7 +85,7 @@ namespace SiTE.Views
             // );
 
             var doc = NoteContent.Text; // temp placeholder until markdown renderer replacement is implemented
-            markdownContent.Text = doc;
+            NoteMarkdownDisplay.Text = doc;
         }
 
         private void ToggleNoteList(bool expand)
@@ -98,7 +98,7 @@ namespace SiTE.Views
             // gclSplitter.IsEnabled = expand;
             // gclNoteList.MinWidth = expand ? 130 : 30;
             // gclNoteList.Width = GridLength.Auto;
-            lvwNoteList.IsVisible = expand;
+            NoteList.IsVisible = expand;
         }
 
         private void ToggleEditorMode()
@@ -118,36 +118,35 @@ namespace SiTE.Views
 
         private void UpdateEditorView()
         {
-            grdEditorMode.ColumnDefinitions[0].Width = grdEditorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+            EditorGrid.ColumnDefinitions[0].Width = EditorGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
 
             switch (_editorMode)
             {
                 case EditorMode.editor:
                     NoteContent.IsVisible = true;
-                    markdownContent.IsVisible = false;
-                    grdEditorMode.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
-                    grdEditorMode.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Auto);
+                    NoteMarkdownDisplay.IsVisible = false;
+                    EditorGrid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+                    EditorGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Auto);
                     break;
 
                 case EditorMode.render:
                     NoteContent.IsVisible = false;
-                    markdownContent.IsVisible = true;
-                    grdEditorMode.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Auto);
-                    grdEditorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+                    NoteMarkdownDisplay.IsVisible = true;
+                    EditorGrid.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Auto);
+                    EditorGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
                     break;
 
                 default:
                     NoteContent.IsVisible = true;
-                    markdownContent.IsVisible = true;
-                    grdEditorMode.ColumnDefinitions[0].Width = grdEditorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+                    NoteMarkdownDisplay.IsVisible = true;
+                    EditorGrid.ColumnDefinitions[0].Width = EditorGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
                     break;
             }
-
         }
 
         private void ToggleNoteModifiedDate()
         {
-            lblLastSaveTime.IsVisible = (lvwNoteList.SelectedIndex >= 0);
+            LastSaveTime.IsVisible = (NoteList.SelectedIndex >= 0);
         }
         #endregion Methods (view)
 
@@ -159,7 +158,7 @@ namespace SiTE.Views
 
         private void NewNote()
         {
-            lvwNoteList.SelectedIndex = -1;
+            NoteList.SelectedIndex = -1;
             ((ViewModels.EditorViewModel)this.DataContext).NewNote();
 
             btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = false;
@@ -169,12 +168,12 @@ namespace SiTE.Views
 
         private void SelectNote()
         {
-            if (lvwNoteList.SelectedIndex < 0)
+            if (NoteList.SelectedIndex < 0)
             {
                 return;
             }
 
-            var tempItem = (Models.NoteModel)lvwNoteList.SelectedItem;
+            var tempItem = (Models.NoteModel)NoteList.SelectedItem;
             OpenNote(tempItem.ID);
         }
 
@@ -189,7 +188,7 @@ namespace SiTE.Views
 
             if (!_continueNoteSwitch)
             {
-                lvwNoteList.SelectedIndex = Models.DataBank.Instance.GetNoteIndex(_selectedNote);
+                NoteList.SelectedIndex = Models.DataBank.Instance.GetNoteIndex(_selectedNote);
                 return;
             }
 
@@ -212,7 +211,7 @@ namespace SiTE.Views
             LoadNoteList();
             SetModifiedState(false);
 
-            if (lvwNoteList.SelectedIndex < 0)
+            if (NoteList.SelectedIndex < 0)
             {
                 UpdateNoteListSelection();
             }
@@ -223,7 +222,7 @@ namespace SiTE.Views
 
         private void DeleteNote()
         {
-            if (lvwNoteList.SelectedIndex < 0)
+            if (NoteList.SelectedIndex < 0)
             {
                 return;
             }
@@ -322,7 +321,7 @@ namespace SiTE.Views
             }
             else
             {
-                txtNoteContent.SelectedText = string.Format("=={0}==", txtNoteContent.SelectedText);
+                NoteContent.SelectedText = string.Format("=={0}==", NoteContent.SelectedText);
             }
         }
 
@@ -408,10 +407,10 @@ namespace SiTE.Views
 
         private void CreateNoteLink()
         {
-            if (lvwNoteList.SelectedIndex < 0)
+            if (NoteList.SelectedIndex < 0)
                 return;
 
-            var tempNote = (Models.NoteModel)lvwNoteList.SelectedItem;
+            var tempNote = (Models.NoteModel)NoteList.SelectedItem;
             string noteLink = string.Format("[{0}](nID:{1})", tempNote.Title, tempNote.ID);
             
             // Avalonia.Controls.TopLevel window
@@ -474,7 +473,7 @@ namespace SiTE.Views
 
         private async Task AutosaveTask()
         {
-            if (System.Convert.ToBoolean(Models.DataBank.Instance.GetSetting("autoSave")) && lvwNoteList.SelectedIndex >= 0)
+            if (System.Convert.ToBoolean(Models.DataBank.Instance.GetSetting("autoSave")) && NoteList.SelectedIndex >= 0)
             {
                 using (_cancellationToken)
                 {
