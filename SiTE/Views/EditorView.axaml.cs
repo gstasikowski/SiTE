@@ -84,7 +84,7 @@ namespace SiTE.Views
             //     .Build()
             // );
 
-            var doc = txtNoteContent.Text; // temp placeholder until markdown renderer replacement is implemented
+            var doc = NoteContent.Text; // temp placeholder until markdown renderer replacement is implemented
             markdownContent.Text = doc;
         }
 
@@ -123,21 +123,21 @@ namespace SiTE.Views
             switch (_editorMode)
             {
                 case EditorMode.editor:
-                    txtNoteContent.IsVisible = true;
+                    NoteContent.IsVisible = true;
                     markdownContent.IsVisible = false;
                     grdEditorMode.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
                     grdEditorMode.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Auto);
                     break;
 
                 case EditorMode.render:
-                    txtNoteContent.IsVisible = false;
+                    NoteContent.IsVisible = false;
                     markdownContent.IsVisible = true;
                     grdEditorMode.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Auto);
                     grdEditorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
                     break;
 
                 default:
-                    txtNoteContent.IsVisible = true;
+                    NoteContent.IsVisible = true;
                     markdownContent.IsVisible = true;
                     grdEditorMode.ColumnDefinitions[0].Width = grdEditorMode.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
                     break;
@@ -145,11 +145,9 @@ namespace SiTE.Views
 
         }
 
-        private void UpdateNoteDisplay() // TODO: remove once binding is working properly
+        private void ToggleNoteModifiedDate()
         {
-            _selectedNote = ((ViewModels.EditorViewModel)this.DataContext).ActiveNote.ID;
-            txtTitle.Text = ((ViewModels.EditorViewModel)this.DataContext).ActiveNote.Title;
-            txtNoteContent.Text = ((ViewModels.EditorViewModel)this.DataContext).ActiveNote.Content;
+            lblLastSaveTime.IsVisible = (lvwNoteList.SelectedIndex >= 0);
         }
         #endregion Methods (view)
 
@@ -163,10 +161,10 @@ namespace SiTE.Views
         {
             lvwNoteList.SelectedIndex = -1;
             ((ViewModels.EditorViewModel)this.DataContext).NewNote();
-            UpdateNoteDisplay();
 
             btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = false;
-            SetModifiedState(false, string.Empty);
+            SetModifiedState(false);
+            ToggleNoteModifiedDate();
         }
 
         private void SelectNote()
@@ -195,33 +193,31 @@ namespace SiTE.Views
                 return;
             }
 
-            txtNoteContent.IsUndoEnabled = false; // TODO figure out a better way to do this
+            NoteContent.IsUndoEnabled = false; // TODO figure out a better way to do this
 
             ((ViewModels.EditorViewModel)this.DataContext).OpenNote(noteID);
-            UpdateNoteDisplay();
 
-            txtNoteContent.IsUndoEnabled = true; // TODO figure out a better way to do this
+            NoteContent.IsUndoEnabled = true; // TODO figure out a better way to do this
             btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = true;
 
+            ToggleNoteModifiedDate();
+            SetModifiedState(false);
             ResetAutosave();
-            SetModifiedState(false, ((ViewModels.EditorViewModel)this.DataContext).ActiveNote.Modified.ToString());
         }
 
         private void SaveNote()
         {
-            ((ViewModels.EditorViewModel)this.DataContext).ActiveNote.Title = txtTitle.Text; // TODO: remove once binding is working properly
-            ((ViewModels.EditorViewModel)this.DataContext).ActiveNote.Content = txtNoteContent.Text; // TODO: remove once binding is working properly
-
             ((ViewModels.EditorViewModel)this.DataContext).SaveNote();
 
             LoadNoteList();
-            SetModifiedState(false, System.DateTime.Now.ToString());
+            SetModifiedState(false);
 
             if (lvwNoteList.SelectedIndex < 0)
             {
                 UpdateNoteListSelection();
             }
 
+            ToggleNoteModifiedDate();
             ResetAutosave();
         }
 
@@ -256,27 +252,27 @@ namespace SiTE.Views
         #region Methods (text operations)
         private void CutText()
         {
-            txtNoteContent.Cut();
+            NoteContent.Cut();
         }
 
         private void CopyText()
         {
-            txtNoteContent.Copy();
+            NoteContent.Copy();
         }
 
         private void PasteText()
         {
-            txtNoteContent.Paste();
+            NoteContent.Paste();
         }
 
         private void UndoChanges()
         {
-            txtNoteContent.Undo();
+            NoteContent.Undo();
         }
 
         private void RedoChanges()
         {
-            txtNoteContent.Redo();
+            NoteContent.Redo();
         }
 
         private void ToggleTextBold()
@@ -286,13 +282,13 @@ namespace SiTE.Views
                 return;
             }
 
-            if (txtNoteContent.SelectedText.StartsWith("**") && txtNoteContent.SelectedText.EndsWith("**"))
+            if (NoteContent.SelectedText.StartsWith("**") && NoteContent.SelectedText.EndsWith("**"))
             {
-                txtNoteContent.SelectedText = txtNoteContent.SelectedText.Substring(2, txtNoteContent.SelectedText.Length - 4);
+                NoteContent.SelectedText = NoteContent.SelectedText.Substring(2, NoteContent.SelectedText.Length - 4);
             }
             else
             {
-                txtNoteContent.SelectedText = string.Format("**{0}**", txtNoteContent.SelectedText);
+                NoteContent.SelectedText = string.Format("**{0}**", NoteContent.SelectedText);
             }
         }
 
@@ -303,13 +299,13 @@ namespace SiTE.Views
                 return;
             }
 
-            if (!CheckIfAddStyle(txtNoteContent.SelectedText, "*"))
+            if (!CheckIfAddStyle(NoteContent.SelectedText, "*"))
             {
-                txtNoteContent.SelectedText = txtNoteContent.SelectedText.Substring(1, txtNoteContent.SelectedText.Length - 2);
+                NoteContent.SelectedText = NoteContent.SelectedText.Substring(1, NoteContent.SelectedText.Length - 2);
             }
             else
             {
-                txtNoteContent.SelectedText = string.Format("*{0}*", txtNoteContent.SelectedText);
+                NoteContent.SelectedText = string.Format("*{0}*", NoteContent.SelectedText);
             }
         }
 
@@ -320,9 +316,9 @@ namespace SiTE.Views
                 return;
             }
 
-            if (txtNoteContent.SelectedText.StartsWith("==") && txtNoteContent.SelectedText.EndsWith("=="))
+            if (NoteContent.SelectedText.StartsWith("==") && NoteContent.SelectedText.EndsWith("=="))
             {
-                txtNoteContent.SelectedText = txtNoteContent.SelectedText.Substring(2, txtNoteContent.SelectedText.Length - 4);
+                NoteContent.SelectedText = NoteContent.SelectedText.Substring(2, NoteContent.SelectedText.Length - 4);
             }
             else
             {
@@ -337,13 +333,13 @@ namespace SiTE.Views
                 return;
             }
 
-            if (txtNoteContent.SelectedText.StartsWith("~~") && txtNoteContent.SelectedText.EndsWith("~~"))
+            if (NoteContent.SelectedText.StartsWith("~~") && NoteContent.SelectedText.EndsWith("~~"))
             {
-                txtNoteContent.SelectedText = txtNoteContent.SelectedText.Substring(2, txtNoteContent.SelectedText.Length - 4);
+                NoteContent.SelectedText = NoteContent.SelectedText.Substring(2, NoteContent.SelectedText.Length - 4);
             }
             else
             {
-                txtNoteContent.SelectedText = string.Format("~~{0}~~", txtNoteContent.SelectedText);
+                NoteContent.SelectedText = string.Format("~~{0}~~", NoteContent.SelectedText);
             }
         }
 
@@ -354,13 +350,13 @@ namespace SiTE.Views
                 return;
             }
 
-            if (!CheckIfAddStyle(txtNoteContent.SelectedText, "~"))
+            if (!CheckIfAddStyle(NoteContent.SelectedText, "~"))
             {
-                txtNoteContent.SelectedText = txtNoteContent.SelectedText.Substring(1, txtNoteContent.SelectedText.Length - 2);
+                NoteContent.SelectedText = NoteContent.SelectedText.Substring(1, NoteContent.SelectedText.Length - 2);
             }
             else
             {
-                txtNoteContent.SelectedText = string.Format("~{0}~", txtNoteContent.SelectedText);
+                NoteContent.SelectedText = string.Format("~{0}~", NoteContent.SelectedText);
             }
         }
 
@@ -371,13 +367,13 @@ namespace SiTE.Views
                 return;
             }
 
-            if (txtNoteContent.SelectedText.StartsWith("^") && txtNoteContent.SelectedText.EndsWith("^"))
+            if (NoteContent.SelectedText.StartsWith("^") && NoteContent.SelectedText.EndsWith("^"))
             {
-                txtNoteContent.SelectedText = txtNoteContent.SelectedText.Substring(1, txtNoteContent.SelectedText.Length - 2);
+                NoteContent.SelectedText = NoteContent.SelectedText.Substring(1, NoteContent.SelectedText.Length - 2);
             }
             else
             {
-                txtNoteContent.SelectedText = string.Format("^{0}^", txtNoteContent.SelectedText);
+                NoteContent.SelectedText = string.Format("^{0}^", NoteContent.SelectedText);
             }
         }
         #endregion Methods (text operations)
@@ -385,7 +381,7 @@ namespace SiTE.Views
         #region Methods (helpers)
         private bool IsNoteContentActive()
         {
-            return txtNoteContent.IsFocused;
+            return NoteContent.IsFocused;
         }
 
         private bool CheckIfAddStyle(string textToCheck, string symbol)
@@ -422,21 +418,15 @@ namespace SiTE.Views
             TopLevel.GetTopLevel(this).Clipboard.SetTextAsync(noteLink);
         }
 
-        private void SetModifiedState(bool isModified, string modifiedDate)
+        private void SetModifiedState(bool isModified)
         {
-            System.Console.WriteLine("[EditorView] setting modified state to: " + isModified + " -> " + modifiedDate);
             _isNoteModified = isModified;
 
             btnSaveNote.IsEnabled = isModified;
-            btnUndoMenu.IsEnabled = btnUndoToolbar.IsEnabled = txtNoteContent.CanUndo;
-            btnRedoMenu.IsEnabled = btnRedoToolbar.IsEnabled = txtNoteContent.CanRedo;
+            btnUndoMenu.IsEnabled = btnUndoToolbar.IsEnabled = NoteContent.CanUndo;
+            btnRedoMenu.IsEnabled = btnRedoToolbar.IsEnabled = NoteContent.CanRedo;
 
             WindowSetup();
-
-            if (modifiedDate != null)
-            {
-                lblLastSaveTime.Content = modifiedDate;
-            }
         }
         #endregion Methods (helpers)
 
@@ -503,7 +493,7 @@ namespace SiTE.Views
         {
             if (((TextBox)sender).IsFocused)
             {
-                SetModifiedState(true, string.Empty);
+                SetModifiedState(true);
             }
             UpdateMarkdownView();
         }

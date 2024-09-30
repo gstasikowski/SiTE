@@ -168,13 +168,22 @@ namespace SiTE.Models
 
         public void NewNote()
         {
-            ActiveNote = new NoteModel();
+            ActiveNote.ID = System.Guid.Empty;
+            ActiveNote.Title = string.Empty;
+            ActiveNote.Content = string.Empty;
+            ActiveNote.Created = new DateTime();
+            ActiveNote.Modified = new DateTime();
         }
 
         public void OpenNote(System.Guid noteID)
         {
             var tempNote = Logic.DatabaseOperations.LoadNote(noteID);
-            ActiveNote = tempNote;
+            
+            ActiveNote.ID = tempNote.ID;
+            ActiveNote.Title = tempNote.Title;
+            ActiveNote.Content = tempNote.Content;
+            ActiveNote.Created = tempNote.Created;
+            ActiveNote.Modified = tempNote.Modified;
         }
 
         public void SaveNote()

@@ -119,13 +119,13 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Label x:Name="lbl_Title" HorizontalAlignment="Left" Content="{lang:Localize NoteTitle}"/>
-                <TextBox x:Name="txtTitle" MinWidth="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" TextChanged="TANoteContent_TextChanged" Grid.ColumnSpan="1" Grid.Column="1"/>
+                <TextBox x:Name="NoteTitle" MinWidth="200" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" Text="{Binding ActiveNote.Title, Mode=TwoWay}" TextChanged="TANoteContent_TextChanged" Grid.ColumnSpan="1" Grid.Column="1"/>
                 <Grid x:Name="grdEditorMode" Grid.Row="1" Grid.ColumnSpan="2" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                        <TextBox x:Name="txtNoteContent" VerticalAlignment="Stretch" MinHeight="100" Background="White" TextChanged="TANoteContent_TextChanged" Margin="0,2,0,0" AcceptsReturn="True" AcceptsTab="True" HorizontalContentAlignment="Left" />
+                        <TextBox x:Name="NoteContent" VerticalAlignment="Stretch" MinHeight="100" Background="White" Text="{Binding ActiveNote.Content, Mode=TwoWay}" TextChanged="TANoteContent_TextChanged" Margin="0,2,0,0" AcceptsReturn="True" AcceptsTab="True" HorizontalContentAlignment="Left" />
                         <ScrollViewer VerticalAlignment="Stretch" MinHeight="100" Background="Blue" Margin="0,2,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Column="1" BorderBrush="#FFABADB3" BorderThickness="1">
                             <!-- <ScrollViewer.CommandBindings> -->
                                 <!-- <CommandBinding Command="{x:Static md:MarkdownXaml.Hyperlink}" Executed="CommandBinding_Executed" /> -->
@@ -137,7 +137,7 @@
         </Grid>
         <DockPanel LastChildFill="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="4" Height="25">
             <Label Content="{lang:Localize NoteLastSaveTime}"/>
-            <Label x:Name="lblLastSaveTime"/>
+            <Label x:Name="lblLastSaveTime" Content="{Binding ActiveNote.Modified}" IsVisible="False"/>
         </DockPanel>
     </Grid>
 </UserControl>
