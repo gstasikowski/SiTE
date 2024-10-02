@@ -1,58 +1,58 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:SiTE.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        x:Class="SiTE.Views.SettingsView"
-        x:DataType="vm:SettingsViewModel"
-        x:CompileBindings="True"
-        xmlns:lang="clr-namespace:SiTE.Logic"
-        mc:Ignorable="d">
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:vm="using:SiTE.ViewModels"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		x:Class="SiTE.Views.SettingsView"
+		x:DataType="vm:SettingsViewModel"
+		x:CompileBindings="True"
+		xmlns:lang="clr-namespace:SiTE.Logic"
+		mc:Ignorable="d">
 	<Design.DataContext>
 		<vm:SettingsViewModel />
 	</Design.DataContext>
-    <Grid Margin="2,2,2,2">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Expander Header="{lang:Localize GroupGeneral}" IsExpanded="True">
-            <Grid Margin="19, 5, 10, 0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="{lang:Localize Language}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="cboLanguageList" SelectionChanged="CBLanguageList_SelectionChanged"/>
-                </StackPanel>
-                <CheckBox Grid.Row="1" x:Name="chkAutoSaveEnable" Content="{lang:Localize AutoSave}" VerticalAlignment="Center" Margin="4,0,0,0" Checked="ChkAutoSaveEnable_Toggled" Unchecked="ChkAutoSaveEnable_Toggled" />
-                <StackPanel Grid.Row="2" Orientation="Horizontal">
-                    <Label Content="{lang:Localize Delay}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                    <TextBox x:Name="txtAutoSaveDelay" Height="20" MinWidth="50" TextInput="TBAutoSaveDelay_TextChanged" />
-                </StackPanel>
-            </Grid>
-        </Expander>
-        <Expander Header="{lang:Localize GroupEncryption}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="1" IsExpanded="True">
-            <Grid  Margin="19, 5, 10, 0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <CheckBox x:Name="chkEncryption" Content="{lang:Localize EncryptionToggle}" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="ChkEncryption_Toggled" Unchecked="ChkEncryption_Toggled" Margin="4,0,0,0"/>
-                <CheckBox x:Name="chkPassword" Content="{lang:Localize PasswordToggle}" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="ChkPasswordProtection_Toggled" Unchecked="ChkPasswordProtection_Toggled" Margin="4,0,0,0"  Grid.Row="1" />
-                <StackPanel Grid.Row="2" Orientation="Horizontal">
-                    <Label Content="{lang:Localize Password}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                    <TextBox x:Name="txtEncryptionPassword" Height="20" MinWidth="300" TextInput="TBEncryptionPassword_TextChanged"/>
-                </StackPanel>
-            </Grid>
-        </Expander>
-        <DockPanel VerticalAlignment="Bottom" Grid.Row="2" Height="25">
-            <Button Content="{lang:Localize ButtonBack}" HorizontalAlignment="Left" VerticalAlignment="Top" Click="BtnBack_Click" MinWidth="20" MinHeight="20" Padding="4,2,4,2"/>
-            <Button Content="{lang:Localize ButtonApply}" IsEnabled="True" HorizontalAlignment="Left" VerticalAlignment="Top" Click="BtnApply_Click" Margin="5,0,0,0" MinWidth="20" MinHeight="20" Padding="4,2,4,2"/>
-        </DockPanel>
-    </Grid>
+	<Grid Margin="2,2,2,2">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<Expander Header="{lang:Localize GroupGeneral}" IsExpanded="True">
+			<Grid Margin="19, 5, 10, 0">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+				<StackPanel Orientation="Horizontal">
+					<Label Content="{lang:Localize Language}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+					<ComboBox x:Name="cboLanguageList" SelectionChanged="CBLanguageList_SelectionChanged"/>
+				</StackPanel>
+				<CheckBox Grid.Row="1" x:Name="chkAutoSaveEnable" Content="{lang:Localize AutoSave}" VerticalAlignment="Center" Margin="4,0,0,0" Checked="ChkAutoSaveEnable_Toggled" Unchecked="ChkAutoSaveEnable_Toggled" />
+				<StackPanel Grid.Row="2" Orientation="Horizontal">
+					<Label Content="{lang:Localize Delay}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+					<TextBox x:Name="txtAutoSaveDelay" Height="20" MinWidth="50" TextInput="TBAutoSaveDelay_TextChanged" />
+				</StackPanel>
+			</Grid>
+		</Expander>
+		<Expander Header="{lang:Localize GroupEncryption}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="1" IsExpanded="True">
+			<Grid  Margin="19, 5, 10, 0">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<CheckBox x:Name="chkEncryption" Content="{lang:Localize EncryptionToggle}" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="ChkEncryption_Toggled" Unchecked="ChkEncryption_Toggled" Margin="4,0,0,0"/>
+				<CheckBox x:Name="chkPassword" Content="{lang:Localize PasswordToggle}" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="ChkPasswordProtection_Toggled" Unchecked="ChkPasswordProtection_Toggled" Margin="4,0,0,0"  Grid.Row="1" />
+				<StackPanel Grid.Row="2" Orientation="Horizontal">
+					<Label Content="{lang:Localize Password}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+					<TextBox x:Name="txtEncryptionPassword" Height="20" MinWidth="300" TextInput="TBEncryptionPassword_TextChanged"/>
+				</StackPanel>
+			</Grid>
+		</Expander>
+		<DockPanel VerticalAlignment="Bottom" Grid.Row="2" Height="25">
+			<Button Content="{lang:Localize ButtonBack}" HorizontalAlignment="Left" VerticalAlignment="Top" Click="BtnBack_Click" MinWidth="20" MinHeight="20" Padding="4,2,4,2"/>
+			<Button Content="{lang:Localize ButtonApply}" IsEnabled="True" HorizontalAlignment="Left" VerticalAlignment="Top" Click="BtnApply_Click" Margin="5,0,0,0" MinWidth="20" MinHeight="20" Padding="4,2,4,2"/>
+		</DockPanel>
+	</Grid>
 </UserControl>

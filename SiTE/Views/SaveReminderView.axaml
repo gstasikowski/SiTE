@@ -1,23 +1,23 @@
 <!--check here for displaying it as a dialog window: https://docs.avaloniaui.net/docs/reference/controls/window-->
 <Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:SiTE.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="200"
-        x:Class="SiTE.Views.SaveReminderView"
-        x:DataType="vm:SaveReminderViewModel"
-        xmlns:lang="clr-namespace:SiTE.Logic"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="SiTE-SaveReminder">
-    <Grid>
-        <StackPanel>
-            <Label Content="{lang:Localize MessageSaveReminder}" Padding="15,5,15,15"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5">
-                <Button Content="{lang:Localize ButtonYes}" Padding="3" Margin="2" Click="ConfirmNoteSave"/>
-                <Button Content="{lang:Localize ButtonNo}" Padding="3"  Margin="2" Click="DenyNoteSave"/>
-                <Button Content="{lang:Localize ButtonCancel}" Padding="3"  Margin="2" Click="CancelNoteSwitch"/>
-            </StackPanel>
-        </StackPanel>
-    </Grid>
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:vm="using:SiTE.ViewModels"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="200"
+		x:Class="SiTE.Views.SaveReminderView"
+		x:DataType="vm:SaveReminderViewModel"
+		xmlns:lang="clr-namespace:SiTE.Logic"
+		Icon="/Assets/avalonia-logo.ico"
+		Title="SiTE-SaveReminder">
+	<Grid>
+		<StackPanel>
+			<Label Content="{lang:Localize MessageSaveReminder}" Padding="15,5,15,15"/>
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5">
+				<Button Content="{lang:Localize ButtonYes}" Padding="3" Margin="2" Click="ConfirmNoteSave"/>
+				<Button Content="{lang:Localize ButtonNo}" Padding="3"  Margin="2" Click="DenyNoteSave"/>
+				<Button Content="{lang:Localize ButtonCancel}" Padding="3"  Margin="2" Click="CancelNoteSwitch"/>
+			</StackPanel>
+		</StackPanel>
+	</Grid>
 </Window>

@@ -5,28 +5,28 @@ using Avalonia.Controls.ApplicationLifetimes;
 
 namespace SiTE.Views
 {
-    public partial class PasswordInputView : Window
-    {
-        public PasswordInputView()
-        {
-            InitializeComponent();
-        }
+	public partial class PasswordInputView : Window
+	{
+		public PasswordInputView()
+		{
+			InitializeComponent();
+		}
 
-        private void SubmitPassword(object sender, RoutedEventArgs e)
-        {
-            Models.DataBank.Instance.UpdatePassword(txtPassword.Text, true);
-            ((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.IsEnabled = true;
-            // DialogResult = true;
-            Close(true);
-        }
+		private void SubmitPassword(object sender, RoutedEventArgs e)
+		{
+			Models.DataBank.Instance.UpdatePassword(txtPassword.Text, true);
+			((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.IsEnabled = true;
+			// DialogResult = true;
+			Close(true);
+		}
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            // if (DialogResult == null)
-            // {
-            //     Models.DataBank.Instance.UpdatePassword("-1", true); 
-            //     App.Current.Shutdown();
-            // }
-        }
-    }
+		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			// if (DialogResult == null)
+			// {
+			//	 Models.DataBank.Instance.UpdatePassword("-1", true); 
+			//	 App.Current.Shutdown();
+			// }
+		}
+	}
 }

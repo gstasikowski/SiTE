@@ -6,9 +6,9 @@ using SiTE.Views;
 
 namespace SiTE.ViewModels
 {
-    public class MainWindowViewModel : ViewModelBase
-    {
-        // A read.only array of possible pages
+	public class MainWindowViewModel : ViewModelBase
+	{
+		// A read.only array of possible pages
 		private ViewModelBase[] Pages;
 		// The default is the first page
 		private ViewModelBase _currentPage;
@@ -25,8 +25,8 @@ namespace SiTE.ViewModels
 		{
 			Pages = new ViewModelBase[]
 			{
-                new EditorViewModel(),
-                new SettingsViewModel()
+				new EditorViewModel(),
+				new SettingsViewModel()
 			};
 		}
 
@@ -49,5 +49,5 @@ namespace SiTE.ViewModels
 			int index = (Pages.IndexOf(CurrentPage) > 0) ? 0 : 1;
 			CurrentPage = Pages[index];
 		}
-    }
+	}
 }

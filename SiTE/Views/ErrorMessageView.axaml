@@ -1,27 +1,27 @@
 <!--check here for displaying it as a dialog window: https://docs.avaloniaui.net/docs/reference/controls/window-->
 <Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:SiTE.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="150"
-        x:Class="SiTE.Views.ErrorMessageView"
-        x:DataType="vm:ErrorMessageViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="SiTE-Error">
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:vm="using:SiTE.ViewModels"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="150"
+		x:Class="SiTE.Views.ErrorMessageView"
+		x:DataType="vm:ErrorMessageViewModel"
+		Icon="/Assets/avalonia-logo.ico"
+		Title="SiTE-Error">
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:ErrorMessageViewModel/>
-    </Design.DataContext>
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+			 to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:ErrorMessageViewModel/>
+	</Design.DataContext>
 
-    <Grid>
-        <StackPanel>
-            <TextBlock x:Name="lblErrorContent" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Expander x:Name="expErrorDetails" Header="{DynamicResource MessageDetails}" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top">
-                <Label x:Name="lblErrorDetails" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" />
-            </Expander>
-        </StackPanel>
-    </Grid>
+	<Grid>
+		<StackPanel>
+			<TextBlock x:Name="lblErrorContent" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+			<Expander x:Name="expErrorDetails" Header="{DynamicResource MessageDetails}" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top">
+				<Label x:Name="lblErrorDetails" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" />
+			</Expander>
+		</StackPanel>
+	</Grid>
 </Window>
