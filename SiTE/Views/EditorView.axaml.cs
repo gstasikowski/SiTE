@@ -177,7 +177,7 @@ namespace SiTE.Views
 
 		private async Task OpenNote(System.Guid noteID)
 		{
-			if (_selectedNote == noteID)
+			if (((ViewModels.EditorViewModel)this.DataContext).ActiveNote.ID == noteID)
 			{
 				return;
 			}
