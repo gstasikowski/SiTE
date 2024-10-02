@@ -49,5 +49,10 @@ namespace SiTE.ViewModels
 			int index = (Pages.IndexOf(CurrentPage) > 0) ? 0 : 1;
 			CurrentPage = Pages[index];
 		}
+
+		public string AppTitle
+		{
+			get { return "SiTE"; } // TODO: append * marking for note with unsaved changes
+		}
 	}
 }

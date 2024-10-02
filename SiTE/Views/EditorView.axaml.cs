@@ -32,12 +32,12 @@ namespace SiTE.Views
 		private void WindowSetup()
 		{
 			// TODO remove hard references to MainWindow
-			((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.Title = "SiTE";//App.ResourceAssembly.GetName().Name;
+			// ((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.Title = "SiTE";//App.ResourceAssembly.GetName().Name;
 
-			if (_isNoteModified)
-			{
-				((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.Title += '*';
-			}
+			// if (((ViewModels.EditorViewModel)this.DataContext).IsNoteModified)
+			// {
+			// 	((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.Title += '*';
+			// }
 
 			int tempMode;
 			int.TryParse(Models.DataBank.Instance.GetSetting("editorMode"), out tempMode);
