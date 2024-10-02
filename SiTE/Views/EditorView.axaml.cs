@@ -17,7 +17,6 @@ namespace SiTE.Views
 		private CancellationTokenSource _cancellationToken;
 
 		private EditorMode _editorMode = EditorMode.editor;
-		private bool _isNoteModified;
 		private bool _continueNoteSwitch = true;
 
 		public EditorView()
@@ -416,7 +415,7 @@ namespace SiTE.Views
 
 		private void SetModifiedState(bool isModified)
 		{
-			_isNoteModified = isModified;
+			((ViewModels.EditorViewModel)this.DataContext).IsNoteModified = isModified;
 
 			btnSaveNote.IsEnabled = isModified;
 			btnUndoMenu.IsEnabled = btnUndoToolbar.IsEnabled = NoteContent.CanUndo;
@@ -429,7 +428,7 @@ namespace SiTE.Views
 		#region Methods (saving)
 		public async Task DisplaySaveReminder()
 		{
-			if (_isNoteModified)
+			if (((ViewModels.EditorViewModel)this.DataContext).IsNoteModified)
 			{
 				var saveWindow = new SaveReminderView();
 				int saveChoice = await saveWindow.ShowDialog<int>(((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow);

@@ -15,6 +15,12 @@ namespace SiTE.ViewModels
 			set { DB.ActiveNote = value; }
 		}
 
+		public bool IsNoteModified
+		{
+			get { return DB.IsNoteModified; }
+			set { DB.IsNoteModified = value; }
+		}
+
 		public void NewNote()
 		{
 			DB.NewNote();

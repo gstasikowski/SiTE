@@ -25,6 +25,7 @@ namespace SiTE.Models
 		private List<string> _languageList = new List<string>();
 		private ObservableCollection<NoteModel> _noteList = new();
 		private NoteModel _activeNote = new NoteModel();
+		private bool _isNoteModified;
 		#endregion Variables
 
 		#region Properties
@@ -83,6 +84,12 @@ namespace SiTE.Models
 		{
 			get { return _activeNote; }
 			set { _activeNote = value; }
+		}
+
+		public bool IsNoteModified
+		{
+			get { return _isNoteModified; }
+			set { _isNoteModified = value; }
 		}
 		#endregion Properties
 
