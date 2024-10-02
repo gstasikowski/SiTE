@@ -12,8 +12,6 @@ namespace SiTE.Views
         public SaveReminderView()
         {
             InitializeComponent();
-            ((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.IsEnabled = false;
-            this.Closing += ClosePrompt;
         }
 
         private void SetDialogChoice(int choice)
@@ -22,24 +20,19 @@ namespace SiTE.Views
             Close(_dialogChoice);
         }
 
-        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        private void ConfirmNoteSave(object sender, RoutedEventArgs e)
         {
             SetDialogChoice(0);
         }
 
-        private void BtnProceed_Click(object sender, RoutedEventArgs e)
+        private void DenyNoteSave(object sender, RoutedEventArgs e)
         {
             SetDialogChoice(1);
         }
 
-        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        private void CancelNoteSwitch(object sender, RoutedEventArgs e)
         {
             SetDialogChoice(-1);
-        }
-
-        private void ClosePrompt(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            ((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.IsEnabled = true;
         }
     }
 }
