@@ -51,7 +51,6 @@ namespace SiTE.Views
 		{
 			string message = string.Format("{0}\n\nVersion: {1}", "SiTE"/*App.ResourceAssembly.GetName().Name*/, "2.0"/*Avalonia.Application.ResourceAssembly.GetName().Version*/);
 
-			((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.IsEnabled = false;
 			ErrorMessageView messageWindow = new ErrorMessageView(message, string.Empty);
 			messageWindow.Title = (string)Logic.Localizer.Instance["MenuAbout"];
 			messageWindow.ShowDialog(((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow);

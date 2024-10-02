@@ -15,7 +15,6 @@ namespace SiTE.Views
 		private void SubmitPassword(object sender, RoutedEventArgs e)
 		{
 			Models.DataBank.Instance.UpdatePassword(txtPassword.Text, true);
-			((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.IsEnabled = true;
 			// DialogResult = true;
 			Close(true);
 		}
