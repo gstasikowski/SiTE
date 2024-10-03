@@ -3,6 +3,7 @@
 		xmlns:vm="using:SiTE.ViewModels"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
 		x:Class="SiTE.Views.EditorView"
 		x:DataType="vm:EditorViewModel"
 		x:CompileBindings="True"
@@ -125,13 +126,8 @@
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
-						<TextBox x:Name="NoteContent" VerticalAlignment="Stretch" MinHeight="100" Background="White" Text="{Binding ActiveNote.Content, Mode=TwoWay}" TextChanged="TANoteContent_TextChanged" Margin="0,2,0,0" AcceptsReturn="True" AcceptsTab="True" HorizontalContentAlignment="Left" />
-						<ScrollViewer VerticalAlignment="Stretch" MinHeight="100" Background="Blue" Margin="0,2,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Column="1" BorderBrush="#FFABADB3" BorderThickness="1">
-							<!-- <ScrollViewer.CommandBindings> -->
-								<!-- <CommandBinding Command="{x:Static md:MarkdownXaml.Hyperlink}" Executed="CommandBinding_Executed" /> -->
-							<!-- </ScrollViewer.CommandBindings> -->
-							<TextBlock x:Name="NoteMarkdownDisplay"/>
-						</ScrollViewer>
+					<TextBox x:Name="NoteContent" VerticalAlignment="Stretch" MinHeight="100" Background="White" Text="{Binding ActiveNote.Content, Mode=TwoWay}" TextChanged="TANoteContent_TextChanged" Margin="0,2,0,0" AcceptsReturn="True" AcceptsTab="True" HorizontalContentAlignment="Left" />
+					<md:MarkdownScrollViewer x:Name="NoteMarkdownDisplay" Markdown="{Binding ActiveNote.Content}" VerticalAlignment="Stretch" MinHeight="100" Margin="0,2,0,0" Grid.Column="1"/>
 				</Grid>
 			</Grid>
 		</Grid>
