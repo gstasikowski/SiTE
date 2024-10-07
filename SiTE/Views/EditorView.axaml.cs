@@ -1,5 +1,3 @@
-// using Markdig;
-// using Neo.Markdig.Xaml;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
@@ -22,7 +20,7 @@ namespace SiTE.Views
 		public EditorView()
 		{
 			InitializeComponent();
-			Logic.FileOperations.InitialSetup();
+			SiTE.Core.Instance.fileOperations.InitialSetup();
 
 			WindowSetup();
 			LoadNoteList();
@@ -40,7 +38,7 @@ namespace SiTE.Views
 			// }
 
 			int tempMode;
-			int.TryParse(Models.DataBank.Instance.GetSetting("editorMode"), out tempMode);
+			int.TryParse(SiTE.Core.Instance.dataBank.GetSetting("editorMode"), out tempMode);
 			_editorMode = (EditorMode)tempMode;
 
 			UpdateEditorView();
@@ -69,31 +67,11 @@ namespace SiTE.Views
 		#region Methods (view)
 		private void UpdateNoteListSelection()
 		{
-			NoteList.SelectedIndex = Models.DataBank.Instance.GetNoteIndex(((ViewModels.EditorViewModel)this.DataContext).ActiveNote.ID);
-		}
-
-		private void UpdateMarkdownView()
-		{
-			// var doc = MarkdownXaml.ToFlowDocument(txtNoteContent.Text,
-			//	 new MarkdownPipelineBuilder()
-			//	 .UseXamlSupportedExtensions()
-			//	 .Build()
-			// );
-
-			var doc = NoteContent.Text; // temp placeholder until markdown renderer replacement is implemented
-			NoteMarkdownDisplay.Text = doc;
+			NoteList.SelectedIndex = SiTE.Core.Instance.dataBank.GetNoteIndex(((ViewModels.EditorViewModel)this.DataContext).ActiveNote.ID);
 		}
 
 		private void ToggleNoteList(bool expand)
 		{
-			// if (!gclNoteList.IsLoaded || !gclSplitter.IsLoaded)
-			// {
-			//	 return;
-			// }
-
-			// gclSplitter.IsEnabled = expand;
-			// gclNoteList.MinWidth = expand ? 130 : 30;
-			// gclNoteList.Width = GridLength.Auto;
 			NoteList.IsVisible = expand;
 		}
 
@@ -108,8 +86,8 @@ namespace SiTE.Views
 
 			UpdateEditorView();
 
-			Models.DataBank.Instance.SetSetting("_editorMode", ((int)_editorMode).ToString());
-			Logic.FileOperations.SaveSettings();
+			SiTE.Core.Instance.dataBank.SetSetting("_editorMode", ((int)_editorMode).ToString());
+			SiTE.Core.Instance.fileOperations.SaveSettings();
 		}
 
 		private void UpdateEditorView()
@@ -149,7 +127,7 @@ namespace SiTE.Views
 		#region Methods (note operations)
 		private void LoadNoteList()
 		{
-			Logic.DatabaseOperations.GetNoteList();
+			SiTE.Core.Instance.databaseOperations.GetNoteList();
 		}
 
 		private void NewNote()
@@ -469,12 +447,12 @@ namespace SiTE.Views
 
 		private async Task AutosaveTask()
 		{
-			if (System.Convert.ToBoolean(Models.DataBank.Instance.GetSetting("autoSave")) && NoteList.SelectedIndex >= 0)
+			if (System.Convert.ToBoolean(SiTE.Core.Instance.dataBank.GetSetting("autoSave")) && NoteList.SelectedIndex >= 0)
 			{
 				using (_cancellationToken)
 				{
 					int autoSaveDelay = 5;
-					int.TryParse(Models.DataBank.Instance.GetSetting("autoSaveDelay"), out autoSaveDelay);
+					int.TryParse(SiTE.Core.Instance.dataBank.GetSetting("autoSaveDelay"), out autoSaveDelay);
 					await Task.Delay(autoSaveDelay * 30000);
 						
 					SaveNote();
@@ -490,7 +468,6 @@ namespace SiTE.Views
 			{
 				SetModifiedState(true);
 			}
-			UpdateMarkdownView();
 		}
 
 		private void BtnNewNote_Click(object sender, RoutedEventArgs e)
@@ -580,7 +557,7 @@ namespace SiTE.Views
 
 		private void MIGit_Click(object sender, RoutedEventArgs e)
 		{
-			OpenLink(Models.DataBank.Instance.projectUrl);
+			OpenLink(SiTE.Core.Instance.dataBank.projectUrl);
 		}
 
 		private void MIAbout_Click(object sender, RoutedEventArgs e)
@@ -608,10 +585,10 @@ namespace SiTE.Views
 			CreateNoteLink();
 		}
 
-		// private void CommandBinding_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
-		// {
-		//	 OpenLink(e.Parameter.ToString());
-		// }
+		private void CommandBinding_Executed(string url)
+		{
+			OpenLink(url);
+		}
 		#endregion UI Events
 	}
 }
