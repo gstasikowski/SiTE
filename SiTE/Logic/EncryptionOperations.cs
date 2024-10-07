@@ -6,19 +6,26 @@ using System.Text;
 
 namespace SiTE.Logic
 {
-	public static class EncryptionOperations
+	public class EncryptionOperations
 	{
-		private static string PrepareMasterKeyFile()
+		private Core _coreApp;
+
+		public EncryptionOperations(Core coreApp)
+		{
+			_coreApp = coreApp;
+		}
+
+		private string PrepareMasterKeyFile()
 		{
 			string masterPassword = string.Empty;
 
-			if (File.Exists(Models.DataBank.Instance.DefaultMasterKeyFile))
-			{ masterPassword = File.ReadAllText(Models.DataBank.Instance.DefaultMasterKeyFile); }
+			if (File.Exists(_coreApp.dataBank.DefaultMasterKeyFile))
+			{ masterPassword = File.ReadAllText(_coreApp.dataBank.DefaultMasterKeyFile); }
 			else
 			{
 				masterPassword = GenerateMasterPassword();
 
-				FileStream fileStream = new FileStream(Models.DataBank.Instance.DefaultMasterKeyFile, FileMode.Create);
+				FileStream fileStream = new FileStream(_coreApp.dataBank.DefaultMasterKeyFile, FileMode.Create);
 
 				fileStream.Write(Encoding.UTF8.GetBytes(masterPassword));
 				fileStream.Close();
@@ -27,7 +34,7 @@ namespace SiTE.Logic
 			return masterPassword;
 		}
 
-		static string GenerateMasterPassword()
+		private string GenerateMasterPassword()
 		{
 			string password = string.Empty;
 
@@ -49,7 +56,7 @@ namespace SiTE.Logic
 			return password;
 		}
 
-		static byte[] GenerateRandomSalt()
+		private byte[] GenerateRandomSalt()
 		{
 			byte[] data = new byte[32];
 
@@ -65,37 +72,37 @@ namespace SiTE.Logic
 			return data;
 		}
 
-		public static void PrepareEncryptedFiles()
+		public void PrepareEncryptedFiles()
 		{
-			if (DencryptDatabase())
+			if (DecryptDatabase())
 			{ PrepareMasterKeyFile(); }
 		}
 
-		public static void EncryptDatabase()
+		public void EncryptDatabase()
 		{
-			if (Models.DataBank.Instance.GetSetting("encryption") == "False")
+			if (_coreApp.dataBank.GetSetting("encryptDatabase") == "False")
 			{ return; }
 
-			if (FileOperations.CheckDatabaseFilesExist(false))
+			if (_coreApp.fileOperations.CheckDatabaseFilesExist(false))
 			{
-				FileEncrypt(Models.DataBank.Instance.DefaultDBPath, PrepareMasterKeyFile());
-				FileEncrypt(Models.DataBank.Instance.DefaultPIndexPath, PrepareMasterKeyFile());
-				FileEncrypt(Models.DataBank.Instance.DefaultSIndexPath, PrepareMasterKeyFile());
+				FileEncrypt(_coreApp.dataBank.DefaultDBPath, PrepareMasterKeyFile());
+				FileEncrypt(_coreApp.dataBank.DefaultPIndexPath, PrepareMasterKeyFile());
+				FileEncrypt(_coreApp.dataBank.DefaultSIndexPath, PrepareMasterKeyFile());
 			}
 		}
 
-		private static bool DencryptDatabase()
+		private bool DecryptDatabase()
 		{
-			if (Models.DataBank.Instance.GetSetting("encryption") == "False")
+			if (_coreApp.dataBank.GetSetting("encryptDatabase") == "False")
 			{ return true; }
 
-			if (FileOperations.CheckDatabaseFilesExist(true))
+			if (_coreApp.fileOperations.CheckDatabaseFilesExist(true))
 			{
 				if (DecryptMasterKeyFile())
 				{
-					FileDecrypt(Models.DataBank.Instance.DefaultDBPath + Models.DataBank.Instance.EncryptionExtention, Models.DataBank.Instance.DefaultDBPath, PrepareMasterKeyFile());
-					FileDecrypt(Models.DataBank.Instance.DefaultPIndexPath + Models.DataBank.Instance.EncryptionExtention, Models.DataBank.Instance.DefaultPIndexPath, PrepareMasterKeyFile());
-					FileDecrypt(Models.DataBank.Instance.DefaultSIndexPath + Models.DataBank.Instance.EncryptionExtention, Models.DataBank.Instance.DefaultSIndexPath, PrepareMasterKeyFile());
+					FileDecrypt(_coreApp.dataBank.DefaultDBPath + _coreApp.dataBank.EncryptionExtention, _coreApp.dataBank.DefaultDBPath, PrepareMasterKeyFile());
+					FileDecrypt(_coreApp.dataBank.DefaultPIndexPath + _coreApp.dataBank.EncryptionExtention, _coreApp.dataBank.DefaultPIndexPath, PrepareMasterKeyFile());
+					FileDecrypt(_coreApp.dataBank.DefaultSIndexPath + _coreApp.dataBank.EncryptionExtention, _coreApp.dataBank.DefaultSIndexPath, PrepareMasterKeyFile());
 				}
 				else
 				{ return false; }
@@ -104,7 +111,7 @@ namespace SiTE.Logic
 			return true;
 		}
 
-		private static void FileEncrypt(string filePath, string password)
+		private void FileEncrypt(string filePath, string password)
 		{
 			//http://stackoverflow.com/questions/27645527/aes-encryption-on-large-files
 
@@ -118,7 +125,7 @@ namespace SiTE.Logic
 			byte[] salt = GenerateRandomSalt();
 
 			//create output file name
-			FileStream fileStreamCrypt = new FileStream(filePath + Models.DataBank.Instance.EncryptionExtention, FileMode.Create);
+			FileStream fileStreamCrypt = new FileStream(filePath + _coreApp.dataBank.EncryptionExtention, FileMode.Create);
 
 			//convert password string to byte arrray
 			byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
@@ -176,7 +183,7 @@ namespace SiTE.Logic
 		/// <param name="inputFile"></param>
 		/// <param name="outputFile"></param>
 		/// <param name="password"></param>
-		private static bool FileDecrypt(string inputFile, string outputFile, string password)
+		private bool FileDecrypt(string inputFile, string outputFile, string password)
 		{
 			if (!File.Exists(inputFile))
 			{
@@ -245,9 +252,9 @@ namespace SiTE.Logic
 			return isSuccess;
 		}
 
-		private static bool DecryptMasterKeyFile()
+		private bool DecryptMasterKeyFile()
 		{
-			if (!File.Exists(Models.DataBank.Instance.DefaultMasterKeyFile + Models.DataBank.Instance.EncryptionExtention))
+			if (!File.Exists(_coreApp.dataBank.DefaultMasterKeyFile + _coreApp.dataBank.EncryptionExtention))
 			{ return true; }
 
 			bool isPasswordAccepted = false;
@@ -257,7 +264,7 @@ namespace SiTE.Logic
 				UserPasswordHandler passwordHandler = new UserPasswordHandler();
 
 				if (passwordHandler.canUnlockDatabase)
-				{ isPasswordAccepted = FileDecrypt(Models.DataBank.Instance.DefaultMasterKeyFile + Models.DataBank.Instance.EncryptionExtention, Models.DataBank.Instance.DefaultMasterKeyFile, Models.DataBank.Instance.UserPassword); }
+				{ isPasswordAccepted = FileDecrypt(_coreApp.dataBank.DefaultMasterKeyFile + _coreApp.dataBank.EncryptionExtention, _coreApp.dataBank.DefaultMasterKeyFile, _coreApp.dataBank.UserPassword); }
 				else
 				{ return false; }
 			}
@@ -269,20 +276,20 @@ namespace SiTE.Logic
 		/// Delete encrypted files when disabling encryption
 		/// or reencrypt masterKey file on password change.
 		/// </summary>
-		public static void UpdateEncryption()
+		public void UpdateEncryption()
 		{
-			if (Models.DataBank.Instance.GetSetting("encryption") == "False")
+			if (_coreApp.dataBank.GetSetting("encryptDatabase") == "False")
 			{
-				FileOperations.DeleteFile(Models.DataBank.Instance.DefaultMasterKeyFile);
-				FileOperations.DeleteFile(Models.DataBank.Instance.DefaultDBPath + Models.DataBank.Instance.EncryptionExtention);
-				FileOperations.DeleteFile(Models.DataBank.Instance.DefaultPIndexPath + Models.DataBank.Instance.EncryptionExtention);
-				FileOperations.DeleteFile(Models.DataBank.Instance.DefaultSIndexPath + Models.DataBank.Instance.EncryptionExtention);
+				Core.Instance.fileOperations.DeleteFile(_coreApp.dataBank.DefaultMasterKeyFile);
+				Core.Instance.fileOperations.DeleteFile(_coreApp.dataBank.DefaultDBPath + _coreApp.dataBank.EncryptionExtention);
+				Core.Instance.fileOperations.DeleteFile(_coreApp.dataBank.DefaultPIndexPath + _coreApp.dataBank.EncryptionExtention);
+				Core.Instance.fileOperations.DeleteFile(_coreApp.dataBank.DefaultSIndexPath + _coreApp.dataBank.EncryptionExtention);
 			}
 
-			if (Models.DataBank.Instance.UserPassword == string.Empty)
-			{ FileOperations.DeleteFile(Models.DataBank.Instance.DefaultMasterKeyFile + Models.DataBank.Instance.EncryptionExtention); }
+			if (_coreApp.dataBank.UserPassword == string.Empty)
+			{ Core.Instance.fileOperations.DeleteFile(_coreApp.dataBank.DefaultMasterKeyFile + _coreApp.dataBank.EncryptionExtention); }
 			else
-			{ FileEncrypt(Models.DataBank.Instance.DefaultMasterKeyFile, Models.DataBank.Instance.UserPassword); }
+			{ FileEncrypt(_coreApp.dataBank.DefaultMasterKeyFile, _coreApp.dataBank.UserPassword); }
 		}
 	}
 }

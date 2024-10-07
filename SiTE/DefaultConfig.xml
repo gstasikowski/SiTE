@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Config>
+  <languageID>en-US</languageID>
+  <theme>Light</theme>
+  <autoSave>True</autoSave>
+  <autoSaveDelay>5</autoSaveDelay>
+  <encryptDatabase>True</encryptDatabase>
+  <editorMode>1</editorMode>
+  <password>abcde1234</password>
+</Config>

@@ -4,31 +4,38 @@ using System.Collections.Generic;
 
 namespace SiTE.Logic
 {
-	public static class DatabaseOperations
+	public class DatabaseOperations
 	{
-		public static void GetNoteList()
+		private Core _coreApp;
+
+		public DatabaseOperations(Core coreApp)
 		{
-			using (var database = new NoteDatabase(Models.DataBank.Instance.DefaultDBPath))
+			_coreApp = coreApp;
+		}
+
+		public void GetNoteList()
+		{
+			using (var database = new NoteDatabase(_coreApp.dataBank.DefaultDBPath))
 			{
 				List<Models.NoteModel> noteList = new List<Models.NoteModel>(database.GetAll());
-				Models.DataBank.Instance.NoteList.Clear();
+				_coreApp.dataBank.NoteList.Clear();
 
 				foreach (var note in noteList.OrderBy(note => note.Title))
 				{
-					Models.DataBank.Instance.NoteList.Add(note);
+					_coreApp.dataBank.NoteList.Add(note);
 				}
 			}
 		}
 
-		public static Models.NoteModel LoadNote(Guid noteID)
+		public Models.NoteModel LoadNote(Guid noteID)
 		{
-			using (var database = new NoteDatabase(Models.DataBank.Instance.DefaultDBPath))
+			using (var database = new NoteDatabase(_coreApp.dataBank.DefaultDBPath))
 			{ return database.Find(noteID); }
 		}
 
-		public static void SaveNote(Guid noteID, string noteTitle, string text)
+		public void SaveNote(Guid noteID, string noteTitle, string text)
 		{
-			using (var database = new NoteDatabase(Models.DataBank.Instance.DefaultDBPath))
+			using (var database = new NoteDatabase(_coreApp.dataBank.DefaultDBPath))
 			{
 				Guid noteGuid = (noteID == Guid.Empty) ? Guid.NewGuid() : noteID;
 				var oldNote = database.Find(noteGuid);
@@ -53,18 +60,18 @@ namespace SiTE.Logic
 				}
 			}
 
-			EncryptionOperations.EncryptDatabase();
+			_coreApp.encryptionOperations.EncryptDatabase();
 		}
 
-		public static void DeleteNote(Guid noteID)
+		public void DeleteNote(Guid noteID)
 		{
-			using (var database = new NoteDatabase(Models.DataBank.Instance.DefaultDBPath))
+			using (var database = new NoteDatabase(_coreApp.dataBank.DefaultDBPath))
 			{
 				var noteToRemove = database.Find(noteID);
 				database.Delete(noteToRemove);
 			}
 
-			EncryptionOperations.EncryptDatabase();
+			_coreApp.encryptionOperations.EncryptDatabase();
 		}
 	}
 }

@@ -43,7 +43,7 @@ namespace SiTE.ViewModels
 
 		private Models.DataBank DB
 		{
-			get { return Models.DataBank.Instance; }
+			get { return SiTE.Core.Instance.dataBank; }
 		}
 	}
 }

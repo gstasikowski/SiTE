@@ -2,42 +2,52 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using SiTE.Models;
 
 namespace SiTE.Logic
 {
-	public static class FileOperations
+	public class FileOperations
 	{
-		public static void InitialSetup()
+		private Core _coreApp;
+		private DataBank _dataBank;
+
+		public FileOperations(Core coreApp, DataBank dataBank)
 		{
-			CheckAppDirectories();
-			// LoadTranslations();
-			LoadSettings();
-			ClearTempDatabaseFiles(); // remove remnant temp files on startup (in case of crash)
-			EncryptionOperations.PrepareEncryptedFiles();
+			_coreApp = coreApp;
+			_dataBank = dataBank;
 		}
 
-		static void CheckAppDirectories()
+		public void InitialSetup()
 		{
-			if (!Directory.Exists(Models.DataBank.Instance.DefaultNotePath))
+			CheckAppDirectories();
+			LoadSettings();
+			ClearTempDatabaseFiles(); // remove remnant temp files on startup (in case of crash)
+			_coreApp.encryptionOperations.PrepareEncryptedFiles();
+		}
+
+		void CheckAppDirectories()
+		{
+			if (!Directory.Exists(_coreApp.dataBank.DefaultNotePath))
 			{
-				Directory.CreateDirectory(Models.DataBank.Instance.DefaultNotePath);
+				Directory.CreateDirectory(_coreApp.dataBank.DefaultNotePath);
 			}
 		}
 
-		public static bool CheckDatabaseFilesExist(bool encrypted)
+		public bool CheckDatabaseFilesExist(bool encrypted)
 		{
-			string encryptionExtention = encrypted ? Models.DataBank.Instance.EncryptionExtention : string.Empty;
+			string encryptionExtention = encrypted ? _coreApp.dataBank.EncryptionExtention : string.Empty;
 
-			return (File.Exists(Models.DataBank.Instance.DefaultDBPath + encryptionExtention)
-				&& File.Exists(Models.DataBank.Instance.DefaultPIndexPath + encryptionExtention)
-				&& File.Exists(Models.DataBank.Instance.DefaultSIndexPath + encryptionExtention));
+			return (File.Exists(_coreApp.dataBank.DefaultDBPath + encryptionExtention)
+				&& File.Exists(_coreApp.dataBank.DefaultPIndexPath + encryptionExtention)
+				&& File.Exists(_coreApp.dataBank.DefaultSIndexPath + encryptionExtention));
 		}
 
-		public static void DeleteFile(string filePath)
+		public void DeleteFile(string filePath)
 		{
 			if (!File.Exists(filePath))
 			{
@@ -47,69 +57,83 @@ namespace SiTE.Logic
 			File.Delete(filePath);
 		}
 
-		public static void ClearTempDatabaseFiles()
+		public void ClearTempDatabaseFiles()
 		{
-			if (Models.DataBank.Instance.GetSetting("encryption") == "False")
+			if (_coreApp.dataBank.GetSetting("encryptDatabase") == "False")
 			{
 				return;
 			}
 
-			if (File.Exists(Models.DataBank.Instance.DefaultMasterKeyFile + Models.DataBank.Instance.EncryptionExtention))
+			if (File.Exists(_coreApp.dataBank.DefaultMasterKeyFile + _coreApp.dataBank.EncryptionExtention))
 			{
-				DeleteFile(Models.DataBank.Instance.DefaultMasterKeyFile);
+				DeleteFile(_coreApp.dataBank.DefaultMasterKeyFile);
 			}
 
-			DeleteFile(Models.DataBank.Instance.DefaultDBPath);
-			DeleteFile(Models.DataBank.Instance.DefaultPIndexPath);
-			DeleteFile(Models.DataBank.Instance.DefaultSIndexPath);
-		}
-		
-		public static void LoadTranslations() // TODO: use method from the Localizer class instead
-		{
-			foreach (string filePath in Directory.EnumerateFiles(Models.DataBank.Instance.DefaultLanguagePath))
-			{
-				string cultureCode = filePath.Substring(filePath.LastIndexOf('\\') + 1).Replace(".xaml", "");
-				var newCulture = System.Globalization.CultureInfo.GetCultureInfo(cultureCode);
-				Models.DataBank.Instance.AddAvailableLanguage(string.Format("{0} [{1}]", newCulture.DisplayName, newCulture.Name));
-			}
+			DeleteFile(_coreApp.dataBank.DefaultDBPath);
+			DeleteFile(_coreApp.dataBank.DefaultPIndexPath);
+			DeleteFile(_coreApp.dataBank.DefaultSIndexPath);
 		}
 
 		#region Settings
-		public static void LoadSettings()
+		public void LoadSettings()
 		{
-			string configFilePath = Models.DataBank.Instance.DefaultConfigPath;
+			string configFilePath = _coreApp.dataBank.ConfigFile;
 
 			if (File.Exists(configFilePath))
 			{
 				string configFile = File.ReadAllText(configFilePath);
-				XElement rootElement = XElement.Parse(configFile);
-
-				foreach (var element in rootElement.Elements())
-				{
-					Models.DataBank.Instance.SetSetting(element.Name.LocalName, element.Value);
-				}
+				ParseSettings(configFile);
 			}
 			else
 			{
-				Models.DataBank.Instance.RestoreDefaultSettings();
-				SaveSettings(); 
+				LoadDefaultSettings(_coreApp.dataBank.DefaultConfigFile);
+				SaveSettings();
 			}
-
-			Localizer.Instance.LoadLanguage(Models.DataBank.Instance.GetSetting("languageID"));
 		}
 
-		public static void SaveSettings()
+		public void LoadDefaultSettings(string assemblyConfigFile)
 		{
-			Dictionary<string, string> appSettings = Models.DataBank.Instance.GetAllSettings();
+			try
+			{
+				var assembly = Assembly.GetExecutingAssembly();
+
+				using (Stream stream = assembly.GetManifestResourceStream(assemblyConfigFile))
+				using (StreamReader reader = new StreamReader(stream))
+				{
+					string? configContent = reader.ReadToEnd();
+					ParseSettings(configContent);
+
+					reader.Close();
+				}
+			}
+			catch (FileNotFoundException e)
+			{
+				new ErrorHandler("ErrorFileNotFound", e.InnerException.ToString());
+			}
+		}
+
+		public void SaveSettings()
+		{
+			Dictionary<string, string> appSettings = _coreApp.dataBank.GetAllSettings();
 
 			FileStream fileStream;
-			fileStream = new FileStream(Models.DataBank.Instance.DefaultConfigPath, FileMode.Create);
+			fileStream = new FileStream(_coreApp.dataBank.ConfigFile, FileMode.Create);
 
 			XElement rootElement = new XElement("Config", appSettings.Select(kv => new XElement(kv.Key, kv.Value)));
 			XmlSerializer serializer = new XmlSerializer(rootElement.GetType());
 			serializer.Serialize(fileStream, rootElement);
 
 			fileStream.Close();
+		}
+
+		public void ParseSettings(string configContent)
+		{
+			XElement rootElement = XElement.Parse(configContent);
+
+			foreach (var element in rootElement.Elements())
+			{
+				_coreApp.dataBank.SetSetting(element.Name.LocalName, element.Value);
+			}
 		}
 		#endregion Settings
 	}

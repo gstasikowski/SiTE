@@ -26,12 +26,12 @@
 				</Grid.RowDefinitions>
 				<StackPanel Orientation="Horizontal">
 					<Label Content="{lang:Localize Language}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-					<ComboBox x:Name="cboLanguageList" SelectionChanged="CBLanguageList_SelectionChanged"/>
+					<ComboBox ItemsSource="{Binding LanguageList}" SelectedIndex="{Binding AppSettings.SelectedLanguage}"/>
 				</StackPanel>
-				<CheckBox Grid.Row="1" x:Name="chkAutoSaveEnable" Content="{lang:Localize AutoSave}" VerticalAlignment="Center" Margin="4,0,0,0" Checked="ChkAutoSaveEnable_Toggled" Unchecked="ChkAutoSaveEnable_Toggled" />
+				<CheckBox Grid.Row="1" x:Name="chkAutoSaveEnable" Content="{lang:Localize AutoSave}" VerticalAlignment="Center" Margin="4,0,0,0" IsChecked="{Binding AppSettings.AutoSave}" />
 				<StackPanel Grid.Row="2" Orientation="Horizontal">
 					<Label Content="{lang:Localize Delay}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-					<TextBox x:Name="txtAutoSaveDelay" Height="20" MinWidth="50" TextInput="TBAutoSaveDelay_TextChanged" />
+					<NumericUpDown Value="{Binding AppSettings.AutoSaveDelay}" FormatString="0" Minimum="1" Width="200" HorizontalAlignment="Left" Margin="10,0,0,5"/>
 				</StackPanel>
 			</Grid>
 		</Expander>
@@ -42,11 +42,11 @@
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
-				<CheckBox x:Name="chkEncryption" Content="{lang:Localize EncryptionToggle}" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="ChkEncryption_Toggled" Unchecked="ChkEncryption_Toggled" Margin="4,0,0,0"/>
-				<CheckBox x:Name="chkPassword" Content="{lang:Localize PasswordToggle}" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="ChkPasswordProtection_Toggled" Unchecked="ChkPasswordProtection_Toggled" Margin="4,0,0,0"  Grid.Row="1" />
+				<CheckBox Content="{lang:Localize EncryptionToggle}" HorizontalAlignment="Left" VerticalAlignment="Center" IsChecked="{Binding AppSettings.EncryptDatabase}" Margin="4,0,0,0"/>
+				<CheckBox Content="{lang:Localize PasswordToggle}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,0,0,0"  Grid.Row="1" />
 				<StackPanel Grid.Row="2" Orientation="Horizontal">
 					<Label Content="{lang:Localize Password}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-					<TextBox x:Name="txtEncryptionPassword" Height="20" MinWidth="300" TextInput="TBEncryptionPassword_TextChanged"/>
+					<TextBox Height="20" MinWidth="300" Text="{Binding AppSettings.DatabasePassword}"/>
 				</StackPanel>
 			</Grid>
 		</Expander>

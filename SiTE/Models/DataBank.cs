@@ -10,7 +10,8 @@ namespace SiTE.Models
 		#region Variables
 		public readonly string projectUrl = "https://github.com/gstasikowski/SiTE";
 
-		private readonly string _defaultConfigPath = AppDomain.CurrentDomain.BaseDirectory + "Config.xml";
+		private readonly string _defaultConfigFile = "SiTE.DefaultConfig.xml";
+		private readonly string _configFile = AppDomain.CurrentDomain.BaseDirectory + "Config.xml";
 		private readonly string _defaultNotePath = AppDomain.CurrentDomain.BaseDirectory + "Notes/";
 		private readonly string _defaultMasterKeyFile = "master.key";
 		private readonly string _defaultDatabaseFile = "Journal.data";
@@ -29,9 +30,13 @@ namespace SiTE.Models
 		#endregion Variables
 
 		#region Properties
-		public string DefaultConfigPath
+		public string DefaultConfigFile
 		{
-			get { return _defaultConfigPath; }
+			get { return _defaultConfigFile; }
+		}
+		public string ConfigFile
+		{
+			get { return _configFile; }
 		}
 
 		public string DefaultNotePath
@@ -94,26 +99,14 @@ namespace SiTE.Models
 		#endregion Properties
 
 		#region Methods
-		public static DataBank Instance { get; set; } = new DataBank();
-
 		public void UpdatePassword(string newPassword, bool onStart)
 		{
 			_userPassword = newPassword;
 
 			if (!onStart)
 			{
-				Logic.EncryptionOperations.UpdateEncryption();
+				SiTE.Core.Instance.encryptionOperations.UpdateEncryption();
 			}
-		}
-
-		public void RestoreDefaultSettings()
-		{			
-			SetSetting("languageID", "en-US");
-			SetSetting("autoSave", "true");
-			SetSetting("autoSaveDelay", "5");
-			SetSetting("encryption", "true");
-			SetSetting("editorMode", "1");
-			SetSetting("password", "abcde1234"); // for testing only! TODO hash and move into a secure place so it's not widely available when app is running
 		}
 
 		public Dictionary<string, string> GetAllSettings()
@@ -138,18 +131,19 @@ namespace SiTE.Models
 			}
 		}
 
-		public void AddAvailableLanguage(string languageCode)
+		public void AddAvailableTheme(string themeName)
 		{
-			if (!_languageList.Contains(languageCode))
-			{
-				_languageList.Add(languageCode);
-			}
+			// if (!_themes.Contains(themeName))
+			// {
+			// 	_themes.Add(themeName);
+			// }
 		}
 
-		public List<string> LanguageList // TODO: use binding with the lang list in the Localizer class
-		{
-			get { return _languageList; }
-		}
+		// public int ThemeIndex(string themeName)
+		// {
+			// int themeIndex = _themes.IndexOf(themeName);
+			// return (themeIndex > -1) ? themeIndex : 0;
+		// }
 
 		public string GetNoteTitle(Guid noteID)
 		{
@@ -168,11 +162,6 @@ namespace SiTE.Models
 			return NoteList.IndexOf(note);
 		}
 
-		public int LanguageIndex(string languageCode)
-		{
-			return _languageList.FindIndex(x => x.Contains(languageCode));
-		}
-
 		public void NewNote()
 		{
 			ActiveNote.ID = System.Guid.Empty;
@@ -184,7 +173,7 @@ namespace SiTE.Models
 
 		public void OpenNote(System.Guid noteID)
 		{
-			var tempNote = Logic.DatabaseOperations.LoadNote(noteID);
+			var tempNote = SiTE.Core.Instance.databaseOperations.LoadNote(noteID);
 			
 			ActiveNote.ID = tempNote.ID;
 			ActiveNote.Title = tempNote.Title;
@@ -195,12 +184,12 @@ namespace SiTE.Models
 
 		public void SaveNote()
 		{
-			Logic.DatabaseOperations.SaveNote(ActiveNote.ID, ActiveNote.Title, ActiveNote.Content);
+			SiTE.Core.Instance.databaseOperations.SaveNote(ActiveNote.ID, ActiveNote.Title, ActiveNote.Content);
 		}
 
 		public void DeleteNote()
 		{
-			Logic.DatabaseOperations.DeleteNote(ActiveNote.ID);
+			SiTE.Core.Instance.databaseOperations.DeleteNote(ActiveNote.ID);
 		}
 		#endregion Methods
 	}

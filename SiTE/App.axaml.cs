@@ -15,6 +15,9 @@ public partial class App : Application
 
 	public override void OnFrameworkInitializationCompleted()
 	{
+		SiTE.Core coreApp = new SiTE.Core();
+		coreApp.InitializeAppComponents();
+
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
 			desktop.MainWindow = new MainWindow
