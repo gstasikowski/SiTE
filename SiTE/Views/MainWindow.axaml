@@ -14,11 +14,6 @@
 	</Design.DataContext>
 
 	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="Auto"/>
-		</Grid.RowDefinitions>
-		<TransitioningContentControl Content="{Binding CurrentPage}" VerticalAlignment="Stretch" Grid.Row="0"/>
-		<Button Command="{Binding ToggleActiveScreenCommand}" Content="View" Margin="0,0,0,3" Grid.Row="1"/>
+		<TransitioningContentControl Content="{Binding CurrentPage}" VerticalAlignment="Stretch"/>
 	</Grid>
 </Window>
