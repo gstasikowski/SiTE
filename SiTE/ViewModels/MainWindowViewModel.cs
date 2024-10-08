@@ -1,4 +1,4 @@
-﻿using System.Windows.Input;
+using System.Windows.Input;
 using DynamicData;
 using ReactiveUI;
 using SiTE.Logic;
@@ -17,8 +17,6 @@ namespace SiTE.ViewModels
 		{
 			InitializePages();
 			_currentPage = Pages[0];
-
-			ToggleActiveScreenCommand = ReactiveCommand.Create(ToggleActiveScreen);
 		}
 
 		private void InitializePages()
@@ -39,12 +37,7 @@ namespace SiTE.ViewModels
 			private set { this.RaiseAndSetIfChanged(ref _currentPage, value); }
 		}
 
-		/// <summary>
-		/// Gets a command that toggles between generator and settings pages
-		/// </summary>
-		public ICommand ToggleActiveScreenCommand { get; }
-
-		private void ToggleActiveScreen()
+		public void ToggleActiveScreen()
 		{
 			int index = (Pages.IndexOf(CurrentPage) > 0) ? 0 : 1;
 			CurrentPage = Pages[index];

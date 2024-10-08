@@ -12,6 +12,8 @@ namespace SiTE.Logic
 			get { return Core.Instance; }
 		}
 
+		private bool _settingsModified = false;
+
 		public static Settings Instance { get; set; } = new Settings();
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -61,6 +63,16 @@ namespace SiTE.Logic
 			set { SetSetting("EditorMode", value.ToString()); }
 		}
 
+		public bool SettingsModified
+		{
+			get { return _settingsModified; }
+			private set
+			{
+				_settingsModified = value;
+				OnPropertyChanged();
+			}
+		}
+
 		public void ApplyUserSettings()
 		{
 			Localizer.Instance.LoadLanguage(GetSetting("LanguageID"));
@@ -68,16 +80,19 @@ namespace SiTE.Logic
 			int themeIndex = 0;
 			int.TryParse(GetSetting("Theme"), out themeIndex);
 			SelectedTheme = themeIndex;
+			SettingsModified = false;
 		}
 
 		public void SaveSettings()
 		{
 			CoreApp.fileOperations.SaveSettings();
+			SettingsModified = false;
 		}
 
 		public void LoadSettings()
 		{
 			CoreApp.fileOperations.LoadSettings();
+			ApplyUserSettings();
 		}
 
 		public void RestoreDefaultSettings()
@@ -98,6 +113,8 @@ namespace SiTE.Logic
 		public void SetSetting(string settingID, string value)
 		{
 			CoreApp.dataBank.SetSetting(settingID, value);
+			OnPropertyChanged(settingID);
+			SettingsModified = true;
 		}
 
 		protected void OnPropertyChanged([CallerMemberName] string name = null)

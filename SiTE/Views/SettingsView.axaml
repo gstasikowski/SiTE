@@ -51,8 +51,8 @@
 			</Grid>
 		</Expander>
 		<DockPanel VerticalAlignment="Bottom" Grid.Row="2" Height="25">
-			<Button Content="{lang:Localize ButtonBack}" HorizontalAlignment="Left" VerticalAlignment="Top" Click="BtnBack_Click" MinWidth="20" MinHeight="20" Padding="4,2,4,2"/>
-			<Button Content="{lang:Localize ButtonApply}" IsEnabled="True" HorizontalAlignment="Left" VerticalAlignment="Top" Click="BtnApply_Click" Margin="5,0,0,0" MinWidth="20" MinHeight="20" Padding="4,2,4,2"/>
+			<Button Content="{lang:Localize ButtonBack}" Command="{Binding SwitchToEditorView}" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="20" MinHeight="20" Padding="4,2,4,2"/>
+			<Button Content="{lang:Localize ButtonApply}" Command="{Binding SaveSettings}" IsEnabled="{Binding AppSettings.SettingsModified}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,0,0,0" MinWidth="20" MinHeight="20" Padding="4,2,4,2"/>
 		</DockPanel>
 	</Grid>
 </UserControl>
