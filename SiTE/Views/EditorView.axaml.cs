@@ -86,7 +86,7 @@ namespace SiTE.Views
 
 			UpdateEditorView();
 
-			SiTE.Core.Instance.dataBank.SetSetting("_editorMode", ((int)_editorMode).ToString());
+			SiTE.Core.Instance.dataBank.SetSetting("editorMode", ((int)_editorMode).ToString());
 			SiTE.Core.Instance.fileOperations.SaveSettings();
 		}
 
