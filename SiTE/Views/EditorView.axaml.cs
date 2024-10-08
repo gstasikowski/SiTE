@@ -44,15 +44,6 @@ namespace SiTE.Views
 			UpdateEditorView();
 		}
 
-		private void OpenAppInfo()
-		{
-			string message = string.Format("{0}\n\nVersion: {1}", "SiTE"/*App.ResourceAssembly.GetName().Name*/, "2.0"/*Avalonia.Application.ResourceAssembly.GetName().Version*/);
-
-			ErrorMessageView messageWindow = new ErrorMessageView(message, string.Empty);
-			messageWindow.Title = (string)Logic.Localizer.Instance["MenuAbout"];
-			messageWindow.ShowDialog(((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow);
-		}
-
 		private void OpenSettings()
 		{
 			// Logic.Refs.viewControl.CurrentPageViewModel = Logic.Refs.viewControl.PageViewModels[1]; // TODO switch to binding
@@ -550,19 +541,9 @@ namespace SiTE.Views
 			ExitApp();
 		}
 
-		private void MISettings_Click(object sender, RoutedEventArgs e)
-		{
-			OpenSettings();
-		}
-
 		private void MIGit_Click(object sender, RoutedEventArgs e)
 		{
 			OpenLink(SiTE.Core.Instance.dataBank.projectUrl);
-		}
-
-		private void MIAbout_Click(object sender, RoutedEventArgs e)
-		{
-			OpenAppInfo();
 		}
 
 		private void LVNoteList_SelectionChanged(object sender, SelectionChangedEventArgs e)

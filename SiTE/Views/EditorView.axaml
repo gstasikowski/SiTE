@@ -44,10 +44,10 @@
 				<MenuItem Header="{lang:Localize MenuSubscript}" ToolTip.Tip="{lang:Localize TipSubscript}"/>
 				<MenuItem Header="{lang:Localize MenuSuperscript}" ToolTip.Tip="{lang:Localize TipSuperscript}"/>
 			</MenuItem>
-			<MenuItem Header="{lang:Localize MenuSettings}" Click="MISettings_Click"/>
+			<MenuItem Header="{lang:Localize MenuSettings}" Command="{Binding SwitchToSettingsView}"/>
 			<MenuItem Header="{lang:Localize MenuHelp}">
 				<MenuItem Header="{lang:Localize MenuGit}" Click="MIGit_Click"/>
-				<MenuItem Header="{lang:Localize MenuAbout}" Click="MIAbout_Click"/>
+				<MenuItem Header="{lang:Localize MenuAbout}" Command="{Binding DisplayAppInfo}"/>
 			</MenuItem>
 		</Menu>
 		<Menu VerticalAlignment="Stretch" Grid.Row="1">
