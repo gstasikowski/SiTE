@@ -80,7 +80,7 @@ namespace SiTE.Logic
 
 		public void EncryptDatabase()
 		{
-			if (_coreApp.dataBank.GetSetting("encryptDatabase") == "False")
+			if (_coreApp.dataBank.GetSetting("EncryptDatabase") == "False")
 			{ return; }
 
 			if (_coreApp.fileOperations.CheckDatabaseFilesExist(false))
@@ -93,7 +93,7 @@ namespace SiTE.Logic
 
 		private bool DecryptDatabase()
 		{
-			if (_coreApp.dataBank.GetSetting("encryptDatabase") == "False")
+			if (_coreApp.dataBank.GetSetting("EncryptDatabase") == "False")
 			{ return true; }
 
 			if (_coreApp.fileOperations.CheckDatabaseFilesExist(true))

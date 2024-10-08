@@ -38,7 +38,7 @@ namespace SiTE.Views
 			// }
 
 			int tempMode;
-			int.TryParse(SiTE.Core.Instance.dataBank.GetSetting("editorMode"), out tempMode);
+			int.TryParse(SiTE.Core.Instance.dataBank.GetSetting("EditorMode"), out tempMode);
 			_editorMode = (EditorMode)tempMode;
 
 			UpdateEditorView();
@@ -447,12 +447,12 @@ namespace SiTE.Views
 
 		private async Task AutosaveTask()
 		{
-			if (System.Convert.ToBoolean(SiTE.Core.Instance.dataBank.GetSetting("autoSave")) && NoteList.SelectedIndex >= 0)
+			if (System.Convert.ToBoolean(SiTE.Core.Instance.dataBank.GetSetting("AutoSave")) && NoteList.SelectedIndex >= 0)
 			{
 				using (_cancellationToken)
 				{
 					int autoSaveDelay = 5;
-					int.TryParse(SiTE.Core.Instance.dataBank.GetSetting("autoSaveDelay"), out autoSaveDelay);
+					int.TryParse(SiTE.Core.Instance.dataBank.GetSetting("AutoSaveDelay"), out autoSaveDelay);
 					await Task.Delay(autoSaveDelay * 30000);
 						
 					SaveNote();

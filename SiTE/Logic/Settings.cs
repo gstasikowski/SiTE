@@ -21,7 +21,7 @@ namespace SiTE.Logic
 			set
 			{
 				Localizer.Instance.LoadLanguage(Localizer.Instance.LanguageList[value]);
-				SetSetting("languageID", Localizer.Instance.LanguageList[value]);
+				SetSetting("LanguageID", Localizer.Instance.LanguageList[value]);
 			}
 		}
 
@@ -33,40 +33,40 @@ namespace SiTE.Logic
 
 		public bool AutoSave
 		{
-			get { return GetSetting("autoSave") == "True"; }
-			set { SetSetting("autoSave", value.ToString()); }
+			get { return GetSetting("AutoSave") == "True"; }
+			set { SetSetting("AutoSave", value.ToString()); }
 		}
 
 		public int AutoSaveDelay
 		{
-			get { return HelperMethods.ParseIntSetting("autoSaveDelay"); }
-			set { SetSetting("autoSaveDelay", value.ToString()); }
+			get { return HelperMethods.ParseIntSetting("AutoSaveDelay"); }
+			set { SetSetting("AutoSaveDelay", value.ToString()); }
 		}
 
 		public bool EncryptDatabase
 		{
-			get { return GetSetting("encryptDatabase") == "True"; }
-			set { SetSetting("encryptDatabase", value.ToString()); }
+			get { return GetSetting("EncryptDatabase") == "True"; }
+			set { SetSetting("EncryptDatabase", value.ToString()); }
 		}
 
 		public string DatabasePassword // temp, gotta hash and salt
 		{
-			get { return GetSetting("databasePassword"); }
-			set { SetSetting("databasePassword", value.ToString()); }
+			get { return GetSetting("DatabasePassword"); }
+			set { SetSetting("DatabasePassword", value.ToString()); }
 		}
 
 		public int EditorMode
 		{
-			get { return HelperMethods.ParseIntSetting("editorMode"); }
-			set { SetSetting("editorMode", value.ToString()); }
+			get { return HelperMethods.ParseIntSetting("EditorMode"); }
+			set { SetSetting("EditorMode", value.ToString()); }
 		}
 
 		public void ApplyUserSettings()
 		{
-			Localizer.Instance.LoadLanguage(GetSetting("languageID"));
+			Localizer.Instance.LoadLanguage(GetSetting("LanguageID"));
 
 			int themeIndex = 0;
-			int.TryParse(GetSetting("theme"), out themeIndex);
+			int.TryParse(GetSetting("Theme"), out themeIndex);
 			SelectedTheme = themeIndex;
 		}
 
@@ -83,7 +83,7 @@ namespace SiTE.Logic
 		public void RestoreDefaultSettings()
 		{
 			CoreApp.fileOperations.LoadDefaultSettings(CoreApp.dataBank.DefaultConfigFile);
-			Localizer.Instance.LoadLanguage(GetSetting("languageID"));
+			Localizer.Instance.LoadLanguage(GetSetting("LanguageID"));
 			OnPropertyChanged("AutoSave");
 			OnPropertyChanged("AutoSaveDelay");
 			OnPropertyChanged("EncryptDatabase");

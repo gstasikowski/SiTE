@@ -59,7 +59,7 @@ namespace SiTE.Logic
 
 		public void ClearTempDatabaseFiles()
 		{
-			if (_coreApp.dataBank.GetSetting("encryptDatabase") == "False")
+			if (_coreApp.dataBank.GetSetting("EncryptDatabase") == "False")
 			{
 				return;
 			}
