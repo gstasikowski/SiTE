@@ -49,7 +49,7 @@
 			</MenuItem>
 			<MenuItem Header="{lang:Localize MenuSettings}" Command="{Binding SwitchToSettingsView}"/>
 			<MenuItem Header="{lang:Localize MenuHelp}">
-				<MenuItem Header="{lang:Localize MenuGit}" Click="MIGit_Click"/>
+				<MenuItem Header="{lang:Localize MenuGit}" Command="{Binding OpenAppRepo}"/>
 				<MenuItem Header="{lang:Localize MenuAbout}" Command="{Binding DisplayAppInfo}"/>
 			</MenuItem>
 		</Menu>

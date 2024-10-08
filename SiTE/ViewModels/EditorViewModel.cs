@@ -47,6 +47,11 @@ namespace SiTE.ViewModels
 			((ViewModels.MainWindowViewModel)((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.DataContext).ToggleActiveScreen();
 		}
 
+		public void OpenAppRepo()
+		{
+			new Logic.NoteLinkCommand().Execute(SiTE.Core.Instance.dataBank.projectUrl);
+		}
+
 		public void DisplayAppInfo()
 		{
 			string message = string.Format("{0}\n\nVersion: {1}", "SiTE"/*App.ResourceAssembly.GetName().Name*/, "2.0"/*Avalonia.Application.ResourceAssembly.GetName().Version*/);

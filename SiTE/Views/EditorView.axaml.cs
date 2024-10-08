@@ -196,21 +196,6 @@ namespace SiTE.Views
 			NewNote();
 			LoadNoteList();
 		}
-
-		private void OpenLink(string url)
-		{
-			if (url.StartsWith("nid:"))
-			{
-				url = url.Replace("nid:", string.Empty);
-				System.Guid tempID = System.Guid.Parse(url);
-				OpenNote(tempID);
-			}
-			else
-			{
-				url = url.Replace("&", "^&");
-				System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
-			}
-		}
 		#endregion (note operations)
 
 		#region Methods (text operations)
@@ -377,8 +362,6 @@ namespace SiTE.Views
 
 			var tempNote = (Models.NoteModel)NoteList.SelectedItem;
 			string noteLink = string.Format("[{0}](nID:{1})", tempNote.Title, tempNote.ID);
-			
-			// Avalonia.Controls.TopLevel window
 			TopLevel.GetTopLevel(this).Clipboard.SetTextAsync(noteLink);
 		}
 
@@ -541,11 +524,6 @@ namespace SiTE.Views
 			ExitApp();
 		}
 
-		private void MIGit_Click(object sender, RoutedEventArgs e)
-		{
-			OpenLink(SiTE.Core.Instance.dataBank.projectUrl);
-		}
-
 		private void LVNoteList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			SelectNote();
@@ -564,11 +542,6 @@ namespace SiTE.Views
 		private void BtnCreateLink_Click(object sender, RoutedEventArgs e)
 		{
 			CreateNoteLink();
-		}
-
-		private void CommandBinding_Executed(string url)
-		{
-			OpenLink(url);
 		}
 		#endregion UI Events
 	}
