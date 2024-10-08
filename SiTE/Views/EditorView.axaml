@@ -106,7 +106,7 @@
 				<ColumnDefinition Width="2"/>
 				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
-			<Expander ExpandDirection="Right" IsExpanded="True" Collapsed="EXNoteList_Collapsed" Expanded="EXNoteList_Expanded" VerticalContentAlignment="Stretch"  ToolTip.Tip="{lang:Localize TipNoteList}">
+			<Expander ExpandDirection="Right" IsExpanded="True" Collapsed="EXNoteList_Collapsed" Expanded="EXNoteList_Expanded" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" ToolTip.Tip="{lang:Localize TipNoteList}">
 				<ListBox x:Name="NoteList" ItemsSource="{Binding NoteList}" DisplayMemberBinding="{Binding Title}" SelectionChanged="LVNoteList_SelectionChanged" Margin="2,0,0,-1" ScrollViewer.VerticalScrollBarVisibility="Auto" MinWidth="130"/>
 			</Expander>
 			<GridSplitter x:Name="gclSplitter" Grid.Column="1" HorizontalAlignment="Stretch" Width="2" />
@@ -126,7 +126,7 @@
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
-					<TextBox x:Name="NoteContent" VerticalAlignment="Stretch" MinHeight="100" Background="White" Text="{Binding ActiveNote.Content, Mode=TwoWay}" TextChanged="TANoteContent_TextChanged" Margin="0,2,0,0" AcceptsReturn="True" AcceptsTab="True" HorizontalContentAlignment="Left" />
+					<TextBox x:Name="NoteContent" VerticalAlignment="Stretch" MinHeight="100" Text="{Binding ActiveNote.Content, Mode=TwoWay}" TextChanged="TANoteContent_TextChanged" Margin="0,2,0,0" AcceptsReturn="True" AcceptsTab="True" HorizontalContentAlignment="Left" />
 					<md:MarkdownScrollViewer x:Name="NoteMarkdownDisplay" Markdown="{Binding ActiveNote.Content}" VerticalAlignment="Stretch" MinHeight="100" Margin="0,2,0,0" Grid.Column="1"/>
 				</Grid>
 			</Grid>

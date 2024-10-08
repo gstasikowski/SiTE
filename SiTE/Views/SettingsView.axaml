@@ -13,11 +13,11 @@
 	</Design.DataContext>
 	<Grid Margin="2,2,2,2">
 		<Grid.RowDefinitions>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
-		<Expander Header="{lang:Localize GroupGeneral}" IsExpanded="True">
+		<Expander Header="{lang:Localize GroupGeneral}" IsExpanded="True" HorizontalAlignment="Stretch">
 			<Grid Margin="19, 5, 10, 0">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="*"/>
