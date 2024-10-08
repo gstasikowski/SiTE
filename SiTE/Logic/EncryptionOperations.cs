@@ -20,7 +20,9 @@ namespace SiTE.Logic
 			string masterPassword = string.Empty;
 
 			if (File.Exists(_coreApp.dataBank.DefaultMasterKeyFile))
-			{ masterPassword = File.ReadAllText(_coreApp.dataBank.DefaultMasterKeyFile); }
+			{
+				masterPassword = File.ReadAllText(_coreApp.dataBank.DefaultMasterKeyFile);
+			}
 			else
 			{
 				masterPassword = GenerateMasterPassword();
@@ -42,16 +44,24 @@ namespace SiTE.Logic
 			Random rng = new Random();
 
 			for (int i = 0; i < 26; i++)
+			{
 				charList.Add((char)('a' + i));
+			}
 
 			for (int i = 0; i < 26; i++)
+			{
 				charList.Add((char)('A' + i));
+			}
 
 			for (int i = 48; i < 58; i++)
+			{
 				charList.Add((char)i);
+			}
 
 			for (int i = 0; i < 256; i++)
-			{ password += charList[rng.Next(0, charList.Count)]; }
+			{
+				password += charList[rng.Next(0, charList.Count)];
+			}
 
 			return password;
 		}
@@ -75,13 +85,17 @@ namespace SiTE.Logic
 		public void PrepareEncryptedFiles()
 		{
 			if (DecryptDatabase())
-			{ PrepareMasterKeyFile(); }
+			{
+				PrepareMasterKeyFile();
+			}
 		}
 
 		public void EncryptDatabase()
 		{
 			if (_coreApp.dataBank.GetSetting("EncryptDatabase") == "False")
-			{ return; }
+			{
+				return;
+			}
 
 			if (_coreApp.fileOperations.CheckDatabaseFilesExist(false))
 			{
@@ -94,18 +108,34 @@ namespace SiTE.Logic
 		private bool DecryptDatabase()
 		{
 			if (_coreApp.dataBank.GetSetting("EncryptDatabase") == "False")
-			{ return true; }
+			{
+				return true;
+			}
 
 			if (_coreApp.fileOperations.CheckDatabaseFilesExist(true))
 			{
 				if (DecryptMasterKeyFile())
 				{
-					FileDecrypt(_coreApp.dataBank.DefaultDBPath + _coreApp.dataBank.EncryptionExtention, _coreApp.dataBank.DefaultDBPath, PrepareMasterKeyFile());
-					FileDecrypt(_coreApp.dataBank.DefaultPIndexPath + _coreApp.dataBank.EncryptionExtention, _coreApp.dataBank.DefaultPIndexPath, PrepareMasterKeyFile());
-					FileDecrypt(_coreApp.dataBank.DefaultSIndexPath + _coreApp.dataBank.EncryptionExtention, _coreApp.dataBank.DefaultSIndexPath, PrepareMasterKeyFile());
+					FileDecrypt(
+						_coreApp.dataBank.DefaultDBPath + _coreApp.dataBank.EncryptionExtention,
+						_coreApp.dataBank.DefaultDBPath,
+						PrepareMasterKeyFile()
+					);
+					FileDecrypt(
+						_coreApp.dataBank.DefaultPIndexPath + _coreApp.dataBank.EncryptionExtention,
+						_coreApp.dataBank.DefaultPIndexPath,
+						PrepareMasterKeyFile()
+					);
+					FileDecrypt(
+						_coreApp.dataBank.DefaultSIndexPath + _coreApp.dataBank.EncryptionExtention,
+						_coreApp.dataBank.DefaultSIndexPath,
+						PrepareMasterKeyFile()
+					);
 				}
 				else
-				{ return false; }
+				{
+					return false;
+				}
 			}
 
 			return true;
@@ -259,7 +289,9 @@ namespace SiTE.Logic
 		private bool DecryptMasterKeyFile()
 		{
 			if (!File.Exists(_coreApp.dataBank.DefaultMasterKeyFile + _coreApp.dataBank.EncryptionExtention))
-			{ return true; }
+			{
+				return true;
+			}
 
 			bool isPasswordAccepted = false;
 
@@ -268,9 +300,17 @@ namespace SiTE.Logic
 				UserPasswordHandler passwordHandler = new UserPasswordHandler();
 
 				if (passwordHandler.canUnlockDatabase)
-				{ isPasswordAccepted = FileDecrypt(_coreApp.dataBank.DefaultMasterKeyFile + _coreApp.dataBank.EncryptionExtention, _coreApp.dataBank.DefaultMasterKeyFile, _coreApp.dataBank.UserPassword); }
+				{
+					isPasswordAccepted = FileDecrypt(
+						_coreApp.dataBank.DefaultMasterKeyFile + _coreApp.dataBank.EncryptionExtention,
+						_coreApp.dataBank.DefaultMasterKeyFile,
+						_coreApp.dataBank.UserPassword
+					);
+				}
 				else
-				{ return false; }
+				{
+					return false;
+				}
 			}
 
 			return true;
@@ -291,9 +331,13 @@ namespace SiTE.Logic
 			}
 
 			if (_coreApp.dataBank.UserPassword == string.Empty)
-			{ Core.Instance.fileOperations.DeleteFile(_coreApp.dataBank.DefaultMasterKeyFile + _coreApp.dataBank.EncryptionExtention); }
+			{
+				Core.Instance.fileOperations.DeleteFile(_coreApp.dataBank.DefaultMasterKeyFile + _coreApp.dataBank.EncryptionExtention);
+			}
 			else
-			{ FileEncrypt(_coreApp.dataBank.DefaultMasterKeyFile, _coreApp.dataBank.UserPassword); }
+			{
+				FileEncrypt(_coreApp.dataBank.DefaultMasterKeyFile, _coreApp.dataBank.UserPassword);
+			}
 		}
 	}
 }
