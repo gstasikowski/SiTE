@@ -3,7 +3,7 @@
 		xmlns:vm="using:SiTE.ViewModels"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
+		xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
 		x:Class="SiTE.Views.EditorView"
 		x:DataType="vm:EditorViewModel"
 		x:CompileBindings="True"
@@ -12,6 +12,9 @@
 	<Design.DataContext>
 		<vm:EditorViewModel />
 	</Design.DataContext>
+	<UserControl.Resources>
+		<lang:NoteLinkCommand x:Key="HandleLinkCommand"/>
+	</UserControl.Resources>
 	<Grid Grid.IsSharedSizeScope="True">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
@@ -127,7 +130,11 @@
 						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
 					<TextBox x:Name="NoteContent" VerticalAlignment="Stretch" MinHeight="100" Text="{Binding ActiveNote.Content, Mode=TwoWay}" TextChanged="TANoteContent_TextChanged" Margin="0,2,0,0" AcceptsReturn="True" AcceptsTab="True" HorizontalContentAlignment="Left" />
-					<md:MarkdownScrollViewer x:Name="NoteMarkdownDisplay" Markdown="{Binding ActiveNote.Content}" VerticalAlignment="Stretch" MinHeight="100" Margin="0,2,0,0" Grid.Column="1"/>
+					<md:MarkdownScrollViewer x:Name="NoteMarkdownDisplay" Markdown="{Binding ActiveNote.Content}" VerticalAlignment="Stretch" MinHeight="100" Margin="0,2,0,0" Grid.Column="1">
+						<md:MarkdownScrollViewer.Engine>
+							<md:Markdown HyperlinkCommand="{StaticResource HandleLinkCommand}"/>
+						</md:MarkdownScrollViewer.Engine>
+					</md:MarkdownScrollViewer>
 				</Grid>
 			</Grid>
 		</Grid>
