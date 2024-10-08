@@ -60,7 +60,7 @@ namespace SiTE.Logic
 		{
 			byte[] data = new byte[32];
 
-			using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+			using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
 			{
 				for (int i = 0; i < 10; i++)
 				{
@@ -131,49 +131,51 @@ namespace SiTE.Logic
 			byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
 
 			//Set Rijndael symmetric encryption algorithm
-			RijndaelManaged AES = new RijndaelManaged();
-			AES.KeySize = 256;
-			AES.BlockSize = 128;
-			AES.Padding = PaddingMode.PKCS7;
-
-			//http://stackoverflow.com/questions/2659214/why-do-i-need-to-use-the-rfc2898derivebytes-class-in-net-instead-of-directly
-			//"What it does is repeatedly hash the user password along with the salt." High iteration counts.
-			var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000, HashAlgorithmName.SHA256);
-			AES.Key = key.GetBytes(AES.KeySize / 8);
-			AES.IV = key.GetBytes(AES.BlockSize / 8);
-
-			//Cipher modes: http://security.stackexchange.com/questions/52665/which-is-the-best-cipher-mode-and-padding-mode-for-aes-encryption
-			AES.Mode = CipherMode.CFB;
-
-			// write salt to the begining of the output file, so in this case can be random every time
-			fileStreamCrypt.Write(salt, 0, salt.Length);
-
-			CryptoStream cryptoStream = new CryptoStream(fileStreamCrypt, AES.CreateEncryptor(), CryptoStreamMode.Write);
-			FileStream fileStreamTemp = new FileStream(filePath, FileMode.Open);
-
-			//create a buffer (1mb) so only this amount will allocate in the memory and not the whole file
-			byte[] buffer = new byte[1048576];
-			int read;
-
-			try
+			using (Aes myAes = Aes.Create())
 			{
-				while ((read = fileStreamTemp.Read(buffer, 0, buffer.Length)) > 0)
+				myAes.KeySize = 256;
+				myAes.BlockSize = 128;
+				myAes.Padding = PaddingMode.PKCS7;
+
+				//http://stackoverflow.com/questions/2659214/why-do-i-need-to-use-the-rfc2898derivebytes-class-in-net-instead-of-directly
+				//"What it does is repeatedly hash the user password along with the salt." High iteration counts.
+				var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000, HashAlgorithmName.SHA256);
+				myAes.Key = key.GetBytes(myAes.KeySize / 8);
+				myAes.IV = key.GetBytes(myAes.BlockSize / 8);
+
+				//Cipher modes: http://security.stackexchange.com/questions/52665/which-is-the-best-cipher-mode-and-padding-mode-for-aes-encryption
+				myAes.Mode = CipherMode.CFB;
+
+				// write salt to the begining of the output file, so in this case can be random every time
+				fileStreamCrypt.Write(salt, 0, salt.Length);
+
+				CryptoStream cryptoStream = new CryptoStream(fileStreamCrypt, myAes.CreateEncryptor(), CryptoStreamMode.Write);
+				FileStream fileStreamTemp = new FileStream(filePath, FileMode.Open);
+
+				//create a buffer (1mb) so only this amount will allocate in the memory and not the whole file
+				byte[] buffer = new byte[1048576];
+				int read;
+
+				try
 				{
-					//Application.DoEvents(); // -> for responsive GUI, using Task will be better!
-					cryptoStream.Write(buffer, 0, read);
-				}
+					while ((read = fileStreamTemp.Read(buffer, 0, buffer.Length)) > 0)
+					{
+						//Application.DoEvents(); // -> for responsive GUI, using Task will be better!
+						cryptoStream.Write(buffer, 0, read);
+					}
 
-				// Close up
-				fileStreamTemp.Close();
-			}
-			catch (Exception ex)
-			{
-				new ErrorHandler("ErrorDefault", ex.Message);
-			}
-			finally
-			{
-				cryptoStream.Close();
-				fileStreamCrypt.Close();
+					// Close up
+					fileStreamTemp.Close();
+				}
+				catch (Exception ex)
+				{
+					new ErrorHandler("ErrorDefault", ex.Message);
+				}
+				finally
+				{
+					cryptoStream.Close();
+					fileStreamCrypt.Close();
+				}
 			}
 		}
 
@@ -199,54 +201,56 @@ namespace SiTE.Logic
 			FileStream fsCrypt = new FileStream(inputFile, FileMode.Open);
 			fsCrypt.Read(salt, 0, salt.Length);
 
-			RijndaelManaged AES = new RijndaelManaged();
-			AES.KeySize = 256;
-			AES.BlockSize = 128;
-			var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000, HashAlgorithmName.SHA256);
-			AES.Key = key.GetBytes(AES.KeySize / 8);
-			AES.IV = key.GetBytes(AES.BlockSize / 8);
-			AES.Padding = PaddingMode.PKCS7;
-			AES.Mode = CipherMode.CFB;
-
-			CryptoStream cs = new CryptoStream(fsCrypt, AES.CreateDecryptor(), CryptoStreamMode.Read);
-
-			FileStream fsOut = new FileStream(outputFile, FileMode.Create);
-
-			int read;
-			byte[] buffer = new byte[1048576];
-
-			try
+			using (Aes myAes = Aes.Create())
 			{
-				while ((read = cs.Read(buffer, 0, buffer.Length)) > 0)
+				myAes.KeySize = 256;
+				myAes.BlockSize = 128;
+				var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000, HashAlgorithmName.SHA256);
+				myAes.Key = key.GetBytes(myAes.KeySize / 8);
+				myAes.IV = key.GetBytes(myAes.BlockSize / 8);
+				myAes.Padding = PaddingMode.PKCS7;
+				myAes.Mode = CipherMode.CFB;
+
+				CryptoStream cs = new CryptoStream(fsCrypt, myAes.CreateDecryptor(), CryptoStreamMode.Read);
+
+				FileStream fsOut = new FileStream(outputFile, FileMode.Create);
+
+				int read;
+				byte[] buffer = new byte[1048576];
+
+				try
 				{
-					//Application.DoEvents();
-					fsOut.Write(buffer, 0, read);
+					while ((read = cs.Read(buffer, 0, buffer.Length)) > 0)
+					{
+						//Application.DoEvents();
+						fsOut.Write(buffer, 0, read);
+					}
 				}
-			}
-			catch (CryptographicException ex_CryptographicException)
-			{
-				isSuccess = false;
-				new ErrorHandler("ErrorCryptographicException", ex_CryptographicException.Message);
-			}
-			catch (Exception ex)
-			{
-				isSuccess = false;
-				new ErrorHandler("ErrorDefault", ex.Message);
-			}
+				catch (CryptographicException ex_CryptographicException)
+				{
+					isSuccess = false;
+					new ErrorHandler("ErrorCryptographicException", ex_CryptographicException.Message);
+				}
+				catch (Exception ex)
+				{
+					isSuccess = false;
+					new ErrorHandler("ErrorDefault", ex.Message);
+				}
 
-			try
-			{
-				cs.Close();
-			}
-			catch (Exception ex)
-			{
-				isSuccess = false;
-				new ErrorHandler("ErrorCryptoStream", ex.Message);
-			}
-			finally
-			{
-				fsOut.Close();
-				fsCrypt.Close();
+				try
+				{
+					cs.Close();
+				}
+				catch (Exception ex)
+				{
+					isSuccess = false;
+					new ErrorHandler("ErrorCryptoStream", ex.Message);
+				}
+				finally
+				{
+					fsOut.Close();
+					fsCrypt.Close();
+				}
 			}
 
 			return isSuccess;
