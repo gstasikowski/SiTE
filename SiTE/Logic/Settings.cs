@@ -96,8 +96,10 @@ namespace SiTE.Logic
 		public void RestoreDefaultSettings()
 		{
 			CoreApp.fileOperations.LoadDefaultSettings(CoreApp.dataBank.DefaultConfigFile);
+			Localizer.Instance.LoadLanguage(GetSetting("LanguageID"));
+			OnPropertyChanged("SelectedLanguage");
 			ApplyLoadedTheme();
-
+			
 			foreach (var setting in CoreApp.dataBank.GetAllSettings())
 			{
 				OnPropertyChanged(setting.Key);
