@@ -131,20 +131,6 @@ namespace SiTE.Models
 			}
 		}
 
-		public void AddAvailableTheme(string themeName)
-		{
-			// if (!_themes.Contains(themeName))
-			// {
-			// 	_themes.Add(themeName);
-			// }
-		}
-
-		// public int ThemeIndex(string themeName)
-		// {
-			// int themeIndex = _themes.IndexOf(themeName);
-			// return (themeIndex > -1) ? themeIndex : 0;
-		// }
-
 		public string GetNoteTitle(Guid noteID)
 		{
 			return NoteList.FirstOrDefault(n => n.ID == noteID).Title;

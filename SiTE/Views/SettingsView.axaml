@@ -18,22 +18,25 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 		<Expander Header="{lang:Localize GroupGeneral}" IsExpanded="True" HorizontalAlignment="Stretch">
-			<Grid Margin="19, 5, 10, 0">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="*"/>
-					<RowDefinition Height="*"/>
-					<RowDefinition Height="*"/>
-				</Grid.RowDefinitions>
+			<StackPanel Margin="19, 5, 10, 0">
 				<StackPanel Orientation="Horizontal">
 					<Label Content="{lang:Localize Language}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 					<ComboBox ItemsSource="{Binding LanguageList}" SelectedIndex="{Binding AppSettings.SelectedLanguage}"/>
 				</StackPanel>
-				<CheckBox Grid.Row="1" x:Name="chkAutoSaveEnable" Content="{lang:Localize AutoSave}" VerticalAlignment="Center" Margin="4,0,0,0" IsChecked="{Binding AppSettings.AutoSave}" />
-				<StackPanel Grid.Row="2" Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal">
+					<Label Content="{lang:Localize Theme}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+					<ComboBox SelectedIndex="{Binding AppSettings.SelectedTheme}" Width="200" Margin="10,10,0,5">
+						<ComboBoxItem Content="{lang:Localize ThemeAutomatic}"/>
+						<ComboBoxItem Content="{lang:Localize ThemeLight}"/>
+						<ComboBoxItem Content="{lang:Localize ThemeDark}"/>
+					</ComboBox>
+				</StackPanel>
+				<CheckBox x:Name="chkAutoSaveEnable" Content="{lang:Localize AutoSave}" VerticalAlignment="Center" Margin="4,0,0,0" IsChecked="{Binding AppSettings.AutoSave}" />
+				<StackPanel Orientation="Horizontal">
 					<Label Content="{lang:Localize Delay}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 					<NumericUpDown Value="{Binding AppSettings.AutoSaveDelay}" FormatString="0" Minimum="1" Width="200" HorizontalAlignment="Left" Margin="10,0,0,5"/>
 				</StackPanel>
-			</Grid>
+			</StackPanel>
 		</Expander>
 		<Expander Header="{lang:Localize GroupEncryption}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="1" IsExpanded="True">
 			<Grid  Margin="19, 5, 10, 0">

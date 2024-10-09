@@ -139,7 +139,7 @@ namespace SiTE.Logic
 					break;
 			}
 
-			SetSetting("theme", index.ToString());
+			SetSetting("Theme", index.ToString());
 		}
 
 		private int GetThemeIndex()
