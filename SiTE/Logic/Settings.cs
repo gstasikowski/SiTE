@@ -76,10 +76,8 @@ namespace SiTE.Logic
 		public void ApplyUserSettings()
 		{
 			Localizer.Instance.LoadLanguage(GetSetting("LanguageID"));
-
-			int themeIndex = 0;
-			int.TryParse(GetSetting("Theme"), out themeIndex);
-			SelectedTheme = themeIndex;
+			ApplyLoadedTheme();
+			
 			SettingsModified = false;
 		}
 
@@ -98,11 +96,12 @@ namespace SiTE.Logic
 		public void RestoreDefaultSettings()
 		{
 			CoreApp.fileOperations.LoadDefaultSettings(CoreApp.dataBank.DefaultConfigFile);
-			Localizer.Instance.LoadLanguage(GetSetting("LanguageID"));
-			OnPropertyChanged("AutoSave");
-			OnPropertyChanged("AutoSaveDelay");
-			OnPropertyChanged("EncryptDatabase");
-			OnPropertyChanged("DatabasePassword");
+			ApplyLoadedTheme();
+
+			foreach (var setting in CoreApp.dataBank.GetAllSettings())
+			{
+				OnPropertyChanged(setting.Key);
+			}
 		}
 
 		public string GetSetting(string settingID)
@@ -120,6 +119,13 @@ namespace SiTE.Logic
 		protected void OnPropertyChanged([CallerMemberName] string name = null)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+		}
+
+		private void ApplyLoadedTheme()
+		{
+			int themeIndex = 0;
+			int.TryParse(GetSetting("Theme"), out themeIndex);
+			SelectedTheme = themeIndex;
 		}
 
 		private void ChangeTheme(int index)

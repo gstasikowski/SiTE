@@ -66,6 +66,7 @@
 	"ButtonYes": "Tak",
 	"ButtonNo": "Nie",
 	"ButtonCancel": "Anuluj",
+	"ButtonRestoreDefault": "Przywróć domyślne",
 	"WindowError": "Wystąpił błąd",
 	"WindowPasswordInput": "Podaj hasło",
 	"WindowSaveReminder": "Niezapisane zmiany",

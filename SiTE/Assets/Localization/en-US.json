@@ -66,6 +66,7 @@
 	"ButtonYes": "Yes",
 	"ButtonNo": "No",
 	"ButtonCancel": "Cancel",
+	"ButtonRestoreDefault": "Restore default",
 	"WindowError": "Error occured",
 	"WindowPasswordInput": "Password required",
 	"WindowSaveReminder": "Unsaved changes",
