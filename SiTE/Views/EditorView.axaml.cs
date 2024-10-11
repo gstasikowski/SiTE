@@ -12,7 +12,7 @@ namespace SiTE.Views
 	public partial class EditorView : UserControl
 	{
 		private Task _autosaveTask;
-		private CancellationTokenSource _cancellationToken;
+		private CancellationTokenSource _cancellationTokenSource;
 
 		private EditorMode _editorMode = EditorMode.editor;
 		private bool _continueNoteSwitch = true;
@@ -24,6 +24,7 @@ namespace SiTE.Views
 
 			WindowSetup();
 			LoadNoteList();
+			ResetAutosave();
 		}
 
 		#region Methods (window)
@@ -129,6 +130,7 @@ namespace SiTE.Views
 			btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = false;
 			SetModifiedState(false);
 			ToggleNoteModifiedDate();
+			ResetAutosave();
 		}
 
 		private void SelectNote()
@@ -171,17 +173,20 @@ namespace SiTE.Views
 
 		private void SaveNote()
 		{
-			((ViewModels.EditorViewModel)this.DataContext).SaveNote();
-
-			LoadNoteList();
-			SetModifiedState(false);
-
-			if (NoteList.SelectedIndex < 0)
+			if (AreChangesSaveWorthy())
 			{
-				UpdateNoteListSelection();
-			}
+				((ViewModels.EditorViewModel)this.DataContext).SaveNote();
 
-			ToggleNoteModifiedDate();
+				LoadNoteList();
+				SetModifiedState(false);
+
+				if (NoteList.SelectedIndex < 0)
+				{
+					UpdateNoteListSelection();
+				}
+
+				ToggleNoteModifiedDate();
+			}
 			ResetAutosave();
 		}
 
@@ -405,33 +410,51 @@ namespace SiTE.Views
 
 		private void ResetAutosave()
 		{
-			if (_autosaveTask != null && !_autosaveTask.IsCompleted)
-			{ 
-				_cancellationToken.Cancel();
-
-				if (_autosaveTask.IsCanceled)
-				{
-					_autosaveTask.Dispose();
-				}
-			}
-
-			_cancellationToken = new CancellationTokenSource();
+			_cancellationTokenSource?.Cancel();
+			_cancellationTokenSource?.Dispose();
+			_cancellationTokenSource = new CancellationTokenSource();
+			_autosaveTask?.Dispose();
 			_autosaveTask = AutosaveTask();
 		}
 
 		private async Task AutosaveTask()
 		{
-			if (System.Convert.ToBoolean(SiTE.Core.Instance.dataBank.GetSetting("AutoSave")) && NoteList.SelectedIndex >= 0)
+			if (System.Convert.ToBoolean(SiTE.Core.Instance.dataBank.GetSetting("AutoSave")))
 			{
-				using (_cancellationToken)
+				using (_cancellationTokenSource)
 				{
+
+					CancellationToken cancellationToken = _cancellationTokenSource.Token;
+
 					int autoSaveDelay = 5;
 					int.TryParse(SiTE.Core.Instance.dataBank.GetSetting("AutoSaveDelay"), out autoSaveDelay);
-					await Task.Delay(autoSaveDelay * 30000);
-						
+					await Task.Delay(System.TimeSpan.FromMinutes(autoSaveDelay));
+
 					SaveNote();
 				}
 			}
+		}
+
+		private bool AreChangesSaveWorthy()
+		{
+			if (NoteList.SelectedIndex >= 0)
+			{
+				if (((ViewModels.EditorViewModel)this.DataContext).IsNoteModified)
+				{
+					return true;
+				}
+
+			}
+			else
+			{
+				if (((ViewModels.EditorViewModel)this.DataContext).ActiveNote.Title != string.Empty
+					|| ((ViewModels.EditorViewModel)this.DataContext).ActiveNote.Content != string.Empty)
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 		#endregion Methods (autosaving)
 		
