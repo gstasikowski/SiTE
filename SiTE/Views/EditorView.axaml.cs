@@ -413,7 +413,15 @@ namespace SiTE.Views
 			_cancellationTokenSource?.Cancel();
 			_cancellationTokenSource?.Dispose();
 			_cancellationTokenSource = new CancellationTokenSource();
-			_autosaveTask?.Dispose();
+			
+			if (_autosaveTask != null && !_autosaveTask.IsCompleted)
+			{ 
+				if (_autosaveTask.IsCanceled)
+				{
+					_autosaveTask.Dispose();
+				}
+			}
+
 			_autosaveTask = AutosaveTask();
 		}
 
