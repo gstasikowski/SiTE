@@ -5,31 +5,25 @@
 
 	<ResourceDictionary.ThemeDictionaries>
 		<ResourceDictionary x:Key="Light">
-			<ControlTheme x:Key="PanelContainer" TargetType="Border">
-				<Setter Property="HorizontalAlignment" Value="Stretch"/>
-				<Setter Property="Padding" Value="5"/>
-				<Setter Property="BorderBrush">
-					<SolidColorBrush  Color="Black" Opacity="0.3" />
-				</Setter>
-				<Setter Property="BorderThickness" Value="1"/>
-				<Setter Property="CornerRadius" Value="3"/>
+			<ControlTheme x:Key="ButtonMenu" TargetType="StackPanel">
 				<Setter Property="Background">
-					<SolidColorBrush  Color="Black" Opacity="0.1" />
+					<SolidColorBrush Color="Black" Opacity="0.1" />
 				</Setter>
+				<Setter Property="Orientation" Value="Horizontal"/>
+				<Setter Property="Spacing" Value="5"/>
+				<Setter Property="VerticalAlignment" Value="Stretch"/>
+				<Setter Property="Margin" Value="-15,-15,-15,5"/>
 			</ControlTheme>
 		</ResourceDictionary>
 		<ResourceDictionary x:Key="Dark">
-			<ControlTheme x:Key="PanelContainer" TargetType="Border">
-				<Setter Property="HorizontalAlignment" Value="Stretch"/>
-				<Setter Property="Padding" Value="5"/>
-				<Setter Property="BorderBrush">
-					<SolidColorBrush  Color="White" Opacity="0.3" />
-				</Setter>
-				<Setter Property="BorderThickness" Value="1"/>
-				<Setter Property="CornerRadius" Value="3"/>
+			<ControlTheme x:Key="ButtonMenu" TargetType="StackPanel">
 				<Setter Property="Background">
-					<SolidColorBrush  Color="White" Opacity="0.1" />
+					<SolidColorBrush Color="White" Opacity="0.1" />
 				</Setter>
+				<Setter Property="Orientation" Value="Horizontal"/>
+				<Setter Property="Spacing" Value="5"/>
+				<Setter Property="VerticalAlignment" Value="Stretch"/>
+				<Setter Property="Margin" Value="-15,-15,-15,5"/>
 			</ControlTheme>
 		</ResourceDictionary>
 	</ResourceDictionary.ThemeDictionaries>
