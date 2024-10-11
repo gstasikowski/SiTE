@@ -17,7 +17,6 @@ namespace SiTE.Models
 		private readonly string _defaultDatabaseFile = "Journal.data";
 		private readonly string _defaultPIndexFile = "Journal.pixd";
 		private readonly string _defaultSIndexFile = "Journal.sidx";
-		private readonly string _defaultLanguagePath = AppDomain.CurrentDomain.BaseDirectory + "Languages/";
 		private readonly string _encryptionExtention = ".aes";
 
 		private string _userPassword = string.Empty;
@@ -62,11 +61,6 @@ namespace SiTE.Models
 		public string DefaultSIndexPath
 		{
 			get { return _defaultNotePath + _defaultSIndexFile; }
-		}
-
-		public string DefaultLanguagePath
-		{
-			get { return _defaultLanguagePath; }
 		}
 
 		public string EncryptionExtention

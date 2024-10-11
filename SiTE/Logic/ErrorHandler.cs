@@ -21,7 +21,6 @@ namespace SiTE.Logic
 			}
 
 			Views.ErrorMessageView messageWindow = new Views.ErrorMessageView(message, details);
-			// messageWindow.ShowDialog(); // TODO: ShowDialog needs an owner window for the dialog
 		}
 	}
 }

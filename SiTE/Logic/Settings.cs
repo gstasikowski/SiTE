@@ -7,6 +7,8 @@ namespace SiTE.Logic
 {
 	public class Settings : INotifyPropertyChanged
 	{
+		public event PropertyChangedEventHandler PropertyChanged;
+
 		private Core CoreApp
 		{
 			get { return Core.Instance; }
@@ -15,7 +17,6 @@ namespace SiTE.Logic
 		private bool _settingsModified = false;
 
 		public static Settings Instance { get; set; } = new Settings();
-		public event PropertyChangedEventHandler PropertyChanged;
 
 		public int SelectedLanguage
 		{

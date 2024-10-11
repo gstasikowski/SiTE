@@ -6,13 +6,13 @@ namespace SiTE.Models
 {
 	public class NoteModel : INotifyPropertyChanged
 	{
+		public event PropertyChangedEventHandler? PropertyChanged;
+
 		private Guid _id;
 		private string _title;
 		private string _content;
 		private DateTime _created;
 		private DateTime _modified;
-
-		public event PropertyChangedEventHandler PropertyChanged;
 
 		public NoteModel()
 		{

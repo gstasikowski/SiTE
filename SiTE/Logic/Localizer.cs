@@ -14,9 +14,11 @@ namespace SiTE.Logic
 {
 	public class Localizer : INotifyPropertyChanged
 	{
-		private ObservableCollection<string> _languages = new ObservableCollection<string>();
+		public event PropertyChangedEventHandler? PropertyChanged;
+
 		private const string IndexerName = "Item";
 		private const string IndexerArrayName = "Item[]";
+		private ObservableCollection<string> _languages = new ObservableCollection<string>();
 		private Dictionary<string, string> m_Strings = null;
 
 		public ObservableCollection<string> LanguageList
@@ -34,6 +36,33 @@ namespace SiTE.Logic
 			{
 				AddAvailableLanguage(file.ToString().Split("/")[^1].Replace(".json", string.Empty));
 			}
+		}
+
+		public static Localizer Instance { get; set; } = new Localizer();
+
+		public string Language { get; private set; }
+
+		public string this[string key]
+		{
+			get
+			{
+				string res;
+				if (m_Strings != null && m_Strings.TryGetValue(key, out res))
+					return res.Replace("\\n", "\n");
+
+				return $"{Language}:{key}";
+			}
+		}
+
+		public void Invalidate()
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(IndexerName));
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(IndexerArrayName));
+		}
+
+		public int SelectedLanguageIndex()
+		{
+			return LanguageList.IndexOf(Language);
 		}
 
 		public void AddAvailableLanguage(string languageCode)
@@ -61,34 +90,6 @@ namespace SiTE.Logic
 			}
 
 			return false;
-		}
-
-		public string Language { get; private set; }
-
-		public string this[string key]
-		{
-			get
-			{
-				string res;
-				if (m_Strings != null && m_Strings.TryGetValue(key, out res))
-					return res.Replace("\\n", "\n");
-
-				return $"{Language}:{key}";
-			}
-		}
-
-		public static Localizer Instance { get; set; } = new Localizer();
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		public void Invalidate()
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(IndexerName));
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(IndexerArrayName));
-		}
-
-		public int SelectedLanguageIndex()
-		{
-			return LanguageList.IndexOf(Language);
 		}
 
 		// Create the OnPropertyChanged method to raise the event

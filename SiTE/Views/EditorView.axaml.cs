@@ -45,11 +45,6 @@ namespace SiTE.Views
 			UpdateEditorView();
 		}
 
-		private void OpenSettings()
-		{
-			// Logic.Refs.viewControl.CurrentPageViewModel = Logic.Refs.viewControl.PageViewModels[1]; // TODO switch to binding
-		}
-
 		private void ExitApp()
 		{
 			// Application.Current.MainWindow.Close();
