@@ -42,10 +42,10 @@
 				<Separator/>
 				<MenuItem Header="{lang:Localize MenuBold}" ToolTip.Tip="{lang:Localize TipBold}" Click="BtnTBold_Click"/>
 				<MenuItem Header="{lang:Localize MenuItalic}" ToolTip.Tip="{lang:Localize TipItalic}" Click="BtnItalics_Click"/>
-				<MenuItem Header="{lang:Localize MenuHighlight}" ToolTip.Tip="{lang:Localize TipHighlight}" Click="BtnHighlight_Click"/>
+				<MenuItem Header="{lang:Localize MenuUnderline}" ToolTip.Tip="{lang:Localize TipUnderline}" Click="BtnUnderline_Click"/>
 				<MenuItem Header="{lang:Localize MenuStrikethrough}" ToolTip.Tip="{lang:Localize TipStrikethrough}"/>
-				<MenuItem Header="{lang:Localize MenuSubscript}" ToolTip.Tip="{lang:Localize TipSubscript}"/>
-				<MenuItem Header="{lang:Localize MenuSuperscript}" ToolTip.Tip="{lang:Localize TipSuperscript}"/>
+				<MenuItem Header="{lang:Localize MenuCode}" ToolTip.Tip="{lang:Localize TipCode}"/>
+				<MenuItem Header="{lang:Localize MenuHorizontalLine}" ToolTip.Tip="{lang:Localize TipHorizontalLine}"/>
 			</MenuItem>
 			<MenuItem Header="{lang:Localize MenuSettings}" Command="{Binding SwitchToSettingsView}"/>
 			<MenuItem Header="{lang:Localize MenuHelp}">
@@ -106,20 +106,16 @@
 						<Image Source="/Assets/Icons/redo.png" Opacity="1"/>
 					</Button>
 					<Separator/>
-					<Button Width="22" Height="22" Content="B" FontWeight="Bold" Click="BtnTBold_Click" ToolTip.Tip="{lang:Localize TipBold}"/>
-					<Button Width="22" Height="22" Content="I" FontStyle="Italic" Click="BtnItalics_Click" ToolTip.Tip="{lang:Localize TipItalic}"/>
-					<Button Width="22" Height="22" Click="BtnHighlight_Click" ToolTip.Tip="{lang:Localize TipHighlight}" Padding="0">
-						<Image Source="/Assets/Icons/textHighlight.png"/>
+					<Button Width="22" Height="22" Content="B" FontWeight="Bold" HotKey="Ctrl+B" Click="BtnTBold_Click" ToolTip.Tip="{lang:Localize TipBold}" Padding="0"/>
+					<Button Width="22" Height="22" Content="I" FontStyle="Italic" HotKey="Ctrl+I" Click="BtnItalics_Click" ToolTip.Tip="{lang:Localize TipItalic}" Padding="0"/>
+					<Button Width="22" Height="22" HotKey="Ctrl+U" Click="BtnUnderline_Click" ToolTip.Tip="{lang:Localize TipUnderline}" Padding="0">
+						<TextBlock TextDecorations="Underline"><Run Text="U"/></TextBlock>
 					</Button>
-					<Button Width="30" Height="22" Click="BtnStrike_Click" ToolTip.Tip="{lang:Localize TipStrikethrough}" >
+					<Button Width="30" Height="22" HotKey="Ctrl+Alt+S" Click="BtnStrike_Click" ToolTip.Tip="{lang:Localize TipStrikethrough}" Padding="0">
 						<TextBlock TextDecorations="Strikethrough"><Run Text="abc"/></TextBlock>
 					</Button>
-					<Button Width="30" Height="22" Click="BtnSubscript_Click" ToolTip.Tip="{lang:Localize TipSubscript}" Padding="0">
-						<Image Source="/Assets/Icons/textSubscript.png"/>
-					</Button>
-					<Button Width="30" Height="22" Click="BtnSuperscript_Click" ToolTip.Tip="{lang:Localize TipSuperscript}" Padding="0">
-						<Image Source="/Assets/Icons/textSuperscript.png"/>
-					</Button>
+					<Button Width="30" Height="22" Content="\{;\}" Click="BtnCode_Click" ToolTip.Tip="{lang:Localize TipCode}" Padding="0"/>
+					<Button Width="30" Height="22" Content="***" Click="BtnHorizontalLine_Click" ToolTip.Tip="{lang:Localize TipHorizontalLine}" Padding="0"/>
 					<Separator/>
 					<Button Width="22" Height="22" Click="BtnViewMode_Click" ToolTip.Tip="{lang:Localize TipViewMode}" Padding="0">
 						<Image Source="/Assets/Icons/viewMode.png" />
@@ -133,7 +129,7 @@
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
-					<TextBox x:Name="NoteContent" VerticalAlignment="Stretch" MinHeight="100" Text="{Binding ActiveNote.Content, Mode=TwoWay}" TextChanged="TANoteContent_TextChanged" Margin="0,2,0,0" AcceptsReturn="True" AcceptsTab="True" HorizontalContentAlignment="Left" />
+					<TextBox x:Name="NoteContent" VerticalAlignment="Stretch" MinHeight="100" Text="{Binding ActiveNote.Content, Mode=TwoWay}" TextChanged="TANoteContent_TextChanged" PointerMoved="TextSelectionChanged" Margin="0,2,0,0" AcceptsReturn="True" AcceptsTab="True" HorizontalContentAlignment="Left" />
 					<md:MarkdownScrollViewer x:Name="NoteMarkdownDisplay" Markdown="{Binding ActiveNote.Content}" VerticalAlignment="Stretch" MinHeight="100" Margin="5,2,0,0" Grid.Column="1">
 						<md:MarkdownScrollViewer.Engine>
 							<md:Markdown HyperlinkCommand="{StaticResource HandleLinkCommand}"/>

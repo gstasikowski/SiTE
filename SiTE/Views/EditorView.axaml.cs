@@ -1,6 +1,5 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Platform.Storage;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -16,6 +15,9 @@ namespace SiTE.Views
 
 		private EditorMode _editorMode = EditorMode.editor;
 		private bool _continueNoteSwitch = true;
+
+		private int selectionStartPosition = -1;
+		private int selectionEndPosition = -1;
 
 		public EditorView()
 		{
@@ -224,137 +226,32 @@ namespace SiTE.Views
 			NoteContent.Redo();
 		}
 
-		private void ToggleTextBold()
+		private void ToggleTextHorizontalLine()
 		{
-			if (!IsNoteContentActive())
-			{
-				return;
-			}
-
-			if (NoteContent.SelectedText.StartsWith("**") && NoteContent.SelectedText.EndsWith("**"))
-			{
-				NoteContent.SelectedText = NoteContent.SelectedText.Substring(2, NoteContent.SelectedText.Length - 4);
-			}
-			else
-			{
-				NoteContent.SelectedText = string.Format("**{0}**", NoteContent.SelectedText);
-			}
+			NoteContent.Focus();
+			NoteContent.Text = NoteContent.Text.Insert(selectionStartPosition, "***");
 		}
-
-		private void ToggleTextItalic()
+		
+		private void ToggleTextDecoration(string decorationMarker)
 		{
-			if (!IsNoteContentActive())
+			int markerLength = decorationMarker.Length; 
+			NoteContent.Focus();
+			RestoreTextSelection();
+			
+			if (NoteContent.SelectedText.StartsWith(decorationMarker) && NoteContent.SelectedText.EndsWith(decorationMarker))
 			{
-				return;
-			}
-
-			if (!CheckIfAddStyle(NoteContent.SelectedText, "*"))
-			{
-				NoteContent.SelectedText = NoteContent.SelectedText.Substring(1, NoteContent.SelectedText.Length - 2);
+				NoteContent.SelectedText = NoteContent.SelectedText[markerLength..^markerLength];
+				UpdateTextSelectionPosition(-markerLength * 2);
 			}
 			else
 			{
-				NoteContent.SelectedText = string.Format("*{0}*", NoteContent.SelectedText);
-			}
-		}
-
-		private void ToggleTextHighlight()
-		{
-			if (!IsNoteContentActive())
-			{
-				return;
-			}
-
-			if (NoteContent.SelectedText.StartsWith("==") && NoteContent.SelectedText.EndsWith("=="))
-			{
-				NoteContent.SelectedText = NoteContent.SelectedText.Substring(2, NoteContent.SelectedText.Length - 4);
-			}
-			else
-			{
-				NoteContent.SelectedText = string.Format("=={0}==", NoteContent.SelectedText);
-			}
-		}
-
-		private void ToggleTextStrikethrough()
-		{
-			if (!IsNoteContentActive())
-			{
-				return;
-			}
-
-			if (NoteContent.SelectedText.StartsWith("~~") && NoteContent.SelectedText.EndsWith("~~"))
-			{
-				NoteContent.SelectedText = NoteContent.SelectedText.Substring(2, NoteContent.SelectedText.Length - 4);
-			}
-			else
-			{
-				NoteContent.SelectedText = string.Format("~~{0}~~", NoteContent.SelectedText);
-			}
-		}
-
-		private void ToggleTextSubscript()
-		{
-			if (!IsNoteContentActive())
-			{
-				return;
-			}
-
-			if (!CheckIfAddStyle(NoteContent.SelectedText, "~"))
-			{
-				NoteContent.SelectedText = NoteContent.SelectedText.Substring(1, NoteContent.SelectedText.Length - 2);
-			}
-			else
-			{
-				NoteContent.SelectedText = string.Format("~{0}~", NoteContent.SelectedText);
-			}
-		}
-
-		private void ToggleTextSuperscript()
-		{
-			if (!IsNoteContentActive())
-			{
-				return;
-			}
-
-			if (NoteContent.SelectedText.StartsWith("^") && NoteContent.SelectedText.EndsWith("^"))
-			{
-				NoteContent.SelectedText = NoteContent.SelectedText.Substring(1, NoteContent.SelectedText.Length - 2);
-			}
-			else
-			{
-				NoteContent.SelectedText = string.Format("^{0}^", NoteContent.SelectedText);
+				NoteContent.SelectedText = string.Format("{0}{1}{0}", decorationMarker, NoteContent.SelectedText);
+				UpdateTextSelectionPosition(markerLength * 2);
 			}
 		}
 		#endregion Methods (text operations)
 
 		#region Methods (helpers)
-		private bool IsNoteContentActive()
-		{
-			return NoteContent.IsFocused;
-		}
-
-		private bool CheckIfAddStyle(string textToCheck, string symbol)
-		{
-			bool addStyle = true;
-
-			if (textToCheck.StartsWith(symbol) && textToCheck.EndsWith(symbol))
-			{
-				addStyle = false;
-			}
-
-			if (textToCheck.StartsWith(symbol + symbol))
-			{
-				addStyle = true;
-			}
-
-			if (textToCheck.StartsWith(symbol + symbol + symbol) && textToCheck.EndsWith(symbol + symbol + symbol))
-			{
-				addStyle = false;
-			}
-
-			return addStyle;
-		}
-
 		private void CreateNoteLink()
 		{
 			if (NoteList.SelectedIndex < 0)
@@ -373,7 +270,25 @@ namespace SiTE.Views
 			btnUndoMenu.IsEnabled = btnUndoToolbar.IsEnabled = NoteContent.CanUndo;
 			btnRedoMenu.IsEnabled = btnRedoToolbar.IsEnabled = NoteContent.CanRedo;
 
+			ToggleNoteModifiedDate();
 			WindowSetup();
+		}
+		
+		private void CacheTextSelectionPosition()
+		{
+			selectionStartPosition = NoteContent.SelectionStart;
+			selectionEndPosition = NoteContent.SelectionEnd;
+		}
+
+		private void RestoreTextSelection()
+		{
+			NoteContent.SelectionStart = selectionStartPosition;
+			NoteContent.SelectionEnd = selectionEndPosition;
+		}
+
+		private void UpdateTextSelectionPosition(int change)
+		{
+			selectionEndPosition += change;
 		}
 		#endregion Methods (helpers)
 
@@ -470,6 +385,11 @@ namespace SiTE.Views
 			}
 		}
 
+		private void TextSelectionChanged(object sender, Avalonia.Input.PointerEventArgs e)
+		{
+			CacheTextSelectionPosition();
+		}
+
 		private void BtnNewNote_Click(object sender, RoutedEventArgs e)
 		{
 			NewNote();
@@ -512,32 +432,32 @@ namespace SiTE.Views
 
 		private void BtnTBold_Click(object sender, RoutedEventArgs e)
 		{
-			ToggleTextBold();
+			ToggleTextDecoration("**");
 		}
 
 		private void BtnItalics_Click(object sender, RoutedEventArgs e)
 		{
-			ToggleTextItalic();
+			ToggleTextDecoration("*");
 		}
 
-		private void BtnHighlight_Click(object sender, RoutedEventArgs e)
+		private void BtnUnderline_Click(object sender, RoutedEventArgs e)
 		{
-			ToggleTextHighlight();
+			ToggleTextDecoration("__");
 		}
 
 		private void BtnStrike_Click(object sender, RoutedEventArgs e)
 		{
-			ToggleTextStrikethrough();
+			ToggleTextDecoration("~~");
 		}
 
-		private void BtnSubscript_Click(object sender, RoutedEventArgs e)
+		private void BtnCode_Click(object sender, RoutedEventArgs e)
 		{
-			ToggleTextSubscript();
+			ToggleTextDecoration("```");
 		}
 
-		private void BtnSuperscript_Click(object sender, RoutedEventArgs e)
+		private void BtnHorizontalLine_Click(object sender, RoutedEventArgs e)
 		{
-			ToggleTextSuperscript();
+			ToggleTextHorizontalLine();
 		}
 
 		private void BtnViewMode_Click(object sender, RoutedEventArgs e)
