@@ -6,7 +6,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 
 namespace SiTE.Views
 {
-	enum EditorMode { editor, mixed, render };
+    enum EditorMode { editor, mixed, render };
 
 	public partial class EditorView : UserControl
 	{
@@ -56,7 +56,7 @@ namespace SiTE.Views
 		#region Methods (view)
 		private void UpdateNoteListSelection()
 		{
-			NoteList.SelectedIndex = SiTE.Core.Instance.dataBank.GetNoteIndex(((ViewModels.EditorViewModel)this.DataContext).ActiveNote.ID);
+			NoteList.SelectedIndex = Core.Instance.dataBank.GetNoteIndex(((ViewModels.EditorViewModel)this.DataContext).ActiveNote.ID);
 		}
 
 		private void ToggleNoteList(bool expand)
@@ -75,8 +75,8 @@ namespace SiTE.Views
 
 			UpdateEditorView();
 
-			SiTE.Core.Instance.dataBank.SetSetting("editorMode", ((int)_editorMode).ToString());
-			SiTE.Core.Instance.fileOperations.SaveSettings();
+            Core.Instance.dataBank.SetSetting("editorMode", ((int)_editorMode).ToString());
+            Core.Instance.fileOperations.SaveSettings();
 		}
 
 		private void UpdateEditorView()
@@ -116,7 +116,7 @@ namespace SiTE.Views
 		#region Methods (note operations)
 		private void LoadNoteList()
 		{
-			SiTE.Core.Instance.databaseOperations.GetNoteList();
+            Core.Instance.databaseOperations.GetNoteList();
 		}
 
 		private void NewNote()
@@ -126,7 +126,6 @@ namespace SiTE.Views
 
 			btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = false;
 			SetModifiedState(false);
-			ToggleNoteModifiedDate();
 			ResetAutosave();
 		}
 
@@ -163,7 +162,6 @@ namespace SiTE.Views
 			NoteContent.IsUndoEnabled = true; // TODO figure out a better way to do this
 			btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = true;
 
-			ToggleNoteModifiedDate();
 			SetModifiedState(false);
 			ResetAutosave();
 		}
@@ -181,8 +179,6 @@ namespace SiTE.Views
 				{
 					UpdateNoteListSelection();
 				}
-
-				ToggleNoteModifiedDate();
 			}
 			ResetAutosave();
 		}
@@ -361,7 +357,6 @@ namespace SiTE.Views
 				{
 					return true;
 				}
-
 			}
 			else
 			{

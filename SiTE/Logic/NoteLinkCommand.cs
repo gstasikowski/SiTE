@@ -16,8 +16,8 @@ namespace SiTE.Logic
             if (url.StartsWith("nID:"))
             {
                 url = url.Replace("nID:", string.Empty);
-                System.Guid noteID = System.Guid.Parse(url);
-                SiTE.Core.Instance.dataBank.OpenNote(noteID);
+                Guid noteID = Guid.Parse(url);
+                Core.Instance.dataBank.OpenNote(noteID);
             }
             else
             {

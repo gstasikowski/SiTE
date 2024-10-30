@@ -1,11 +1,9 @@
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
-using SiTE.Models;
 
 namespace SiTE.Logic
 {
-	public class Settings : INotifyPropertyChanged
+    public class Settings : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 
