@@ -5,8 +5,12 @@ using System.Linq;
 
 namespace SiTE.Models
 {
+	public delegate void Notification();
+
 	public class DataBank
 	{
+		public event Notification NoteSwitched;
+
 		#region Variables
 		public readonly string projectUrl = "https://github.com/gstasikowski/SiTE";
 
@@ -149,6 +153,8 @@ namespace SiTE.Models
 			ActiveNote.Content = string.Empty;
 			ActiveNote.Created = new DateTime();
 			ActiveNote.Modified = new DateTime();
+
+			NoteSwitched?.Invoke();
 		}
 
 		public void OpenNote(System.Guid noteID)
@@ -160,6 +166,8 @@ namespace SiTE.Models
 			ActiveNote.Content = tempNote.Content;
 			ActiveNote.Created = tempNote.Created;
 			ActiveNote.Modified = tempNote.Modified;
+			
+			NoteSwitched?.Invoke();
 		}
 
 		public void SaveNote()

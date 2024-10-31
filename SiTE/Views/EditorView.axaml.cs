@@ -27,6 +27,8 @@ namespace SiTE.Views
 			WindowSetup();
 			LoadNoteList();
 			ResetAutosave();
+
+			Core.Instance.dataBank.NoteSwitched += UpdateNoteListSelection;
 		}
 
 		#region Methods (window)
