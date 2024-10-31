@@ -62,13 +62,13 @@
 			<Expander ExpandDirection="Down" IsExpanded="True" Collapsed="EXNoteList_Collapsed" Expanded="EXNoteList_Expanded" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" ToolTip.Tip="{lang:Localize TipNoteList}">
 				<StackPanel>
 					<StackPanel Theme="{DynamicResource ButtonMenu}">
-						<Button Width="22" Height="22" Click="BtnNewNote_Click" ToolTip.Tip="{lang:Localize TipNewNote}" Padding="0">
+						<Button HotKey="Ctrl+N" Click="BtnNewNote_Click" ToolTip.Tip="{lang:Localize TipNewNote}">
 							<Image Source="/Assets/Icons/newFile.png"/>
 						</Button>
-						<Button x:Name="btnSaveNote" Width="22" Height="22" Click="BtnSaveNote_Click" ToolTip.Tip="{lang:Localize TipSaveNote}" Padding="0">
+						<Button x:Name="btnSaveNote" HotKey="Ctrl+S" Click="BtnSaveNote_Click" ToolTip.Tip="{lang:Localize TipSaveNote}">
 							<Image Source="/Assets/Icons/saveFile.png"/>
 						</Button>
-						<Button x:Name="btnDeleteNote" Width="22" Height="22" Click="BtnDeleteNote_Click" ToolTip.Tip="{lang:Localize TipDeleteNote}" Padding="0">
+						<Button x:Name="btnDeleteNote" HotKey="Ctrl+Alt+D" Click="BtnDeleteNote_Click" ToolTip.Tip="{lang:Localize TipDeleteNote}">
 							<Image Source="/Assets/Icons/deleteFile.png"/>
 						</Button>
 					</StackPanel>
