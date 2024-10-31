@@ -22,7 +22,7 @@ namespace SiTE.Views
 		public EditorView()
 		{
 			InitializeComponent();
-			SiTE.Core.Instance.fileOperations.InitialSetup();
+            Core.Instance.fileOperations.InitialSetup();
 
 			WindowSetup();
 			LoadNoteList();
@@ -43,7 +43,7 @@ namespace SiTE.Views
 			// }
 
 			int tempMode;
-			int.TryParse(SiTE.Core.Instance.dataBank.GetSetting("EditorMode"), out tempMode);
+			int.TryParse(Core.Instance.dataBank.GetSetting("EditorMode"), out tempMode);
 			_editorMode = (EditorMode)tempMode;
 
 			UpdateEditorView();
@@ -131,7 +131,7 @@ namespace SiTE.Views
 			ResetAutosave();
 		}
 
-		private void SelectNote()
+		private void SelectNoteOnList()
 		{
 			if (NoteList.SelectedIndex < 0)
 			{
@@ -469,7 +469,7 @@ namespace SiTE.Views
 
 		private void LVNoteList_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			SelectNote();
+			SelectNoteOnList();
 		}
 
 		private void EXNoteList_Collapsed(object sender, RoutedEventArgs e)

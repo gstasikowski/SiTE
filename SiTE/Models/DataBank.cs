@@ -26,7 +26,6 @@ namespace SiTE.Models
 		private string _userPassword = string.Empty;
 
 		private Dictionary<string, string> _settings = new Dictionary<string, string>();
-		private List<string> _languageList = new List<string>();
 		private ObservableCollection<NoteModel> _noteList = new();
 		private NoteModel _activeNote = new NoteModel();
 		private bool _isNoteModified;
@@ -103,7 +102,7 @@ namespace SiTE.Models
 
 			if (!onStart)
 			{
-				SiTE.Core.Instance.encryptionOperations.UpdateEncryption();
+                Core.Instance.encryptionOperations.UpdateEncryption();
 			}
 		}
 
@@ -148,7 +147,7 @@ namespace SiTE.Models
 
 		public void NewNote()
 		{
-			ActiveNote.ID = System.Guid.Empty;
+			ActiveNote.ID = Guid.Empty;
 			ActiveNote.Title = string.Empty;
 			ActiveNote.Content = string.Empty;
 			ActiveNote.Created = new DateTime();
@@ -157,9 +156,9 @@ namespace SiTE.Models
 			NoteSwitched?.Invoke();
 		}
 
-		public void OpenNote(System.Guid noteID)
+		public void OpenNote(Guid noteID)
 		{
-			var tempNote = SiTE.Core.Instance.databaseOperations.LoadNote(noteID);
+			var tempNote = Core.Instance.databaseOperations.LoadNote(noteID);
 			
 			ActiveNote.ID = tempNote.ID;
 			ActiveNote.Title = tempNote.Title;
@@ -173,12 +172,12 @@ namespace SiTE.Models
 		public void SaveNote()
 		{
 			ActiveNote.Modified = DateTime.Now;
-			SiTE.Core.Instance.databaseOperations.SaveNote(ActiveNote.ID, ActiveNote.Title, ActiveNote.Content);
+            Core.Instance.databaseOperations.SaveNote(ActiveNote.ID, ActiveNote.Title, ActiveNote.Content);
 		}
 
 		public void DeleteNote()
 		{
-			SiTE.Core.Instance.databaseOperations.DeleteNote(ActiveNote.ID);
+            Core.Instance.databaseOperations.DeleteNote(ActiveNote.ID);
 		}
 		#endregion Methods
 	}

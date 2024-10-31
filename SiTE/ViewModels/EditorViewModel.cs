@@ -49,7 +49,7 @@ namespace SiTE.ViewModels
 
 		public void OpenAppRepo()
 		{
-			new Logic.NoteLinkCommand().Execute(SiTE.Core.Instance.dataBank.projectUrl);
+			new Logic.NoteLinkCommand().Execute(Core.Instance.dataBank.projectUrl);
 		}
 
 		public void DisplayAppInfo()
@@ -63,7 +63,7 @@ namespace SiTE.ViewModels
 
 		private Models.DataBank DB
 		{
-			get { return SiTE.Core.Instance.dataBank; }
+			get { return Core.Instance.dataBank; }
 		}
 	}
 }
