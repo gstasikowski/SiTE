@@ -47,6 +47,10 @@ namespace SiTE.ViewModels
 		{
 			get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Name; } // TODO: append * marking for note with unsaved changes
 		}
+
+		public string AppVersion
+		{
+			get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
 		}
 	}
 }
