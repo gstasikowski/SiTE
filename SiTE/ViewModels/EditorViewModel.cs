@@ -5,6 +5,11 @@ namespace SiTE.ViewModels
 {
 	public class EditorViewModel : ViewModelBase
 	{
+		private MainWindowViewModel MainWindow
+		{
+			get { return (ViewModels.MainWindowViewModel)((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.DataContext; }
+		}
+
 		public ObservableCollection<Models.NoteModel> NoteList
 		{
 			get { return DB.NoteList; }
@@ -44,7 +49,7 @@ namespace SiTE.ViewModels
 
 		public void SwitchToSettingsView()
 		{
-			((ViewModels.MainWindowViewModel)((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.DataContext).ToggleActiveScreen();
+			MainWindow.ToggleActiveScreen();
 		}
 
 		public void OpenAppRepo()
