@@ -126,10 +126,7 @@ namespace SiTE.Views
 		{
 			NoteList.SelectedIndex = -1;
 			((ViewModels.EditorViewModel)this.DataContext).NewNote();
-
-			btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = false;
-			SetModifiedState(false);
-			ResetAutosave();
+			ResetEditorStatus();
 		}
 
 		private void SelectNoteOnList()
@@ -285,7 +282,7 @@ namespace SiTE.Views
 		private void ResetEditorStatus()
 		{
 			NoteContent.IsUndoEnabled = false;
-			btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = true;
+			btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = (NoteList.SelectedIndex > -1);
 
 			SetModifiedState(false);
 			ResetAutosave();
