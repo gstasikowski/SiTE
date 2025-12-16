@@ -7,7 +7,7 @@ namespace SiTE.ViewModels
 	{
 		private MainWindowViewModel MainWindow
 		{
-			get { return (ViewModels.MainWindowViewModel)((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.DataContext; }
+			get { return (MainWindowViewModel)((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.DataContext; }
 		}
 
 		public ObservableCollection<Models.NoteModel> NoteList
