@@ -29,6 +29,7 @@ namespace SiTE.Views
 			ResetAutosave();
 
 			Core.Instance.dataBank.NoteSwitched += UpdateNoteListSelection;
+			Core.Instance.dataBank.NoteSwitched += ResetEditorStatus;
 		}
 
 		#region Methods (window)
@@ -157,15 +158,7 @@ namespace SiTE.Views
 				return;
 			}
 
-			NoteContent.IsUndoEnabled = false; // TODO figure out a better way to do this
-
 			((ViewModels.EditorViewModel)this.DataContext).OpenNote(noteID);
-
-			NoteContent.IsUndoEnabled = true; // TODO figure out a better way to do this
-			btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = true;
-
-			SetModifiedState(false);
-			ResetAutosave();
 		}
 
 		private void SaveNote()
@@ -287,6 +280,15 @@ namespace SiTE.Views
 		private void UpdateTextSelectionPosition(int change)
 		{
 			selectionEndPosition += change;
+		}
+
+		private void ResetEditorStatus()
+		{
+			NoteContent.IsUndoEnabled = false;
+			btnDeleteNote.IsEnabled = btnCreateLink.IsEnabled = true;
+
+			SetModifiedState(false);
+			ResetAutosave();
 		}
 		#endregion Methods (helpers)
 
