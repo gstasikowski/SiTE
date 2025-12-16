@@ -6,7 +6,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 
 namespace SiTE.Views
 {
-    enum EditorMode { editor, mixed, render };
+	enum EditorMode { editor, mixed, render };
 
 	public partial class EditorView : UserControl
 	{
@@ -22,7 +22,7 @@ namespace SiTE.Views
 		public EditorView()
 		{
 			InitializeComponent();
-            Core.Instance.fileOperations.InitialSetup();
+			Core.Instance.fileOperations.InitialSetup();
 
 			WindowSetup();
 			LoadNoteList();
@@ -78,8 +78,8 @@ namespace SiTE.Views
 
 			UpdateEditorView();
 
-            Core.Instance.dataBank.SetSetting("editorMode", ((int)_editorMode).ToString());
-            Core.Instance.fileOperations.SaveSettings();
+			Core.Instance.dataBank.SetSetting("editorMode", ((int)_editorMode).ToString());
+			Core.Instance.fileOperations.SaveSettings();
 		}
 
 		private void UpdateEditorView()
@@ -119,7 +119,7 @@ namespace SiTE.Views
 		#region Methods (note operations)
 		private void LoadNoteList()
 		{
-            Core.Instance.databaseOperations.GetNoteList();
+			Core.Instance.databaseOperations.GetNoteList();
 		}
 
 		private void NewNote()
@@ -184,7 +184,7 @@ namespace SiTE.Views
 			{
 				return;
 			}
-			
+
 			((ViewModels.EditorViewModel)this.DataContext).DeleteNote();
 			NewNote();
 			LoadNoteList();
@@ -222,13 +222,13 @@ namespace SiTE.Views
 			NoteContent.Focus();
 			NoteContent.Text = NoteContent.Text.Insert(selectionStartPosition, "***");
 		}
-		
+
 		private void ToggleTextDecoration(string decorationMarker)
 		{
-			int markerLength = decorationMarker.Length; 
+			int markerLength = decorationMarker.Length;
 			NoteContent.Focus();
 			RestoreTextSelection();
-			
+
 			if (NoteContent.SelectedText.StartsWith(decorationMarker) && NoteContent.SelectedText.EndsWith(decorationMarker))
 			{
 				NoteContent.SelectedText = NoteContent.SelectedText[markerLength..^markerLength];
@@ -264,7 +264,7 @@ namespace SiTE.Views
 			ToggleNoteModifiedDate();
 			WindowSetup();
 		}
-		
+
 		private void CacheTextSelectionPosition()
 		{
 			selectionStartPosition = NoteContent.SelectionStart;
@@ -323,9 +323,9 @@ namespace SiTE.Views
 			_cancellationTokenSource?.Cancel();
 			_cancellationTokenSource?.Dispose();
 			_cancellationTokenSource = new CancellationTokenSource();
-			
+
 			if (_autosaveTask != null && !_autosaveTask.IsCompleted)
-			{ 
+			{
 				if (_autosaveTask.IsCanceled)
 				{
 					_autosaveTask.Dispose();
@@ -374,7 +374,7 @@ namespace SiTE.Views
 			return false;
 		}
 		#endregion Methods (autosaving)
-		
+
 		#region UI Events
 		private void TANoteContent_TextChanged(object sender, TextChangedEventArgs e)
 		{
