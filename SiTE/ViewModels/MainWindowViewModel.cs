@@ -45,7 +45,8 @@ namespace SiTE.ViewModels
 
 		public string AppTitle
 		{
-			get { return "SiTE"; } // TODO: append * marking for note with unsaved changes
+			get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Name; } // TODO: append * marking for note with unsaved changes
+		}
 		}
 	}
 }
