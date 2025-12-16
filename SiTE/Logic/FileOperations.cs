@@ -42,9 +42,9 @@ namespace SiTE.Logic
 		{
 			string encryptionExtention = encrypted ? _coreApp.dataBank.EncryptionExtention : string.Empty;
 
-			return (File.Exists(_coreApp.dataBank.DefaultDBPath + encryptionExtention)
+			return File.Exists(_coreApp.dataBank.DefaultDBPath + encryptionExtention)
 				&& File.Exists(_coreApp.dataBank.DefaultPIndexPath + encryptionExtention)
-				&& File.Exists(_coreApp.dataBank.DefaultSIndexPath + encryptionExtention));
+				&& File.Exists(_coreApp.dataBank.DefaultSIndexPath + encryptionExtention);
 		}
 
 		public void DeleteFile(string filePath)
@@ -53,7 +53,7 @@ namespace SiTE.Logic
 			{
 				return;
 			}
-			
+
 			File.Delete(filePath);
 		}
 
@@ -98,12 +98,14 @@ namespace SiTE.Logic
 				var assembly = Assembly.GetExecutingAssembly();
 
 				using (Stream stream = assembly.GetManifestResourceStream(assemblyConfigFile))
-				using (StreamReader reader = new StreamReader(stream))
 				{
-					string? configContent = reader.ReadToEnd();
-					ParseSettings(configContent);
+					using (StreamReader reader = new StreamReader(stream))
+					{
+						string? configContent = reader.ReadToEnd();
+						ParseSettings(configContent);
 
-					reader.Close();
+						reader.Close();
+					}
 				}
 			}
 			catch (FileNotFoundException e)
