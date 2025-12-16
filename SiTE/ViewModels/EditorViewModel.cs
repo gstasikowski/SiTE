@@ -59,7 +59,7 @@ namespace SiTE.ViewModels
 
 		public void DisplayAppInfo()
 		{
-			string message = string.Format("{0}\n\nVersion: {1}", "SiTE"/*App.ResourceAssembly.GetName().Name*/, "2.0"/*Avalonia.Application.ResourceAssembly.GetName().Version*/);
+			string message = string.Format("{0}\n\nVersion: {1}", MainWindow.AppTitle, MainWindow.AppVersion);
 
 			Views.ErrorMessageView messageWindow = new Views.ErrorMessageView(message, string.Empty);
 			messageWindow.Title = (string)Logic.Localizer.Instance["MenuAbout"];
