@@ -1,8 +1,5 @@
-using System.Windows.Input;
 using DynamicData;
 using ReactiveUI;
-using SiTE.Logic;
-using SiTE.Views;
 
 namespace SiTE.ViewModels
 {
