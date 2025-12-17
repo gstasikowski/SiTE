@@ -16,7 +16,7 @@ namespace SiTE.Models
 
 		public NoteModel()
 		{
-			ID = System.Guid.Empty;
+			ID = Guid.Empty;
 			Title = string.Empty;
 			Content = string.Empty;
 		}
@@ -70,7 +70,7 @@ namespace SiTE.Models
 				OnPropertyChanged();
 			}
 		}
-	 
+
 		protected void OnPropertyChanged([CallerMemberName] string name = null)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
