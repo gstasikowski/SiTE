@@ -15,7 +15,7 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		<Expander Header="{lang:Localize GroupGeneral}" IsExpanded="True" HorizontalAlignment="Stretch">
 			<StackPanel Margin="19, 5, 10, 0">
