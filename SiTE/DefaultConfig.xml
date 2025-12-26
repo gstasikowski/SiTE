@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Config>
-  <LanguageID>en-US</LanguageID>
+  <LanguageID>en-GB</LanguageID>
   <Theme>Light</Theme>
   <AutoSave>True</AutoSave>
   <AutoSaveDelay>5</AutoSaveDelay>
