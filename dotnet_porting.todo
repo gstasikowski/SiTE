@@ -1,0 +1,42 @@
+Editor Logic:
+	✔ Restore core functionality @done(24-10-01 14:39)
+		✔ Note opening @done(24-10-01 14:39)
+		✔ Note saving @done(24-10-01 14:39)
+		✔ Note encryption @done(24-10-01 14:39)
+		✔ Auto saving @done(24-10-02 15:13)
+	✔ Raw note display @done(24-10-01 14:40)
+	✔ Markdown rendering @done(24-10-03 15:33)
+	✔ Markdown links handling @done(24-10-08 16:02)
+	✔ Switching to Settings @done(24-10-08 15:33)
+	☐ Move core logic away from editor view
+		✔ Note binding @done(24-10-02 15:13)
+		✔ Note opening @done(24-10-01 14:39)
+		✔ Note saving @done(24-10-01 14:39)
+		☐ Auto saving
+	☐ Secure database password (hashing + salting)
+Settings Logic:
+	✔ Restore core functionality @done(24-10-07 21:03)
+	✔ Add UI themes @done(24-10-09 14:32)
+	☐ Move core logic away from settings view
+	✔ Switching to Editor @done(24-10-08 15:33)
+UI:
+	☐ Update layout
+		☐ Save reminder
+		☐ Error pop-up
+		☐ Password dialog
+		☐ Editor view
+		✔ Settings view @done(25-12-17 16:31)
+Automatic testing:
+	☐ Decrypting database
+	☐ Encrypting database
+	☐ Creating new notes
+	☐ Opening notes
+	☐ Saving notes
+Issues:
+	✔ Autosave triggers multiple times @done(24-10-11 17:40)
+	✔ Switching active note through a link doesn't update note list selection. @done(24-10-31 16:41)
+	☐ Last save time label disappear on save.
+	☐ Resizing note list using the slider makes its width static (editor view won't fill the space if list is hidden).
+	☐ Switching notes using link doesn't go through editor steps.
+		☐ Display save reminder
+		✔ Refresh autosave, editor buttons etc @done(25-12-16 21:33)
