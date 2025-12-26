@@ -1,3 +1,5 @@
+**Currently undergoing a rewrite to .NET 8 and Avalonia. Check *dotnet_core_rewrite* branch for details.**
+
 # About
 Simple note taking app with encryption.
 
