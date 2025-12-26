@@ -6,8 +6,9 @@ Simple note taking app with encryption.
 - (optional) password protection
 - markdown support
 - multi language support (loaded on boot, can add your own)
+- auto saving
+- UI themes (dark, light)
 <br>
 
 **TODO:**
-- themes
 - lots and lots of polishing
