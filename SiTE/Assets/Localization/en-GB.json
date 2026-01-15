@@ -51,6 +51,8 @@
 	"TipViewMode": "Toggle view mode (editor / mixed / markdown).",
 	"TipNoteList": "Toggle note list.",
 	"TipCreateLink": "Copy markdown link.",
+	"TipSortNotesTitle": "Sort notes by title.",
+	"TipSortNotesDate": "Sort notes by modification date.",
 	"NoteTitle": "Title",
 	"NoteLastSaveTime": "Last save time:",
 	"GroupGeneral": "General",

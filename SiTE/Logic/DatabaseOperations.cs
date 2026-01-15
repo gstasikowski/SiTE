@@ -13,14 +13,33 @@ namespace SiTE.Logic
 			_coreApp = coreApp;
 		}
 
-		public void GetNoteList()
+		public void SetNoteSorting(bool sortByDate, bool sortDescending)
+		{
+			GetNoteList(sortByDate, sortDescending);
+		}
+
+		public void GetNoteList(bool sortByDate = false, bool sortDescending = false)
 		{
 			using (var database = new NoteDatabase(_coreApp.dataBank.DefaultDBPath))
 			{
 				List<Models.NoteModel> noteList = new List<Models.NoteModel>(database.GetAll());
 				_coreApp.dataBank.NoteList.Clear();
 
-				foreach (var note in noteList.OrderBy(note => note.Title))
+				if (sortByDate)
+				{
+					noteList = noteList.OrderBy(note => note.Modified).ToList();
+				}
+				else
+				{
+					noteList = noteList.OrderBy(note => note.Title).ToList();
+				}
+
+				if (sortDescending)
+				{
+					noteList.Reverse();
+				}
+
+				foreach (var note in noteList)
 				{
 					_coreApp.dataBank.NoteList.Add(note);
 				}

@@ -51,6 +51,8 @@
 	"TipViewMode": "Zmień tryb edycji (edytor / mieszany / markdown).",
 	"TipNoteList": "Pokaż/ukryj listę notatek.",
 	"TipCreateLink": "Kopiuj link markdown.",
+	"TipSortNotesTitle": "Sortuj alfabetycznie.",
+	"TipSortNotesDate": "Sortuj według daty modyfikacji.",
 	"NoteTitle": "Tytuł",
 	"NoteLastSaveTime": "Ostatni zapis:",
 	"GroupGeneral": "Ogólne",
