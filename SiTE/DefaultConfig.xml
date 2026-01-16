@@ -6,5 +6,7 @@
   <AutoSaveDelay>5</AutoSaveDelay>
   <EncryptDatabase>True</EncryptDatabase>
   <EditorMode>1</EditorMode>
+  <SortNotesByDate>False</SortNotesByDate>
+  <SortNotesDescending>False</SortNotesDescending>
   <Password>abcde1234</Password>
 </Config>

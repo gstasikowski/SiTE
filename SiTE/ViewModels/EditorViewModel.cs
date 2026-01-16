@@ -10,6 +10,11 @@ namespace SiTE.ViewModels
 			get { return (MainWindowViewModel)((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.DataContext; }
 		}
 
+		private Logic.Settings Settings
+		{
+			get { return Logic.Settings.Instance; }
+		}
+
 		public ObservableCollection<Models.NoteModel> NoteList
 		{
 			get { return DB.NoteList; }
@@ -45,6 +50,21 @@ namespace SiTE.ViewModels
 		public void DeleteNote()
 		{
 			DB.DeleteNote();
+		}
+
+		public void ToggleSortNotesByDate(bool setEnabled)
+		{
+			if (Settings.SortNotesByDate == setEnabled)
+			{
+				Settings.SortNotesDescending = !Settings.SortNotesDescending;
+			}
+			else
+			{
+				Settings.SortNotesDescending = false;
+			}
+
+			Settings.SortNotesByDate = setEnabled;
+			Settings.SaveSettings();
 		}
 
 		public void SwitchToSettingsView()

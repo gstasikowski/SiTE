@@ -62,6 +62,18 @@ namespace SiTE.Logic
 			set { SetSetting("EditorMode", value.ToString()); }
 		}
 
+		public bool SortNotesByDate
+		{
+			get { return GetSetting("SortNotesByDate") == "True"; }
+			set { SetSetting("SortNotesByDate", value.ToString()); }
+		}
+
+		public bool SortNotesDescending
+		{
+			get { return GetSetting("SortNotesDescending") == "True"; }
+			set { SetSetting("SortNotesDescending", value.ToString()); }
+		}
+
 		public bool SettingsModified
 		{
 			get { return _settingsModified; }
@@ -76,7 +88,7 @@ namespace SiTE.Logic
 		{
 			Localizer.Instance.LoadLanguage(GetSetting("LanguageID"));
 			ApplyLoadedTheme();
-			
+
 			SettingsModified = false;
 		}
 

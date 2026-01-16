@@ -19,9 +19,6 @@ namespace SiTE.Views
 		private int selectionStartPosition = -1;
 		private int selectionEndPosition = -1;
 
-		private bool sortByDate = false;
-		private bool sortDescending = false;
-
 		public EditorView()
 		{
 			InitializeComponent();
@@ -192,9 +189,8 @@ namespace SiTE.Views
 
 		private void ChangeNoteSorting(bool setSortByDate)
 		{
-			sortDescending = (setSortByDate != sortByDate) ? false : !sortDescending;
-			sortByDate = setSortByDate;
-			Core.Instance.databaseOperations.SetNoteSorting(sortByDate, sortDescending);
+			((ViewModels.EditorViewModel)this.DataContext).ToggleSortNotesByDate(setSortByDate);
+			LoadNoteList();
 		}
 		#endregion (note operations)
 
