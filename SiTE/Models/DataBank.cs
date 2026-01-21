@@ -171,8 +171,7 @@ namespace SiTE.Models
 
 		public void SaveNote()
 		{
-			ActiveNote.Modified = DateTime.Now;
-            Core.Instance.databaseOperations.SaveNote(ActiveNote.ID, ActiveNote.Title, ActiveNote.Content);
+			Core.Instance.databaseOperations.SaveNote(ActiveNote.ID, ActiveNote.Title, ActiveNote.Content);
 		}
 
 		public void DeleteNote()
