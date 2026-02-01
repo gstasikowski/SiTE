@@ -67,13 +67,13 @@ namespace SiTE.Models
 		}
 
 		public string EncryptionExtention
-		{ 
-			get { return _encryptionExtention; } 
+		{
+			get { return _encryptionExtention; }
 		}
 
 		public string UserPassword
-		{ 
-			get { return _userPassword; } 
+		{
+			get { return _userPassword; }
 		}
 
 		public ObservableCollection<NoteModel> NoteList
@@ -102,7 +102,7 @@ namespace SiTE.Models
 
 			if (!onStart)
 			{
-                Core.Instance.encryptionOperations.UpdateEncryption();
+				Core.Instance.encryptionOperations.UpdateEncryption();
 			}
 		}
 
@@ -159,13 +159,13 @@ namespace SiTE.Models
 		public void OpenNote(Guid noteID)
 		{
 			var tempNote = Core.Instance.databaseOperations.LoadNote(noteID);
-			
+
 			ActiveNote.ID = tempNote.ID;
 			ActiveNote.Title = tempNote.Title;
 			ActiveNote.Content = tempNote.Content;
 			ActiveNote.Created = tempNote.Created;
 			ActiveNote.Modified = tempNote.Modified;
-			
+
 			NoteSwitched?.Invoke();
 		}
 
@@ -176,7 +176,7 @@ namespace SiTE.Models
 
 		public void DeleteNote()
 		{
-            Core.Instance.databaseOperations.DeleteNote(ActiveNote.ID);
+			Core.Instance.databaseOperations.DeleteNote(ActiveNote.ID);
 		}
 		#endregion Methods
 	}

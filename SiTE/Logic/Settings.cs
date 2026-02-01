@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace SiTE.Logic
 {
-    public class Settings : INotifyPropertyChanged
+	public class Settings : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -110,7 +110,7 @@ namespace SiTE.Logic
 			Localizer.Instance.LoadLanguage(GetSetting("LanguageID"));
 			OnPropertyChanged("SelectedLanguage");
 			ApplyLoadedTheme();
-			
+
 			foreach (var setting in CoreApp.dataBank.GetAllSettings())
 			{
 				OnPropertyChanged(setting.Key);
