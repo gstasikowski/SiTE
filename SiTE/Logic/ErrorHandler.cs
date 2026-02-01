@@ -1,5 +1,3 @@
-using System.Windows; // TODO replace
-
 namespace SiTE.Logic
 {
 	public class ErrorHandler
@@ -9,15 +7,15 @@ namespace SiTE.Logic
 		public ErrorHandler(string errorCode, string exceptionMessage)
 		{
 			string message;
-			string details = (exceptionMessage != string.Empty) ? string.Format("{0}: {1}", (string)Logic.Localizer.Instance["MessageErrorDetails"], exceptionMessage) : string.Empty;
+			string details = (exceptionMessage != string.Empty) ? string.Format("{0}: {1}", Localizer.Instance["MessageErrorDetails"], exceptionMessage) : string.Empty;
 
 			try
 			{
-				message = (string)Logic.Localizer.Instance[errorCode];
+				message = Localizer.Instance[errorCode];
 			}
 			catch
 			{
-				message = (string)Logic.Localizer.Instance["ErrorDefault"];
+				message = Localizer.Instance["ErrorDefault"];
 			}
 
 			Views.ErrorMessageView messageWindow = new Views.ErrorMessageView(message, details);
