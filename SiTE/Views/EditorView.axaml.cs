@@ -35,14 +35,6 @@ namespace SiTE.Views
 		#region Methods (window)
 		private void WindowSetup()
 		{
-			// TODO remove hard references to MainWindow
-			// ((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.Title = "SiTE";//App.ResourceAssembly.GetName().Name;
-
-			// if (((ViewModels.EditorViewModel)this.DataContext).IsNoteModified)
-			// {
-			// 	((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow.Title += '*';
-			// }
-
 			int tempMode;
 			int.TryParse(Core.Instance.dataBank.GetSetting("EditorMode"), out tempMode);
 			_editorMode = (EditorMode)tempMode;
