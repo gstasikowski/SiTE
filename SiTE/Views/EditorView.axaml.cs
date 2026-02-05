@@ -52,7 +52,7 @@ namespace SiTE.Views
 
 		private void ExitApp()
 		{
-			// Application.Current.MainWindow.Close();
+			((ViewModels.EditorViewModel)this.DataContext).CloseApplication();
 		}
 		#endregion Methods (window)
 
@@ -500,6 +500,11 @@ namespace SiTE.Views
 		private void BtnSortNotesDate_Click(object sender, RoutedEventArgs e)
 		{
 			ChangeNoteSorting(true);
+		}
+
+		private void BtnExit_Click(object sender, RoutedEventArgs e)
+		{
+			ExitApp();
 		}
 		#endregion UI Events
 	}

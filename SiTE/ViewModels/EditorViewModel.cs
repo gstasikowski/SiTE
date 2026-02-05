@@ -90,5 +90,10 @@ namespace SiTE.ViewModels
 		{
 			get { return Core.Instance.dataBank; }
 		}
+
+		public void CloseApplication()
+		{
+			((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow?.Close();
+		}
 	}
 }

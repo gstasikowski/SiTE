@@ -29,7 +29,7 @@
 				<MenuItem Header="{lang:Localize MenuSaveNote}" ToolTip.Tip="{lang:Localize TipSaveNote}" Click="BtnSaveNote_Click"/>
 				<MenuItem Header="{lang:Localize MenuDeleteNote}" ToolTip.Tip="{lang:Localize TipDeleteNote}" Click="BtnDeleteNote_Click"/>
 				<Separator/>
-				<MenuItem Header="{lang:Localize MenuExit}" Click="MIExit_Click"/>
+				<MenuItem Header="{lang:Localize MenuExit}" Click="BtnExit_Click"/>
 			</MenuItem>
 			<MenuItem Header="{lang:Localize MenuEdit}">
 				<MenuItem Header="{lang:Localize MenuCut}" ToolTip.Tip="{lang:Localize TipCut}" Click="BtnCut_Click"/>
